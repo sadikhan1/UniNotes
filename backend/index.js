@@ -11,6 +11,12 @@ app.use(express.json())
 
 app.use('/api/auth', authRoutes)
 
+// Global error handler
+app.use((err, req, res, _next) => {
+  console.error(err)
+  res.status(500).json({ error: 'Internal server error' })
+})
+
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`)
 })
