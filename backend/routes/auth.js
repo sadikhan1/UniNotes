@@ -3,6 +3,31 @@ import supabase from '../services/supabase.js'
 
 const router = Router()
 
+// POST /api/auth/register
+router.post('/register', async (req, res) => {
+  const { email, username, password } = req.body
+
+  if (!email || !username || !password) {
+    return res.status(400).json({ error: 'Email, username, and password are required' })
+  }
+
+  if (password.length < 8) {
+    return res.status(400).json({ error: 'Password must be at least 8 characters' })
+  }
+
+  const { error } = await supabase.auth.signUp({
+    email,
+    password,
+    options: { data: { username } },
+  })
+
+  if (error) {
+    return res.status(400).json({ error: error.message })
+  }
+
+  return res.status(201).json({ message: 'Registration successful. Please check your email to verify your account.' })
+})
+
 // POST /api/auth/login
 router.post('/login', async (req, res) => {
   const { email, password } = req.body
