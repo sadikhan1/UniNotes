@@ -53,14 +53,6 @@ router.post('/login', async (req, res) => {
 
 // POST /api/auth/logout
 router.post('/logout', async (req, res) => {
-  const token = req.headers.authorization?.startsWith('Bearer ')
-    ? req.headers.authorization.slice(7)
-    : null
-
-  if (token) {
-    await supabase.auth.admin.signOut(token)
-  }
-
   return res.status(200).json({ message: 'Logged out' })
 })
 
