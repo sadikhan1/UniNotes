@@ -56,3 +56,15 @@ export async function updateNote(id, data) {
 export async function deleteNote(id) {
   return request(`/notes/${id}`, { method: 'DELETE' })
 }
+
+export async function getUser(id) {
+  return request(`/users/${id}`)
+}
+
+export async function getUserNotes(id) {
+  return request(`/users/${id}/notes`)
+}
+
+export async function updateUsername(username) {
+  return request('/users/me', { method: 'PUT', body: JSON.stringify({ username }) })
+}
