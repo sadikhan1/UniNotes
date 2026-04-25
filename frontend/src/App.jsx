@@ -3,6 +3,9 @@ import { AuthProvider, useAuth } from './context/AuthContext'
 import Navbar from './components/Navbar'
 import LoginPage from './pages/LoginPage'
 import RegisterPage from './pages/RegisterPage'
+import HomePage from './pages/HomePage'
+import NoteFormPage from './pages/NoteFormPage'
+import NoteDetailPage from './pages/NoteDetailPage'
 
 function ProtectedRoute({ children }) {
   const { user, loading } = useAuth()
@@ -18,14 +21,6 @@ function ProtectedRoute({ children }) {
   return user ? children : <Navigate to="/login" replace />
 }
 
-function NotesPage() {
-  return (
-    <div className="min-h-screen flex items-center justify-center">
-      <h1 className="text-2xl font-bold text-gray-900">Notes (coming soon)</h1>
-    </div>
-  )
-}
-
 function App() {
   return (
     <AuthProvider>
@@ -35,7 +30,14 @@ function App() {
           <Route path="/" element={<Navigate to="/notes" replace />} />
           <Route path="/login" element={<LoginPage />} />
           <Route path="/register" element={<RegisterPage />} />
-          <Route path="/notes" element={<NotesPage />} />
+          <Route path="/notes" element={<HomePage />} />
+          <Route path="/notes/new" element={
+            <ProtectedRoute><NoteFormPage /></ProtectedRoute>
+          } />
+          <Route path="/notes/:id/edit" element={
+            <ProtectedRoute><NoteFormPage /></ProtectedRoute>
+          } />
+          <Route path="/notes/:id" element={<NoteDetailPage />} />
         </Routes>
       </div>
     </AuthProvider>
