@@ -1,15 +1,46 @@
 import express from 'express'
 import cors from 'cors'
+import rateLimit from 'express-rate-limit'
 import 'dotenv/config'
 import authRoutes from './routes/auth.js'
 
 const app = express()
 const PORT = process.env.PORT || 5010
 
-app.use(cors())
+const corsOptions = {
+  origin: process.env.NODE_ENV === 'production'
+    ? process.env.FRONTEND_URL
+    : 'http://localhost:5173',
+  credentials: true,
+}
+
+const globalLimit = rateLimit({
+  windowMs: 15 * 60 * 1000,
+  max: 100,
+  standardHeaders: true,
+  legacyHeaders: false,
+  message: { error: 'Too many requests' },
+})
+
+const authLimit = rateLimit({
+  windowMs: 15 * 60 * 1000,
+  max: 10,
+  standardHeaders: true,
+  legacyHeaders: false,
+  message: { error: 'Too many requests' },
+})
+
+app.use(cors(corsOptions))
+app.use(globalLimit)
 app.use(express.json())
 
-app.use('/api/auth', authRoutes)
+app.use('/api/auth', authLimit, authRoutes)
+
+// Global error handler
+app.use((err, req, res, _next) => {
+  console.error(err)
+  res.status(500).json({ error: 'Internal server error' })
+})
 
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`)
