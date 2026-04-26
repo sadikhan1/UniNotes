@@ -1,9 +1,11 @@
 import { useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import { loginUser } from '../services/api'
+import { useAuth } from '../context/AuthContext'
 
 function LoginPage() {
   const navigate = useNavigate()
+  const { login } = useAuth()
   const [formData, setFormData] = useState({ email: '', password: '' })
   const [errors, setErrors] = useState({})
   const [serverError, setServerError] = useState('')
@@ -43,7 +45,7 @@ function LoginPage() {
       setServerError('')
       setEmailUnverified(false)
       const data = await loginUser(formData.email, formData.password)
-      localStorage.setItem('token', data.access_token)
+      login(data.access_token, data.user)
       navigate('/notes')
     } catch (err) {
       if (err.status === 403) {
