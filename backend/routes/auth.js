@@ -5,6 +5,7 @@ import { validate } from '../middleware/validate.js'
 
 const router = Router()
 
+
 const registerRules = [
   body('email').trim().isEmail().withMessage('Valid email is required'),
   body('username').trim().isLength({ min: 3 }).withMessage('Username must be at least 3 characters'),
@@ -27,6 +28,7 @@ router.post('/register', validate(registerRules), async (req, res) => {
   })
 
   if (error) return res.status(400).json({ error: error.message })
+
 
   return res.status(201).json({ message: 'Registration successful. Please check your email to verify your account.' })
 })
