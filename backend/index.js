@@ -3,6 +3,8 @@ import cors from 'cors'
 import rateLimit from 'express-rate-limit'
 import 'dotenv/config'
 import authRoutes from './routes/auth.js'
+import notesRoutes from './routes/notes.js'
+import usersRoutes from './routes/users.js'
 
 const app = express()
 const PORT = process.env.PORT || 5010
@@ -34,6 +36,11 @@ app.use(cors(corsOptions))
 app.use(globalLimit)
 app.use(express.json())
 
+
+app.use('/api/auth', authRoutes)
+app.use('/api/notes', notesRoutes)
+app.use('/api/users', usersRoutes)
+
 app.use('/api/auth', authLimit, authRoutes)
 
 // Global error handler
@@ -41,6 +48,7 @@ app.use((err, req, res, _next) => {
   console.error(err)
   res.status(500).json({ error: 'Internal server error' })
 })
+
 
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`)
