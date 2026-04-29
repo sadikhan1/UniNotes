@@ -68,3 +68,23 @@ export async function getUserNotes(id) {
 export async function updateUsername(username) {
   return request('/users/me', { method: 'PUT', body: JSON.stringify({ username }) })
 }
+
+export async function toggleLike(noteId) {
+  return request(`/notes/${noteId}/like`, { method: 'POST' })
+}
+
+export async function toggleSave(noteId) {
+  return request(`/notes/${noteId}/save`, { method: 'POST' })
+}
+
+export async function getComments(noteId) {
+  return request(`/notes/${noteId}/comments`)
+}
+
+export async function addComment(noteId, content) {
+  return request(`/notes/${noteId}/comments`, { method: 'POST', body: JSON.stringify({ content }) })
+}
+
+export async function deleteComment(commentId) {
+  return request(`/comments/${commentId}`, { method: 'DELETE' })
+}
