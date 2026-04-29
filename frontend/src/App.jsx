@@ -6,6 +6,7 @@ import RegisterPage from './pages/RegisterPage'
 import HomePage from './pages/HomePage'
 import NoteFormPage from './pages/NoteFormPage'
 import NoteDetailPage from './pages/NoteDetailPage'
+import ProfilePage from './pages/ProfilePage'
 
 function ProtectedRoute({ children }) {
   const { user, loading } = useAuth()
@@ -38,6 +39,7 @@ function App() {
             <ProtectedRoute><NoteFormPage /></ProtectedRoute>
           } />
           <Route path="/notes/:id" element={<NoteDetailPage />} />
+          <Route path="/profile/:id" element={<ProfilePage />} />
         </Routes>
       </div>
     </AuthProvider>
