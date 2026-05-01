@@ -15,7 +15,7 @@ notesRouter.post('/:id/like', requireAuth, async (req, res) => {
     .select('user_id')
     .eq('user_id', userId)
     .eq('note_id', noteId)
-    .single()
+    .maybeSingle()
 
   if (existing) {
     await supabase.from('likes').delete().eq('user_id', userId).eq('note_id', noteId)
@@ -41,7 +41,7 @@ notesRouter.post('/:id/save', requireAuth, async (req, res) => {
     .select('user_id')
     .eq('user_id', userId)
     .eq('note_id', noteId)
-    .single()
+    .maybeSingle()
 
   if (existing) {
     await supabase.from('saved_notes').delete().eq('user_id', userId).eq('note_id', noteId)
