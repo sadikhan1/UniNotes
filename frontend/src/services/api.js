@@ -1,9 +1,18 @@
 const BASE_URL = import.meta.env.VITE_API_URL ?? '/api'
 
+function getToken() {
+  return localStorage.getItem('token')
+}
+
 async function request(path, options = {}) {
+  const token = getToken()
   const res = await fetch(`${BASE_URL}${path}`, {
-    headers: { 'Content-Type': 'application/json', ...options.headers },
     ...options,
+    headers: {
+      'Content-Type': 'application/json',
+      ...(token ? { Authorization: `Bearer ${token}` } : {}),
+      ...options.headers,
+    },
   })
   const data = await res.json()
   if (!res.ok) {

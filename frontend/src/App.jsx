@@ -1,35 +1,18 @@
 import { Routes, Route, Navigate } from 'react-router-dom'
-import { AuthProvider, useAuth } from './context/AuthContext'
+import { AuthProvider } from './context/AuthContext'
+import ProtectedRoute from './components/ProtectedRoute'
 import LoginPage from './pages/LoginPage'
 import RegisterPage from './pages/RegisterPage'
-
-function ProtectedRoute({ children }) {
-  const { user, loading } = useAuth()
-
-  if (loading) {
-    return (
-      <div className="min-h-screen flex items-center justify-center">
-        <div className="w-8 h-8 border-4 border-blue-600 border-t-transparent rounded-full animate-spin" />
-      </div>
-    )
-  }
-
-  return user ? children : <Navigate to="/login" replace />
-}
-
-function NotesPage() {
-  return (
-    <div className="min-h-screen flex items-center justify-center">
-      <h1 className="text-2xl font-bold text-gray-900">Notes (coming soon)</h1>
-    </div>
-  )
-}
+import HomePage from './pages/HomePage'
+import NotesPage from './pages/NotesPage'
+import NoteDetailPage from './pages/NoteDetailPage'
+import ProfilePage from './pages/ProfilePage'
 
 function App() {
   return (
     <AuthProvider>
       <Routes>
-        <Route path="/" element={<Navigate to="/login" replace />} />
+        <Route path="/" element={<HomePage />} />
         <Route path="/login" element={<LoginPage />} />
         <Route path="/register" element={<RegisterPage />} />
         <Route path="/notes" element={
@@ -37,6 +20,9 @@ function App() {
             <NotesPage />
           </ProtectedRoute>
         } />
+        <Route path="/notes/:id" element={<NoteDetailPage />} />
+        <Route path="/profile/:id" element={<ProfilePage />} />
+        <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>
     </AuthProvider>
   )

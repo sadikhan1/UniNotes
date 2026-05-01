@@ -126,24 +126,42 @@ router.get('/', async (req, res) => {
   if (search) query = query.or(`title.ilike.%${search}%,content.ilike.%${search}%`)
   if (course) query = query.ilike('course', course)
 
+  if (tag) {
+    const { data: tagRow } = await supabase
+      .from('tags')
+      .select('id')
+      .eq('name', tag.toLowerCase())
+      .maybeSingle()
+
+    if (!tagRow) {
+      return res.status(200).json({ notes: [], total: 0, hasNextPage: false })
+    }
+
+    const { data: noteTags } = await supabase
+      .from('note_tags')
+      .select('note_id')
+      .eq('tag_id', tagRow.id)
+
+    const noteIds = (noteTags || []).map(nt => nt.note_id)
+    if (noteIds.length === 0) {
+      return res.status(200).json({ notes: [], total: 0, hasNextPage: false })
+    }
+
+    query = query.in('id', noteIds)
+  }
+
   query = query
-    .order('created_at', { ascending: sort !== 'latest' ? false : false })
+    .order('created_at', { ascending: sort !== 'latest' })
     .range(offset, offset + Number(limit) - 1)
 
   const { data: notes, count, error } = await query
 
   if (error) return res.status(500).json({ error: error.message })
 
-  let result = (notes || []).map(formatNote)
-
-  if (tag) {
-    result = result.filter(n => n.tags.includes(tag.toLowerCase()))
-  }
-
   return res.status(200).json({
-    notes: result,
+    notes: (notes || []).map(formatNote),
     total: count ?? 0,
-    hasNextPage: offset + result.length < (count ?? 0),
+    hasNextPage: offset + (notes?.length ?? 0) < (count ?? 0),
   })
 })
 

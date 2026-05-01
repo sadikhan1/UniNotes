@@ -21,7 +21,7 @@ const loginRules = [
 router.post('/register', validate(registerRules), async (req, res) => {
   const { email, username, password } = req.body
 
-  const { error } = await supabase.auth.signUp({
+  const { data, error } = await supabase.auth.signUp({
     email: email.trim(),
     password,
     options: { data: { username: username.trim() } },
@@ -29,6 +29,11 @@ router.post('/register', validate(registerRules), async (req, res) => {
 
   if (error) return res.status(400).json({ error: error.message })
 
+  const { error: profileError } = await supabase
+    .from('users')
+    .insert({ id: data.user.id, email: email.trim(), username: username.trim() })
+
+  if (profileError) return res.status(500).json({ error: 'Registration failed. Please try again.' })
 
   return res.status(201).json({ message: 'Registration successful. Please check your email to verify your account.' })
 })
@@ -57,6 +62,14 @@ router.post('/login', validate(loginRules), async (req, res) => {
 
 // POST /api/auth/logout
 router.post('/logout', async (req, res) => {
+  const token = req.headers.authorization?.startsWith('Bearer ')
+    ? req.headers.authorization.slice(7)
+    : null
+
+  if (token) {
+    await supabase.auth.admin.signOut(token)
+  }
+
   return res.status(200).json({ message: 'Logged out' })
 })
 
