@@ -8,6 +8,7 @@ import notesRoutes from './routes/notes.js'
 import usersRoutes from './routes/users.js'
 import commentRouters from './routes/comments.js'
 import { notesRouter as likesNotesRouter, usersRouter as likesUsersRouter } from './routes/likes.js'
+import filesRouter from './routes/files.js'
 
 const app = express()
 const PORT = process.env.PORT || 5010
@@ -53,8 +54,11 @@ app.use('/api/comments', commentRouters.comments)
 app.use('/api/notes', likesNotesRouter)
 app.use('/api/users', likesUsersRouter)
 
+// Files
+app.use('/api/files', filesRouter)
+
 // Global error handler
-app.use((err, req, res, _next) => {
+app.use((err, _req, res, _next) => {
   console.error(err)
   res.status(500).json({ error: 'Internal server error' })
 })
