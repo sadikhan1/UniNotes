@@ -30,7 +30,17 @@ router.post('/register', validate(registerRules), async (req, res) => {
   if (error) return res.status(400).json({ error: error.message })
 
   if (data.user.identities?.length === 0) {
-    return res.status(409).json({ error: 'An account with this email already exists.' })
+    return res.status(400).json({ error: 'An account with this email already exists.' })
+  }
+
+  const { data: existingUser } = await supabase
+    .from('users')
+    .select('id')
+    .eq('username', username.trim())
+    .maybeSingle()
+
+  if (existingUser) {
+    return res.status(400).json({ error: 'Username is already taken.' })
   }
 
   const { error: profileError } = await supabase
@@ -39,7 +49,7 @@ router.post('/register', validate(registerRules), async (req, res) => {
 
   if (profileError) return res.status(500).json({ error: 'Registration failed. Please try again.' })
 
-  return res.status(201).json({ message: 'Registration successful. Please check your email to verify your account.' })
+  return res.status(201).json({ message: 'Check your email to confirm your account' })
 })
 
 // POST /api/auth/login
