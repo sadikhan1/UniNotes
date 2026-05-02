@@ -29,6 +29,10 @@ router.post('/register', validate(registerRules), async (req, res) => {
 
   if (error) return res.status(400).json({ error: error.message })
 
+  if (data.user.identities?.length === 0) {
+    return res.status(409).json({ error: 'An account with this email already exists.' })
+  }
+
   const { error: profileError } = await supabase
     .from('users')
     .insert({ id: data.user.id, email: email.trim(), username: username.trim() })
