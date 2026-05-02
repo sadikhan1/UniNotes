@@ -36,3 +36,56 @@ export async function loginUser(email, password) {
     body: JSON.stringify({ email, password }),
   })
 }
+
+export async function getNotes(params = {}) {
+  const query = new URLSearchParams(params).toString()
+  return request(`/notes${query ? `?${query}` : ''}`)
+}
+
+export async function getNote(id) {
+  return request(`/notes/${id}`)
+}
+
+export async function createNote(data) {
+  return request('/notes', { method: 'POST', body: JSON.stringify(data) })
+}
+
+export async function updateNote(id, data) {
+  return request(`/notes/${id}`, { method: 'PUT', body: JSON.stringify(data) })
+}
+
+export async function deleteNote(id) {
+  return request(`/notes/${id}`, { method: 'DELETE' })
+}
+
+export async function getUser(id) {
+  return request(`/users/${id}`)
+}
+
+export async function getUserNotes(id) {
+  return request(`/users/${id}/notes`)
+}
+
+export async function updateUsername(username) {
+  return request('/users/me', { method: 'PUT', body: JSON.stringify({ username }) })
+}
+
+export async function toggleLike(noteId) {
+  return request(`/notes/${noteId}/like`, { method: 'POST' })
+}
+
+export async function toggleSave(noteId) {
+  return request(`/notes/${noteId}/save`, { method: 'POST' })
+}
+
+export async function getComments(noteId) {
+  return request(`/notes/${noteId}/comments`)
+}
+
+export async function addComment(noteId, content) {
+  return request(`/notes/${noteId}/comments`, { method: 'POST', body: JSON.stringify({ content }) })
+}
+
+export async function deleteComment(commentId) {
+  return request(`/comments/${commentId}`, { method: 'DELETE' })
+}
