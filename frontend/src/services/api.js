@@ -14,6 +14,7 @@ async function request(path, options = {}) {
       ...options.headers,
     },
   })
+  if (res.status === 204) return null
   const data = await res.json()
   if (!res.ok) {
     const err = new Error(data.error ?? 'Something went wrong')
@@ -92,4 +93,29 @@ export async function addComment(noteId, content) {
 
 export async function deleteComment(commentId) {
   return request(`/comments/${commentId}`, { method: 'DELETE' })
+}
+export async function deleteFile(id) {
+  return request(`/files/${id}`, { method: 'DELETE' })
+}
+export async function uploadFile(noteId, file) {
+  const formData = new FormData()
+  formData.append('file', file)
+  formData.append('note_id', noteId)
+
+  const token = getToken()
+  const res = await fetch(`${BASE_URL}/files`, {
+    method: 'POST',
+    headers: token ? { Authorization: `Bearer ${token}` } : {},
+    body: formData,
+  })
+
+
+  const data = await res.json()
+  if (!res.ok) {
+    const err = new Error(data.error ?? 'Upload failed')
+    err.status = res.status
+    throw err
+  }
+  return data
+
 }
