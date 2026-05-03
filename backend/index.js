@@ -37,11 +37,11 @@ const authLimit = rateLimit({
 })
 
 app.use(cors(corsOptions))
-app.use(globalLimit)
+// app.use(globalLimit)
 app.use(express.json())
 
 // Routes
-app.use('/api/auth', authLimit, authRoutes)
+app.use('/api/auth', /* authLimit, */ authRoutes)
 
 app.use('/api/notes', notesRoutes)
 app.use('/api/users', usersRoutes)
