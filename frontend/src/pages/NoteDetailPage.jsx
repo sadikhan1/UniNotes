@@ -3,6 +3,7 @@ import { useParams, Link, useNavigate } from 'react-router-dom'
 import { getNote, deleteNote } from '../services/api'
 import { useAuth } from '../context/AuthContext'
 import FileUploader from '../components/FileUploader'
+import FilePreview from '../components/FilePreview'
 
 function NoteDetailPage() {
   const { id } = useParams()
@@ -97,9 +98,10 @@ function NoteDetailPage() {
           {note.content || <span className="text-gray-400 italic">No content.</span>}
         </div>
 
-        {isOwner && (
-          <FileUploader noteId={note.id} initialFiles={note.files ?? []} />
-        )}
+        {isOwner
+          ? <FileUploader noteId={note.id} initialFiles={note.files ?? []} />
+          : <FilePreview files={note.files ?? []} />
+        }
       </div>
     </div>
   )
