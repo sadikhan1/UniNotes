@@ -4,6 +4,7 @@ import { getNote, deleteNote } from '../services/api'
 import { useAuth } from '../context/AuthContext'
 import FileUploader from '../components/FileUploader'
 import FilePreview from '../components/FilePreview'
+import CommentSection from '../components/CommentSection'
 
 function NoteDetailPage() {
   const { id } = useParams()
@@ -102,6 +103,8 @@ function NoteDetailPage() {
           ? <FileUploader noteId={note.id} initialFiles={note.files ?? []} />
           : <FilePreview files={note.files ?? []} />
         }
+
+        <CommentSection noteId={note.id} currentUser={user} />
       </div>
     </div>
   )
