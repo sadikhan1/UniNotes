@@ -165,6 +165,20 @@ router.get('/', async (req, res) => {
   })
 })
 
+// GET /api/notes/courses
+router.get('/courses', async (_req, res) => {
+  const { data, error } = await supabase
+    .from('notes')
+    .select('course')
+    .eq('is_public', true)
+    .not('course', 'is', null)
+
+  if (error) return res.status(500).json({ error: error.message })
+
+  const courses = [...new Set((data || []).map(n => n.course).filter(Boolean))].sort()
+  return res.status(200).json(courses)
+})
+
 // GET /api/notes/:id  — must come after GET /
 router.get('/:id', async (req, res) => {
   const { id } = req.params

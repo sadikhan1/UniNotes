@@ -37,6 +37,10 @@ export async function loginUser(email, password) {
   })
 }
 
+export async function getCourses() {
+  return request('/notes/courses')
+}
+
 export async function getNotes(params = {}) {
   const query = new URLSearchParams(params).toString()
   return request(`/notes${query ? `?${query}` : ''}`)
