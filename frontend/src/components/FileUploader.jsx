@@ -10,12 +10,35 @@ function formatSize(bytes) {
   return `${(bytes / (1024 * 1024)).toFixed(1)} MB`
 }
 
+function isImage(f) {
+  return f.file_type?.startsWith('image/') || /\.(png|jpe?g)$/i.test(f.file_name)
+}
+
+function isPDF(f) {
+  return f.file_type === 'application/pdf' || /\.pdf$/i.test(f.file_name)
+}
+
+async function triggerDownload(url, name) {
+  try {
+    const res = await fetch(url)
+    const blob = await res.blob()
+    const a = document.createElement('a')
+    a.href = URL.createObjectURL(blob)
+    a.download = name
+    a.click()
+    URL.revokeObjectURL(a.href)
+  } catch {
+    window.open(url, '_blank')
+  }
+}
+
 function FileUploader({ noteId, initialFiles = [] }) {
   const [files, setFiles] = useState(initialFiles)
   const [selected, setSelected] = useState(null)
   const [uploading, setUploading] = useState(false)
   const [dragOver, setDragOver] = useState(false)
   const [error, setError] = useState('')
+  const [lightbox, setLightbox] = useState(null)
   const inputRef = useRef()
 
   function validate(file) {
@@ -87,7 +110,7 @@ function FileUploader({ noteId, initialFiles = [] }) {
         <p className="text-xs text-gray-400 mt-1">PDF, PNG, JPG — max 10 MB</p>
       </div>
 
-      {/* Selected file preview + upload button */}
+      {/* Selected file + upload button */}
       {selected && (
         <div className="mt-3 flex items-center justify-between bg-gray-50 border border-gray-200 rounded-md px-3 py-2">
           <div>
@@ -95,10 +118,7 @@ function FileUploader({ noteId, initialFiles = [] }) {
             <p className="text-xs text-gray-400">{formatSize(selected.size)}</p>
           </div>
           <div className="flex items-center gap-2 shrink-0">
-            <button
-              onClick={() => setSelected(null)}
-              className="text-xs text-gray-400 hover:text-gray-600"
-            >
+            <button onClick={() => setSelected(null)} className="text-xs text-gray-400 hover:text-gray-600">
               Cancel
             </button>
             <button
@@ -119,28 +139,113 @@ function FileUploader({ noteId, initialFiles = [] }) {
 
       {error && <p className="text-sm text-red-600 mt-2">{error}</p>}
 
-      {/* Uploaded files list */}
+      {/* Uploaded files with preview */}
       {files.length > 0 && (
-        <ul className="mt-4 space-y-2">
+        <div className="mt-4 space-y-4">
           {files.map(f => (
-            <li key={f.id} className="flex items-center justify-between bg-white border border-gray-200 rounded-md px-3 py-2">
-              <a
-                href={f.file_url}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="text-sm text-blue-600 hover:underline truncate"
-              >
-                {f.file_name}
-              </a>
-              <button
-                onClick={() => handleDelete(f.id)}
-                className="ml-3 text-gray-400 hover:text-red-500 transition shrink-0 text-sm"
-              >
-                ✕
-              </button>
-            </li>
+            <div key={f.id} className="border border-gray-200 rounded-lg overflow-hidden">
+              {isImage(f) ? (
+                <>
+                  <div
+                    className="cursor-pointer"
+                    onClick={() => setLightbox(f.file_url)}
+                    title="Click to view full size"
+                  >
+                    <img
+                      src={f.file_url}
+                      alt={f.file_name}
+                      className="w-full max-h-48 object-cover hover:opacity-90 transition"
+                    />
+                  </div>
+                  <div className="px-3 py-2 flex items-center justify-between bg-gray-50 border-t border-gray-200">
+                    <span className="text-sm text-gray-700 truncate">{f.file_name}</span>
+                    <div className="flex items-center gap-3 shrink-0 ml-3">
+                      <button
+                        onClick={() => triggerDownload(f.file_url, f.file_name)}
+                        className="text-xs text-blue-600 hover:text-blue-800"
+                      >
+                        ↓ Download
+                      </button>
+                      <button
+                        onClick={() => handleDelete(f.id)}
+                        className="text-gray-400 hover:text-red-500 transition text-sm"
+                        title="Remove file"
+                      >
+                        ✕
+                      </button>
+                    </div>
+                  </div>
+                </>
+              ) : isPDF(f) ? (
+                <>
+                  <iframe
+                    src={f.file_url}
+                    title={f.file_name}
+                    className="w-full h-96 border-0"
+                  />
+                  <div className="px-3 py-2 flex items-center justify-between bg-gray-50 border-t border-gray-200">
+                    <span className="text-sm text-gray-700 truncate">{f.file_name}</span>
+                    <div className="flex items-center gap-3 shrink-0 ml-3">
+                      <button
+                        onClick={() => triggerDownload(f.file_url, f.file_name)}
+                        className="text-xs text-blue-600 hover:text-blue-800"
+                      >
+                        ↓ Download
+                      </button>
+                      <button
+                        onClick={() => handleDelete(f.id)}
+                        className="text-gray-400 hover:text-red-500 transition text-sm"
+                        title="Remove file"
+                      >
+                        ✕
+                      </button>
+                    </div>
+                  </div>
+                </>
+              ) : (
+                <div className="px-3 py-3 flex items-center justify-between">
+                  <span className="text-sm text-gray-700 truncate">{f.file_name}</span>
+                  <div className="flex items-center gap-3 shrink-0 ml-3">
+                    <button
+                      onClick={() => triggerDownload(f.file_url, f.file_name)}
+                      className="text-xs text-blue-600 hover:text-blue-800"
+                    >
+                      ↓ Download
+                    </button>
+                    <button
+                      onClick={() => handleDelete(f.id)}
+                      className="text-gray-400 hover:text-red-500 transition text-sm"
+                      title="Remove file"
+                    >
+                      ✕
+                    </button>
+                  </div>
+                </div>
+              )}
+            </div>
           ))}
-        </ul>
+        </div>
+      )}
+
+      {/* Lightbox for full-size image */}
+      {lightbox && (
+        <div
+          className="fixed inset-0 bg-black/80 flex items-center justify-center z-50 p-4"
+          onClick={() => setLightbox(null)}
+        >
+          <button
+            className="absolute top-4 right-4 text-white text-2xl leading-none hover:text-gray-300"
+            onClick={() => setLightbox(null)}
+          >
+            ✕
+          </button>
+          <img
+            src={lightbox}
+            alt="Full size"
+            className="max-w-full max-h-full object-contain rounded"
+            onClick={e => e.stopPropagation()}
+          />
+        </div>
       )}
     </div>
   )
