@@ -1,6 +1,6 @@
 import { useState, useEffect, useCallback } from 'react'
 import { Link, useSearchParams } from 'react-router-dom'
-import { getNotes } from '../services/api'
+import { getNotes, getCourses } from '../services/api'
 import { useAuth } from '../context/AuthContext'
 import { DEPT_NAME_TO_SLUG } from '../data/curriculum'
 
@@ -12,8 +12,6 @@ function useDebounce(value, delay) {
   }, [value, delay])
   return debounced
 }
-
-const COURSES = ['', 'CS101', 'CS201', 'MATH101', 'MATH201', 'ENG101', 'PHYS101', 'BIO101']
 
 const DEPARTMENTS = [
   'Computer Engineering',
@@ -81,10 +79,15 @@ function HomePage() {
   const [hasNextPage, setHasNextPage] = useState(false)
   const [loading, setLoading] = useState(true)
 
+  const [courses, setCourses] = useState([])
   const [searchInput, setSearchInput] = useState('')
   const [course, setCourse] = useState(() => searchParams.get('course') ?? '')
   const [tag, setTag] = useState('')
   const [department, setDepartment] = useState('')
+
+  useEffect(() => {
+    getCourses().then(setCourses).catch(() => {})
+  }, [])
 
   const debouncedSearch = useDebounce(searchInput, 300)
 
@@ -210,7 +213,8 @@ function HomePage() {
                 onChange={e => { setCourse(e.target.value); setDepartment('') }}
                 className="w-full px-3 py-2 border border-gray-300 rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
               >
-                {COURSES.map(c => <option key={c} value={c}>{c || 'All courses'}</option>)}
+                <option value="">All courses</option>
+              {courses.map(c => <option key={c} value={c}>{c}</option>)}
               </select>
             </div>
             <div className="min-w-36">
