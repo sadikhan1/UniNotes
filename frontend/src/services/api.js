@@ -83,6 +83,10 @@ export async function toggleSave(noteId) {
   return request(`/notes/${noteId}/save`, { method: 'POST' })
 }
 
+export async function getSavedNotes() {
+  return request('/users/me/saved')
+}
+
 export async function getComments(noteId) {
   return request(`/notes/${noteId}/comments`)
 }
