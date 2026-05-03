@@ -25,7 +25,7 @@ function NoteDetailPage() {
     if (!window.confirm('Delete this note? This cannot be undone.')) return
     try {
       await deleteNote(id)
-      navigate('/')
+      navigate('/', { state: { toast: 'Note deleted.' } })
     } catch (err) {
       alert(err.message)
     }
