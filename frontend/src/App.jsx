@@ -10,12 +10,14 @@ import NoteFormPage from './pages/NoteFormPage'
 import NoteDetailPage from './pages/NoteDetailPage'
 import ProfilePage from './pages/ProfilePage'
 import CurriculumPage from './pages/CurriculumPage'
+import Toast from './components/Toast'
 
 function App() {
   return (
     <AuthProvider>
       <div className="min-h-screen bg-gray-50">
         <Navbar />
+        <Toast />
         <Routes>
           <Route path="/" element={<Navigate to="/notes" replace />} />
           <Route path="/login" element={<LoginPage />} />
