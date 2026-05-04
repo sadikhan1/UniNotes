@@ -191,20 +191,41 @@ router.get('/:id', async (req, res) => {
 
   if (error || !note) return res.status(404).json({ error: 'Note not found' })
 
+  const token = req.headers.authorization?.startsWith('Bearer ')
+    ? req.headers.authorization.slice(7)
+    : null
+
+  let userId = null
+
   if (!note.is_public) {
-    const token = req.headers.authorization?.startsWith('Bearer ')
-      ? req.headers.authorization.slice(7)
-      : null
-
     if (!token) return res.status(403).json({ error: 'Private note' })
-
     const { data: userData } = await supabase.auth.getUser(token)
     if (!userData?.user || userData.user.id !== note.user_id) {
       return res.status(403).json({ error: 'Private note' })
     }
+    userId = userData.user.id
+  } else if (token) {
+    const { data: userData } = await supabase.auth.getUser(token)
+    if (userData?.user) userId = userData.user.id
   }
 
-  return res.status(200).json(formatNote(note))
+  const { count: likeCount } = await supabase
+    .from('likes')
+    .select('*', { count: 'exact', head: true })
+    .eq('note_id', id)
+
+  let liked = false
+  let saved = false
+  if (userId) {
+    const [{ data: likeRow }, { data: saveRow }] = await Promise.all([
+      supabase.from('likes').select('user_id').eq('user_id', userId).eq('note_id', id).maybeSingle(),
+      supabase.from('saved_notes').select('user_id').eq('user_id', userId).eq('note_id', id).maybeSingle(),
+    ])
+    liked = !!likeRow
+    saved = !!saveRow
+  }
+
+  return res.status(200).json({ ...formatNote(note), like_count: likeCount ?? 0, liked, saved })
 })
 
 export default router
