@@ -101,7 +101,9 @@ export async function deleteComment(commentId) {
 export async function deleteFile(id) {
   return request(`/files/${id}`, { method: 'DELETE' })
 }
+
 export async function uploadFile(noteId, file) {
+  
   const formData = new FormData()
   formData.append('file', file)
   formData.append('note_id', noteId)
