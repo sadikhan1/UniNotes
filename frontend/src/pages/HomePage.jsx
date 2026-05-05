@@ -50,19 +50,19 @@ function NoteCard({ note }) {
   return (
     <Link
       to={`/notes/${note.id}`}
-      className="block bg-white rounded-lg border border-gray-200 p-4 hover:shadow-md transition"
+      className="block rounded-xl border border-cyan-900/60 bg-[#151c25] p-4 hover:border-cyan-500/60 hover:shadow-[0_0_24px_rgba(0,192,216,0.18)] transition"
     >
-      <h3 className="font-semibold text-gray-900 truncate">{note.title}</h3>
-      {note.course && <p className="text-xs text-blue-600 mt-1 font-medium">{note.course}</p>}
-      <p className="text-sm text-gray-500 mt-1">by {note.author}</p>
+      <h3 className="font-semibold text-slate-100 truncate">{note.title}</h3>
+      {note.course && <p className="text-xs text-cyan-400 mt-1 font-medium">{note.course}</p>}
+      <p className="text-sm text-slate-400 mt-1">by {note.author}</p>
       {note.tags?.length > 0 && (
         <div className="flex flex-wrap gap-1 mt-2">
           {note.tags.map(tag => (
-            <span key={tag} className="text-xs bg-gray-100 text-gray-600 px-2 py-0.5 rounded-full">{tag}</span>
+            <span key={tag} className="text-xs bg-cyan-950/50 text-cyan-300 px-2 py-0.5 rounded-full border border-cyan-800/60">{tag}</span>
           ))}
         </div>
       )}
-      <div className="flex items-center justify-between mt-3 text-xs text-gray-400">
+      <div className="flex items-center justify-between mt-3 text-xs text-slate-500">
         <span>{new Date(note.created_at).toLocaleDateString()}</span>
         <span>♥ {note.like_count ?? 0}</span>
       </div>
@@ -120,15 +120,14 @@ function HomePage() {
         isLoggedIn={Boolean(user)}
       />
 
-      <div id="notes-list" className="scroll-mt-24" />
-
+      <div id="notes-list" className="scroll-mt-24 rounded-2xl border border-cyan-900/60 bg-gradient-to-b from-[#10141a] to-[#0d1218] p-4 sm:p-6 shadow-[0_10px_30px_rgba(0,0,0,0.45)]">
       <div className="flex items-center justify-between mb-6">
-        <h1 className="text-2xl font-bold text-gray-900">
-          Public Notes {total > 0 && <span className="text-gray-400 font-normal text-lg">({total})</span>}
+        <h1 className="text-2xl font-bold text-cyan-300 tracking-wide uppercase">
+          Tum Notlar {total > 0 && <span className="text-slate-400 font-normal text-lg">({total})</span>}
         </h1>
         {user && (
-          <Link to="/notes/new" className="bg-blue-600 text-white px-4 py-2 rounded-md text-sm font-medium hover:bg-blue-700 transition">
-            + New Note
+          <Link to="/notes/new" className="bg-cyan-400 text-[#10141a] px-4 py-2 rounded-md text-sm font-bold tracking-wide hover:bg-cyan-300 transition uppercase">
+            + Not Paylas
           </Link>
         )}
       </div>
@@ -136,8 +135,8 @@ function HomePage() {
       <div className="flex gap-6 items-start">
         {/* Departments sidebar */}
         <aside className="hidden lg:block w-56 shrink-0">
-          <div className="bg-white border border-gray-200 rounded-lg p-4 sticky top-4">
-            <h2 className="text-xs font-semibold text-gray-500 uppercase tracking-wide mb-3">Yaşar University Departments</h2>
+          <div className="bg-[#151c25] border border-cyan-900/60 rounded-lg p-4 sticky top-4">
+            <h2 className="text-xs font-semibold text-cyan-400 uppercase tracking-wide mb-3">Yasar University Departments</h2>
             <ul className="space-y-0.5">
               {DEPARTMENTS.map(dept => {
                 const slug = DEPT_NAME_TO_SLUG[dept]
@@ -146,18 +145,18 @@ function HomePage() {
                     {slug ? (
                       <Link
                         to={`/departments/${slug}`}
-                        className="block w-full text-left text-xs px-2 py-1.5 rounded transition text-gray-600 hover:bg-gray-100"
+                        className="block w-full text-left text-xs px-2 py-1.5 rounded transition text-slate-300 hover:bg-cyan-900/25"
                       >
                         {dept}
-                        <span className="ml-1 text-blue-400 text-[10px]">→</span>
+                        <span className="ml-1 text-cyan-400 text-[10px]">→</span>
                       </Link>
                     ) : (
                       <button
                         onClick={() => { setDepartment(dept === department ? '' : dept); setCourse('') }}
                         className={`w-full text-left text-xs px-2 py-1.5 rounded transition ${
                           department === dept
-                            ? 'bg-blue-600 text-white font-medium'
-                            : 'text-gray-600 hover:bg-gray-100'
+                            ? 'bg-cyan-500 text-[#10141a] font-bold'
+                            : 'text-slate-300 hover:bg-cyan-900/25'
                         }`}
                       >
                         {dept}
@@ -174,7 +173,7 @@ function HomePage() {
         <div className="flex-1 min-w-0">
           {/* Mobile departments (horizontal scroll) */}
           <div className="lg:hidden mb-4 -mx-1">
-            <p className="text-xs font-semibold text-gray-500 uppercase tracking-wide mb-2 px-1">Departments</p>
+            <p className="text-xs font-semibold text-cyan-400 uppercase tracking-wide mb-2 px-1">Departments</p>
             <div className="flex gap-2 overflow-x-auto pb-2">
               {DEPARTMENTS.map(dept => {
                 const slug = DEPT_NAME_TO_SLUG[dept]
@@ -182,7 +181,7 @@ function HomePage() {
                   <Link
                     key={dept}
                     to={`/departments/${slug}`}
-                    className="shrink-0 text-xs px-3 py-1.5 rounded-full border border-blue-300 text-blue-700 hover:bg-blue-50 transition"
+                    className="shrink-0 text-xs px-3 py-1.5 rounded-full border border-cyan-700 text-cyan-300 hover:bg-cyan-900/25 transition"
                   >
                     {dept}
                   </Link>
@@ -192,8 +191,8 @@ function HomePage() {
                     onClick={() => { setDepartment(dept === department ? '' : dept); setCourse('') }}
                     className={`shrink-0 text-xs px-3 py-1.5 rounded-full border transition ${
                       department === dept
-                        ? 'bg-blue-600 border-blue-600 text-white font-medium'
-                        : 'border-gray-300 text-gray-600 hover:bg-gray-50'
+                        ? 'bg-cyan-500 border-cyan-500 text-[#10141a] font-bold'
+                        : 'border-cyan-700 text-cyan-300 hover:bg-cyan-900/25'
                     }`}
                   >
                     {dept}
@@ -204,40 +203,40 @@ function HomePage() {
           </div>
 
           {/* Filters */}
-          <div className="bg-white border border-gray-200 rounded-lg p-4 mb-6 flex flex-wrap gap-3 items-end">
+          <div className="bg-[#151c25] border border-cyan-900/60 rounded-lg p-4 mb-6 flex flex-wrap gap-3 items-end">
             <div className="flex-1 min-w-48">
-              <label className="block text-xs font-medium text-gray-600 mb-1">Search</label>
+              <label className="block text-xs font-medium text-cyan-400 mb-1">Search</label>
               <input
                 type="text"
                 placeholder="Search title or content..."
                 value={searchInput}
                 onChange={e => setSearchInput(e.target.value)}
-                className="w-full px-3 py-2 border border-gray-300 rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className="w-full px-3 py-2 border border-cyan-800/80 bg-[#0f141c] text-slate-100 rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-cyan-500"
               />
             </div>
             <div className="min-w-36">
-              <label className="block text-xs font-medium text-gray-600 mb-1">Course</label>
+              <label className="block text-xs font-medium text-cyan-400 mb-1">Course</label>
               <select
                 value={course}
                 onChange={e => { setCourse(e.target.value); setDepartment('') }}
-                className="w-full px-3 py-2 border border-gray-300 rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className="w-full px-3 py-2 border border-cyan-800/80 bg-[#0f141c] text-slate-100 rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-cyan-500"
               >
                 <option value="">All courses</option>
               {courses.map(c => <option key={c} value={c}>{c}</option>)}
               </select>
             </div>
             <div className="min-w-36">
-              <label className="block text-xs font-medium text-gray-600 mb-1">Tag</label>
+              <label className="block text-xs font-medium text-cyan-400 mb-1">Tag</label>
               <input
                 type="text"
                 placeholder="e.g. exam"
                 value={tag}
                 onChange={e => setTag(e.target.value)}
-                className="w-full px-3 py-2 border border-gray-300 rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className="w-full px-3 py-2 border border-cyan-800/80 bg-[#0f141c] text-slate-100 rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-cyan-500"
               />
             </div>
             {hasFilters && (
-              <button onClick={clearFilters} className="px-4 py-2 text-sm text-gray-500 hover:text-red-600 border border-gray-300 rounded-md hover:border-red-300 transition">
+              <button onClick={clearFilters} className="px-4 py-2 text-sm text-slate-300 hover:text-red-400 border border-cyan-800/80 rounded-md hover:border-red-500/70 transition">
                 Clear filters
               </button>
             )}
@@ -245,10 +244,10 @@ function HomePage() {
 
           {department && (
             <div className="mb-4 flex items-center gap-2">
-              <span className="text-sm font-medium text-blue-700 bg-blue-50 border border-blue-200 px-3 py-1 rounded-full">
+              <span className="text-sm font-medium text-cyan-300 bg-cyan-950/50 border border-cyan-700 px-3 py-1 rounded-full">
                 {department}
               </span>
-              <button onClick={() => setDepartment('')} className="text-xs text-gray-400 hover:text-gray-600">
+              <button onClick={() => setDepartment('')} className="text-xs text-slate-500 hover:text-slate-300">
                 ✕ remove
               </button>
             </div>
@@ -256,10 +255,10 @@ function HomePage() {
 
           {loading ? (
             <div className="flex justify-center py-20">
-              <div className="w-8 h-8 border-4 border-blue-600 border-t-transparent rounded-full animate-spin" />
+              <div className="w-8 h-8 border-4 border-cyan-500 border-t-transparent rounded-full animate-spin" />
             </div>
           ) : notes.length === 0 ? (
-            <div className="text-center py-20 text-gray-500">
+            <div className="text-center py-20 text-slate-400">
               {hasFilters ? 'No notes match your filters.' : 'No notes found. Be the first to share one!'}
             </div>
           ) : (
@@ -271,17 +270,18 @@ function HomePage() {
           {(page > 1 || hasNextPage) && (
             <div className="flex justify-center items-center gap-4 mt-8">
               <button onClick={() => setPage(p => p - 1)} disabled={page === 1}
-                className="px-4 py-2 text-sm border border-gray-300 rounded-md disabled:opacity-40 hover:bg-gray-50 transition">
+                className="px-4 py-2 text-sm border border-cyan-700 text-cyan-300 rounded-md disabled:opacity-40 hover:bg-cyan-900/25 transition">
                 Previous
               </button>
-              <span className="text-sm text-gray-600">Page {page}</span>
+              <span className="text-sm text-slate-400">Page {page}</span>
               <button onClick={() => setPage(p => p + 1)} disabled={!hasNextPage}
-                className="px-4 py-2 text-sm border border-gray-300 rounded-md disabled:opacity-40 hover:bg-gray-50 transition">
+                className="px-4 py-2 text-sm border border-cyan-700 text-cyan-300 rounded-md disabled:opacity-40 hover:bg-cyan-900/25 transition">
                 Next
               </button>
             </div>
           )}
         </div>
+      </div>
       </div>
     </div>
   )
