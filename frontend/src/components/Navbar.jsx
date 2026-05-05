@@ -16,23 +16,15 @@ function Navbar() {
 
   return (
     <nav className="bg-white border-b border-gray-200 px-4 py-3">
-      <div className="max-w-6xl mx-auto flex items-center gap-4">
+      <div className="max-w-6xl mx-auto flex flex-wrap items-center justify-between gap-3">
         <Link to="/" className="text-xl font-bold text-blue-600 shrink-0">
           UniNotes
         </Link>
 
-        <div className="flex-1 flex justify-center">
-          <input
-            type="text"
-            placeholder="Search notes..."
-            className="w-full max-w-md px-4 py-1.5 border border-gray-300 rounded-full text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
-          />
-        </div>
-
-        <div className="flex items-center gap-4 shrink-0">
+        <div className="flex items-center gap-3 shrink-0 ml-auto">
           {user ? (
             <>
-              <span className="text-sm text-gray-700 font-medium">
+              <span className="hidden sm:inline text-sm text-gray-700 font-medium max-w-[12rem] truncate">
                 {user.user_metadata?.username || user.email}
               </span>
               <button

@@ -13,10 +13,20 @@ import filesRouter from './routes/files.js'
 const app = express()
 const PORT = process.env.PORT || 5010
 
+const allowedOrigins = process.env.NODE_ENV === 'production'
+  ? (process.env.FRONTEND_URL || '')
+      .split(',')
+      .map(origin => origin.trim())
+      .filter(Boolean)
+  : ['http://localhost:5173']
+
 const corsOptions = {
-  origin: process.env.NODE_ENV === 'production'
-    ? process.env.FRONTEND_URL
-    : 'http://localhost:5173',
+  origin: (origin, callback) => {
+    // Allow same-origin/server-to-server requests without an Origin header.
+    if (!origin) return callback(null, true)
+    if (allowedOrigins.includes(origin)) return callback(null, true)
+    return callback(new Error('Not allowed by CORS'))
+  },
   credentials: true,
 }
 
@@ -39,6 +49,10 @@ const authLimit = rateLimit({
 app.use(cors(corsOptions))
 // app.use(globalLimit)
 app.use(express.json())
+
+app.get('/health', (_req, res) => {
+  res.status(200).json({ ok: true })
+})
 
 // Routes
 app.use('/api/auth', /* authLimit, */ authRoutes)

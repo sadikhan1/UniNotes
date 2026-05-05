@@ -112,9 +112,9 @@ function NoteDetailPage() {
   return (
     <div className="max-w-3xl mx-auto px-4 py-8">
       <div className="bg-white rounded-lg border border-gray-200 p-6">
-        <div className="flex items-start justify-between gap-4 mb-4">
+        <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-4 mb-4">
           <h1 className="text-2xl font-bold text-gray-900">{note.title}</h1>
-          <div className="flex items-center gap-2 shrink-0">
+          <div className="flex flex-wrap items-center gap-2 shrink-0">
             {/* Like button */}
             <div className="relative group">
               <button

@@ -7,6 +7,7 @@ function RegisterPage() {
   const [errors, setErrors] = useState({})
   const [apiError, setApiError] = useState('')
   const [success, setSuccess] = useState(false)
+  const [registeredEmail, setRegisteredEmail] = useState('')
 
   const validateField = (name, value) => {
     const newErrors = { ...errors }
@@ -65,6 +66,7 @@ function RegisterPage() {
 
     try {
       setApiError('')
+      setRegisteredEmail(formData.email)
       await registerUser(formData.email, formData.username, formData.password)
       setSuccess(true)
       setFormData({ email: '', username: '', password: '' })
@@ -80,7 +82,7 @@ function RegisterPage() {
           <div className="bg-white p-8 rounded-lg shadow">
             <h2 className="text-2xl font-bold text-gray-900 mb-4">Check your email</h2>
             <p className="text-gray-600 mb-6">
-              We've sent a verification link to <strong>{formData.email || 'your email'}</strong>.
+              We've sent a verification link to <strong>{registeredEmail || 'your email'}</strong>.
             </p>
             <p className="text-gray-600 mb-6">
               Please verify your email address to complete registration.
