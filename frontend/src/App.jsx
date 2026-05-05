@@ -1,4 +1,4 @@
-import { Routes, Route, Navigate } from 'react-router-dom'
+import { Routes, Route, Navigate, useLocation } from 'react-router-dom'
 import { AuthProvider } from './context/AuthContext'
 import ProtectedRoute from './components/ProtectedRoute'
 import Navbar from './components/Navbar'
@@ -13,10 +13,13 @@ import CurriculumPage from './pages/CurriculumPage'
 import Toast from './components/Toast'
 
 function App() {
+  const location = useLocation()
+  const isStudentLoungePage = location.pathname === '/notes'
+
   return (
     <AuthProvider>
-      <div className="min-h-screen bg-gray-50">
-        <Navbar />
+      <div className={`min-h-screen ${isStudentLoungePage ? 'bg-[#0b1117]' : 'bg-gray-50'}`}>
+        {!isStudentLoungePage && <Navbar />}
         <Toast />
         <Routes>
           <Route path="/" element={<Navigate to="/notes" replace />} />
