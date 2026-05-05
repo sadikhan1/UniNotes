@@ -1944,6 +1944,47 @@ export function getDepartmentBySlug(slug) {
   return DEPARTMENTS.find(d => d.slug === slug)
 }
 
+function buildAcademicCalendar(department) {
+  const year = new Date().getFullYear()
+
+  return [
+    {
+      date: `${year}-09-16`,
+      title: 'Fall Semester Start',
+      desc: `${department.name} students start the fall term.`,
+    },
+    {
+      date: `${year}-10-15`,
+      title: 'Midterm Period',
+      desc: `${department.shortName} midterm exams and project reviews.`,
+    },
+    {
+      date: `${year}-12-20`,
+      title: 'Fall Final Exams',
+      desc: `${department.name} final exam week for the fall semester.`,
+    },
+    {
+      date: `${year + 1}-02-03`,
+      title: 'Spring Semester Start',
+      desc: `${department.shortName} spring term begins.`,
+    },
+    {
+      date: `${year + 1}-03-18`,
+      title: 'Add/Drop Deadline',
+      desc: `${department.name} course add/drop deadline.`,
+    },
+    {
+      date: `${year + 1}-05-25`,
+      title: 'Spring Final Exams',
+      desc: `${department.shortName} final exam period for the spring semester.`,
+    },
+  ]
+}
+
+DEPARTMENTS.forEach(department => {
+  department.academicCalendar = buildAcademicCalendar(department)
+})
+
 // Map from Turkish department names (used in homepage sidebar) to slugs
 export const DEPT_NAME_TO_SLUG = {
   'Bilgisayar Mühendisliği': 'bilgisayar-muhendisligi',
