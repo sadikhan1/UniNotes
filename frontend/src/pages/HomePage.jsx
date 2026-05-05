@@ -3,6 +3,7 @@ import { Link, useSearchParams } from 'react-router-dom'
 import { getNotes, getCourses } from '../services/api'
 import { useAuth } from '../context/AuthContext'
 import { DEPT_NAME_TO_SLUG } from '../data/curriculum'
+import StudentLoungeHero from '../components/StudentLoungeHero'
 
 function useDebounce(value, delay) {
   const [debounced, setDebounced] = useState(value)
@@ -113,6 +114,14 @@ function HomePage() {
 
   return (
     <div className="max-w-7xl mx-auto px-4 py-8">
+      <StudentLoungeHero
+        searchInput={searchInput}
+        onSearchChange={setSearchInput}
+        isLoggedIn={Boolean(user)}
+      />
+
+      <div id="notes-list" className="scroll-mt-24" />
+
       <div className="flex items-center justify-between mb-6">
         <h1 className="text-2xl font-bold text-gray-900">
           Public Notes {total > 0 && <span className="text-gray-400 font-normal text-lg">({total})</span>}
