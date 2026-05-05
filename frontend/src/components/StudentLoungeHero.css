@@ -119,8 +119,6 @@
 .sl-main-logo-svg {
   width: 100%;
   height: 100%;
-  color: var(--sl-teal);
-  --logo-cut: #10141a;
   filter: drop-shadow(0 0 10px rgba(0, 192, 216, 0.35));
 }
 
@@ -258,8 +256,7 @@
 .sl-faint-logo-svg {
   width: 100%;
   height: 100%;
-  color: rgba(0, 192, 216, 0.3);
-  --logo-cut: #10141a;
+  filter: saturate(1.05) brightness(0.9);
 }
 
 .sl-faint-logo-1 {
