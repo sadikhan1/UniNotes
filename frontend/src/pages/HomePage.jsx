@@ -113,13 +113,14 @@ function HomePage() {
   const hasFilters = searchInput || course || tag || department
 
   return (
-    <div className="max-w-7xl mx-auto px-4 py-8">
+    <div className="w-full pb-10">
       <StudentLoungeHero
         searchInput={searchInput}
         onSearchChange={setSearchInput}
         isLoggedIn={Boolean(user)}
       />
 
+      <div className="max-w-7xl mx-auto px-4">
       <div id="notes-list" className="scroll-mt-24 rounded-2xl border border-cyan-900/60 bg-gradient-to-b from-[#10141a] to-[#0d1218] p-4 sm:p-6 shadow-[0_10px_30px_rgba(0,0,0,0.45)]">
       <div className="flex items-center justify-between mb-6">
         <h1 className="text-2xl font-bold text-cyan-300 tracking-wide uppercase">
@@ -281,6 +282,7 @@ function HomePage() {
             </div>
           )}
         </div>
+      </div>
       </div>
       </div>
     </div>
