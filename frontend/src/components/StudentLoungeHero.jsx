@@ -1,6 +1,43 @@
 import { Link } from 'react-router-dom'
 import './StudentLoungeHero.css'
 
+function YasarSeal({ className }) {
+  return (
+    <svg className={className} viewBox="0 0 256 256" fill="none" aria-hidden="true">
+      <circle cx="128" cy="128" r="102" stroke="currentColor" strokeWidth="12" />
+
+      <path
+        d="M78 82c20 8 36 26 46 49v72H93v-98c-3-9-8-17-15-23z"
+        fill="currentColor"
+      />
+      <path
+        d="M178 82c-20 8-36 26-46 49v72h31v-98c3-9 8-17 15-23z"
+        fill="currentColor"
+      />
+      <path d="M121 128h14v75h-14z" fill="currentColor" />
+
+      <path
+        d="M128 132c-9-16-22-28-39-36"
+        stroke="var(--logo-cut, #0b1117)"
+        strokeWidth="7"
+        strokeLinecap="round"
+      />
+      <path
+        d="M128 132c9-16 22-28 39-36"
+        stroke="var(--logo-cut, #0b1117)"
+        strokeWidth="7"
+        strokeLinecap="round"
+      />
+      <path
+        d="M128 132v38"
+        stroke="var(--logo-cut, #0b1117)"
+        strokeWidth="7"
+        strokeLinecap="round"
+      />
+    </svg>
+  )
+}
+
 function StudentLoungeHero({ searchInput, onSearchChange, isLoggedIn }) {
   return (
     <section className="student-lounge" aria-label="Student Lounge banner">
@@ -18,7 +55,9 @@ function StudentLoungeHero({ searchInput, onSearchChange, isLoggedIn }) {
 
         <div className="sl-header">
           <div className="sl-logo-group">
-            <div className="sl-main-logo" aria-hidden="true">YU</div>
+            <div className="sl-main-logo" aria-hidden="true">
+              <YasarSeal className="sl-main-logo-svg" />
+            </div>
             <div className="sl-university-name">YASAR<br />UNIVERSITY</div>
           </div>
 
@@ -49,8 +88,12 @@ function StudentLoungeHero({ searchInput, onSearchChange, isLoggedIn }) {
         <div className="sl-main">
           <div className="sl-left-content" aria-hidden="true">
             <div className="sl-circuit-pattern" />
-            <div className="sl-faint-logo sl-faint-logo-1">YU</div>
-            <div className="sl-faint-logo sl-faint-logo-2">YU</div>
+            <div className="sl-faint-logo sl-faint-logo-1">
+              <YasarSeal className="sl-faint-logo-svg" />
+            </div>
+            <div className="sl-faint-logo sl-faint-logo-2">
+              <YasarSeal className="sl-faint-logo-svg" />
+            </div>
           </div>
 
           <div className="sl-right-content">
