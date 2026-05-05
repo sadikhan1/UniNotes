@@ -1,9 +1,10 @@
 import { useState, useEffect, useCallback } from 'react'
-import { Link, useSearchParams } from 'react-router-dom'
+import { Link, useSearchParams, useLocation } from 'react-router-dom'
 import { getNotes, getCourses } from '../services/api'
 import { useAuth } from '../context/AuthContext'
-import { DEPT_NAME_TO_SLUG } from '../data/curriculum'
+import { DEPARTMENTS as CURRICULUM_DEPARTMENTS } from '../data/curriculum'
 import StudentLoungeHero from '../components/StudentLoungeHero'
+import AcademicCalendar from '../components/AcademicCalendar'
 
 function useDebounce(value, delay) {
   const [debounced, setDebounced] = useState(value)
@@ -46,6 +47,10 @@ const DEPARTMENTS = [
   'Management Information Systems',
 ]
 
+const DEPT_NAME_TO_SLUG = Object.fromEntries(
+  CURRICULUM_DEPARTMENTS.map(department => [department.name, department.slug])
+)
+
 function NoteCard({ note }) {
   return (
     <Link
@@ -84,7 +89,28 @@ function HomePage() {
   const [searchInput, setSearchInput] = useState('')
   const [course, setCourse] = useState(() => searchParams.get('course') ?? '')
   const [tag, setTag] = useState('')
-  const [department, setDepartment] = useState('')
+  const [department, setDepartment] = useState(() => searchParams.get('department') ?? '')
+
+  useEffect(() => {
+    const dep = searchParams.get('department') ?? ''
+    setDepartment(dep)
+    if (dep) setCourse('')
+  }, [searchParams])
+
+  const location = useLocation()
+
+  useEffect(() => {
+    // If navigation included department query or anchor to notes-list, scroll the notes list into view
+    const hasDept = searchParams.get('department')
+    const wantsAnchor = location.hash === '#notes-list'
+    if ((hasDept || wantsAnchor) && location.pathname === '/notes') {
+      // Small delay to allow content to render
+      setTimeout(() => {
+        const el = document.getElementById('notes-list')
+        if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' })
+      }, 120)
+    }
+  }, [location, searchParams])
 
   useEffect(() => {
     getCourses().then(setCourses).catch(() => {})
@@ -92,12 +118,22 @@ function HomePage() {
 
   const debouncedSearch = useDebounce(searchInput, 300)
 
+  // If the user searches a department name, show a curriculum preview
+  const matchedDept = debouncedSearch
+    ? CURRICULUM_DEPARTMENTS.find(d => d.name.toLowerCase().includes(debouncedSearch.toLowerCase()))
+    : null
+
   const fetchNotes = useCallback(() => {
     setLoading(true)
     const params = { page, limit: 12 }
-    if (debouncedSearch) params.search = debouncedSearch
+    if (debouncedSearch) {
+      const trimmed = debouncedSearch.trim()
+      params.search = trimmed
+      // if user typed a course code like 'COMP 4102' or 'COMP4102', treat it as course filter too
+      const courseLike = /^\s*[A-Za-z]{2,6}\s*\d{3,4}\s*$/.test(trimmed)
+      if (courseLike) params.course = trimmed
+    }
     if (course) params.course = course
-    if (department) params.course = department
     if (tag) params.tag = tag
 
     getNotes(params)
@@ -110,7 +146,9 @@ function HomePage() {
   useEffect(() => { fetchNotes() }, [fetchNotes])
 
   const clearFilters = () => { setSearchInput(''); setCourse(''); setTag(''); setDepartment('') }
-  const hasFilters = searchInput || course || tag || department
+  // Do not treat `department` as a strict API filter; users clicking departments should land on notes area
+  // but not be considered a "filter" for the empty-state message.
+  const hasFilters = searchInput || course || tag
 
   return (
     <div className="w-full pb-10">
@@ -121,7 +159,7 @@ function HomePage() {
       />
 
       <div className="max-w-7xl mx-auto px-4">
-      <div id="notes-list" className="scroll-mt-24 rounded-2xl border border-cyan-900/60 bg-gradient-to-b from-[#10141a] to-[#0d1218] p-4 sm:p-6 shadow-[0_10px_30px_rgba(0,0,0,0.45)]">
+      <div id="notes-list" className="scroll-mt-24 bg-gradient-to-b from-[#10141a] to-[#0d1218] p-4 sm:p-6">
       <div className="flex items-center justify-between mb-6">
         <h1 className="text-2xl font-bold text-cyan-300 tracking-wide uppercase">
           Tum Notlar {total > 0 && <span className="text-slate-400 font-normal text-lg">({total})</span>}
@@ -140,29 +178,17 @@ function HomePage() {
             <h2 className="text-xs font-semibold text-cyan-400 uppercase tracking-wide mb-3">Yasar University Departments</h2>
             <ul className="space-y-0.5">
               {DEPARTMENTS.map(dept => {
-                const slug = DEPT_NAME_TO_SLUG[dept]
+                const slug = DEPT_NAME_TO_SLUG[dept] ?? dept.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '')
+                const linkTo = `/departments/${slug}`
                 return (
                   <li key={dept}>
-                    {slug ? (
-                      <Link
-                        to={`/departments/${slug}`}
-                        className="block w-full text-left text-xs px-2 py-1.5 rounded transition text-slate-300 hover:bg-cyan-900/25"
-                      >
-                        {dept}
-                        <span className="ml-1 text-cyan-400 text-[10px]">→</span>
-                      </Link>
-                    ) : (
-                      <button
-                        onClick={() => { setDepartment(dept === department ? '' : dept); setCourse('') }}
-                        className={`w-full text-left text-xs px-2 py-1.5 rounded transition ${
-                          department === dept
-                            ? 'bg-cyan-500 text-[#10141a] font-bold'
-                            : 'text-slate-300 hover:bg-cyan-900/25'
-                        }`}
-                      >
-                        {dept}
-                      </button>
-                    )}
+                    <Link
+                      to={linkTo}
+                      className="block w-full text-left text-xs px-2 py-1.5 rounded transition text-slate-300 hover:bg-cyan-900/25"
+                    >
+                      {dept}
+                      <span className="ml-1 text-cyan-400 text-[10px]">→</span>
+                    </Link>
                   </li>
                 )
               })}
@@ -177,27 +203,16 @@ function HomePage() {
             <p className="text-xs font-semibold text-cyan-400 uppercase tracking-wide mb-2 px-1">Departments</p>
             <div className="flex gap-2 overflow-x-auto pb-2">
               {DEPARTMENTS.map(dept => {
-                const slug = DEPT_NAME_TO_SLUG[dept]
-                return slug ? (
+                const slug = DEPT_NAME_TO_SLUG[dept] ?? dept.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '')
+                const linkTo = `/departments/${slug}`
+                return (
                   <Link
                     key={dept}
-                    to={`/departments/${slug}`}
+                    to={linkTo}
                     className="shrink-0 text-xs px-3 py-1.5 rounded-full border border-cyan-700 text-cyan-300 hover:bg-cyan-900/25 transition"
                   >
                     {dept}
                   </Link>
-                ) : (
-                  <button
-                    key={dept}
-                    onClick={() => { setDepartment(dept === department ? '' : dept); setCourse('') }}
-                    className={`shrink-0 text-xs px-3 py-1.5 rounded-full border transition ${
-                      department === dept
-                        ? 'bg-cyan-500 border-cyan-500 text-[#10141a] font-bold'
-                        : 'border-cyan-700 text-cyan-300 hover:bg-cyan-900/25'
-                    }`}
-                  >
-                    {dept}
-                  </button>
                 )
               })}
             </div>
@@ -251,6 +266,33 @@ function HomePage() {
               <button onClick={() => setDepartment('')} className="text-xs text-slate-500 hover:text-slate-300">
                 ✕ remove
               </button>
+            </div>
+          )}
+
+          {matchedDept && (
+            <div className="mb-6 rounded-2xl border border-cyan-900/60 bg-gradient-to-b from-[#10141a] to-[#0d1218] p-4">
+              <div className="flex items-center justify-between mb-3">
+                <div>
+                  <h3 className="text-lg font-semibold text-cyan-300">{matchedDept.name} (Curriculum preview)</h3>
+                  <p className="text-xs text-slate-400">Matched from your search — showing quick curriculum preview.</p>
+                </div>
+                <Link to={`/departments/${matchedDept.slug}`} className="text-sm text-cyan-300 hover:underline">Open full curriculum →</Link>
+              </div>
+              <div className="mb-3">
+                <AcademicCalendar slug={matchedDept.slug} />
+              </div>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                {matchedDept.semesters.slice(0, 2).map(sem => (
+                  <div key={sem.semester} className="p-3 bg-[#0f1720] rounded-lg border border-cyan-900/40">
+                    <div className="text-sm font-medium text-slate-100 mb-2">Semester {sem.semester}</div>
+                    <ul className="text-xs text-slate-400 leading-relaxed space-y-1 max-h-28 overflow-auto">
+                      {sem.courses.slice(0,6).map(c => (
+                        <li key={c.code}>{c.code} — <span className="text-slate-300">{c.name}</span></li>
+                      ))}
+                    </ul>
+                  </div>
+                ))}
+              </div>
             </div>
           )}
 

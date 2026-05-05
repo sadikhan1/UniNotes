@@ -124,7 +124,17 @@ router.get('/', async (req, res) => {
     .eq('is_public', true)
 
   if (search) query = query.or(`title.ilike.%${search}%,content.ilike.%${search}%`)
-  if (course) query = query.ilike('course', course)
+  if (course) {
+    const courseTrimmed = String(course).trim()
+    const noSpaces = courseTrimmed.replace(/\s+/g, '')
+    // ensure there's a space between letters and numbers for one variant (e.g. COMP4102 -> COMP 4102)
+    const spaced = courseTrimmed.replace(/([A-Za-z]+)\s*(\d+)/, '$1 $2')
+
+    // Try matching multiple variants: exact-ish, without spaces, and with standard spacing
+    // Build an OR clause for case-insensitive partial matches
+    const orClause = `course.ilike.%${courseTrimmed}%,course.ilike.%${noSpaces}%,course.ilike.%${spaced}%`
+    query = query.or(orClause)
+  }
 
   if (tag) {
     const { data: tagRow } = await supabase

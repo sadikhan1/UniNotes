@@ -11,54 +11,17 @@
   width: 100%;
   max-width: 100%;
   margin: 0 0 2rem;
-  background-color: var(--sl-light);
-  border-radius: 0.75rem;
-  overflow: hidden;
-  border: 1px solid #dcdcdc;
-  box-shadow: 0 18px 40px rgba(0, 0, 0, 0.28);
+  background-color: transparent;
+  border-radius: 0;
+  overflow: visible;
+  border: 0;
+  box-shadow: none;
 }
 
 .student-lounge *,
 .student-lounge *::before,
 .student-lounge *::after {
   box-sizing: border-box;
-}
-
-.sl-browser-header {
-  height: 40px;
-  background-color: #e8eaed;
-  border-bottom: 1px solid #dadce0;
-  display: flex;
-  align-items: center;
-  padding: 0 15px;
-  gap: 15px;
-}
-
-.sl-traffic-lights {
-  display: flex;
-  gap: 7px;
-}
-
-.sl-traffic-lights span {
-  width: 12px;
-  height: 12px;
-  border-radius: 999px;
-  display: inline-block;
-}
-
-.sl-red { background-color: #ff5f57; }
-.sl-yellow { background-color: #ffbd2e; }
-.sl-green { background-color: #28c940; }
-
-.sl-url-bar {
-  background-color: #ffffff;
-  padding: 5px 20px;
-  border-radius: 999px;
-  flex-grow: 1;
-  font-size: 12px;
-  color: #5f6368;
-  text-align: center;
-  max-width: 500px;
 }
 
 .sl-page-content {
@@ -94,7 +57,7 @@
 .sl-header {
   display: flex;
   justify-content: space-between;
-  align-items: flex-start;
+  align-items: center;
   gap: 1.5rem;
   padding: 42px 56px 24px;
   position: relative;
@@ -109,16 +72,36 @@
   gap: 12px;
 }
 
-.sl-main-logo {
-  width: 145px;
-  height: 145px;
-  display: grid;
-  place-items: center;
+/* Removed circular logo above university name; keep typographic brand only */
+
+/* Wrapper to keep platform title and shush icon side-by-side */
+.platform-title-wrapper {
+    display: flex;
+    align-items: center; /* vertically center */
+    justify-content: center;
+    gap: 20px; /* space between title and icon */
+    margin-top: 30px;
 }
 
-.sl-main-logo-svg {
-  width: 100%;
-  height: 100%;
+.platform-title-group {
+    text-align: center;
+}
+
+/* Shush icon styling with neon glow and subtle pulse */
+.shush-icon {
+    width: 65px;
+    height: auto;
+    filter: drop-shadow(0 0 5px #00c0d8) drop-shadow(0 0 15px rgba(0, 192, 216, 0.5));
+    animation: neonPulse 2s infinite alternate;
+}
+
+@keyframes neonPulse {
+    from {
+        filter: drop-shadow(0 0 5px #00c0d8) drop-shadow(0 0 15px rgba(0, 192, 216, 0.5));
+    }
+    to {
+        filter: drop-shadow(0 0 8px #00c0d8) drop-shadow(0 0 25px rgba(0, 192, 216, 0.8));
+    }
 }
 
 .sl-university-name {
@@ -132,7 +115,32 @@
 
 .sl-platform-title-group {
   text-align: center;
-  margin-top: 22px;
+  margin-top: 0;
+}
+
+/* Wrapper to keep platform title and shush icon side-by-side */
+.platform-title-wrapper {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 20px;
+  margin-top: 0;
+}
+
+.platform-title-group {
+  text-align: center;
+}
+
+.shush-icon {
+  width: 65px;
+  height: auto;
+  filter: drop-shadow(0 0 5px #00c0d8) drop-shadow(0 0 15px rgba(0,192,216,0.5));
+  animation: neonPulse 2s infinite alternate;
+}
+
+@keyframes neonPulse {
+  from { filter: drop-shadow(0 0 5px #00c0d8) drop-shadow(0 0 15px rgba(0,192,216,0.5)); }
+  to   { filter: drop-shadow(0 0 8px #00c0d8) drop-shadow(0 0 25px rgba(0,192,216,0.8)); }
 }
 
 .sl-platform-name {
@@ -249,12 +257,13 @@
   position: absolute;
   width: 62px;
   height: 62px;
-  opacity: 0.28;
-}
-
-.sl-faint-logo-svg {
-  width: 100%;
-  height: 100%;
+  border: 3px solid rgba(0, 192, 216, 0.25);
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  color: rgba(0, 192, 216, 0.25);
+  font-weight: 700;
+  opacity: 0.35;
 }
 
 .sl-faint-logo-1 {

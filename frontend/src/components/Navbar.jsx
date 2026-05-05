@@ -15,21 +15,21 @@ function Navbar() {
     location.pathname === path ? 'text-blue-600 font-semibold' : 'text-gray-600 hover:text-blue-600'
 
   return (
-    <nav className="bg-white border-b border-gray-200 px-4 py-3">
+    <nav className="border-b border-cyan-900/60 bg-[#0b1117]/95 px-4 py-3 text-slate-100 backdrop-blur-sm">
       <div className="max-w-6xl mx-auto flex flex-wrap items-center justify-between gap-3">
-        <Link to="/" className="text-xl font-bold text-blue-600 shrink-0">
+        <Link to="/" className="text-xl font-bold text-cyan-300 shrink-0 tracking-wide">
           UniNotes
         </Link>
 
         <div className="flex items-center gap-3 shrink-0 ml-auto">
           {user ? (
             <>
-              <span className="hidden sm:inline text-sm text-gray-700 font-medium max-w-[12rem] truncate">
+              <span className="hidden sm:inline text-sm text-slate-300 font-medium max-w-[12rem] truncate">
                 {user.user_metadata?.username || user.email}
               </span>
               <button
                 onClick={handleLogout}
-                className="text-sm text-gray-500 hover:text-red-600 transition"
+                className="text-sm text-slate-400 hover:text-red-300 transition"
               >
                 Logout
               </button>
@@ -41,8 +41,8 @@ function Navbar() {
               </Link>
               <Link
                 to="/register"
-                className={`text-sm font-medium bg-blue-600 text-white px-4 py-1.5 rounded-full hover:bg-blue-700 transition ${
-                  location.pathname === '/register' ? 'ring-2 ring-blue-400' : ''
+                className={`text-sm font-semibold bg-cyan-400 text-[#0b1117] px-4 py-1.5 rounded-full hover:bg-cyan-300 transition ${
+                  location.pathname === '/register' ? 'ring-2 ring-cyan-300/60' : ''
                 }`}
               >
                 Register
