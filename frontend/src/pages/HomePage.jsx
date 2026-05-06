@@ -77,13 +77,20 @@ function DepartmentGrid({ faculty, selectedDept, onSelect }) {
                 {getLocalizedDeptName(dept, locale)}
               </div>
               <div className="text-xs text-gray-400 mt-1">{totalCourses} {t('coursesLabel')} · {dept.semesters.length} {t('semesters')}</div>
-              <Link
-                to={`/departments/${dept.slug}`}
-                onClick={e => e.stopPropagation()}
-                className="inline-block mt-2 text-xs text-blue-500 hover:text-blue-700"
-              >
-                {t('viewNotes')}
-              </Link>
+              <div className="flex items-center gap-3 mt-2" onClick={e => e.stopPropagation()}>
+                <Link
+                  to={`/departments/${dept.slug}`}
+                  className="text-xs text-blue-500 hover:text-blue-700"
+                >
+                  {t('viewNotes')}
+                </Link>
+                <Link
+                  to={`/departments/${dept.slug}/exams`}
+                  className="text-xs text-red-400 hover:text-red-600"
+                >
+                  📅 Exams
+                </Link>
+              </div>
             </button>
           )
         })}
