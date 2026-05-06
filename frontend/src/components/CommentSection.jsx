@@ -36,13 +36,8 @@ function CommentSection({ noteId, currentUser, noteOwnerId }) {
     }
   }
 
-  function requestDeleteComment(commentId) {
-    setConfirmingCommentId(commentId)
-  }
-
   async function handleConfirmDelete() {
     if (!confirmingCommentId) return
-
     try {
       await deleteComment(confirmingCommentId)
       setComments(prev => prev.filter(c => c.id !== confirmingCommentId))
@@ -53,14 +48,10 @@ function CommentSection({ noteId, currentUser, noteOwnerId }) {
     }
   }
 
-  function handleCancelDelete() {
-    setConfirmingCommentId(null)
-  }
-
   return (
-    <div className="mt-6 border-t border-gray-100 pt-6">
-      <h3 className="text-sm font-semibold text-gray-700 mb-4">
-        {t('comments')} {!loading && <span className="font-normal text-gray-400">({comments.length})</span>}
+    <div className="mt-6 border-t border-cyan-900/30 pt-6">
+      <h3 className="text-sm font-semibold text-slate-300 mb-4">
+        {t('comments')} {!loading && <span className="font-normal text-slate-600">({comments.length})</span>}
       </h3>
 
       {currentUser ? (
@@ -70,53 +61,54 @@ function CommentSection({ noteId, currentUser, noteOwnerId }) {
             onChange={e => setText(e.target.value)}
             placeholder={t('addComment')}
             rows={3}
-            className="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm text-gray-700 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent resize-none"
+            className="w-full bg-[#0b1117] border border-cyan-900/50 rounded-lg px-3 py-2 text-sm text-slate-300 placeholder-slate-600
+              focus:outline-none focus:ring-2 focus:ring-cyan-500/40 focus:border-cyan-600 resize-none transition"
           />
-          {error && <p className="text-xs text-red-500 mt-1">{error}</p>}
+          {error && <p className="text-xs text-red-400 mt-1">{error}</p>}
           <div className="flex justify-end mt-2">
             <button
               type="submit"
               disabled={submitting || !text.trim()}
-              className="px-4 py-1.5 text-sm bg-blue-600 text-white rounded-md hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed transition"
+              className="px-4 py-1.5 text-sm bg-cyan-400 text-[#0b1117] rounded-lg hover:bg-cyan-300 disabled:opacity-50 disabled:cursor-not-allowed transition font-medium"
             >
               {submitting ? t('posting') : t('postComment')}
             </button>
           </div>
         </form>
       ) : (
-        <div className="mb-6 rounded-lg bg-gray-50 border border-gray-200 px-4 py-3 text-sm text-gray-500">
-          <Link to="/login" className="text-blue-600 hover:underline font-medium">{t('login')}</Link>
+        <div className="mb-6 rounded-lg bg-cyan-900/10 border border-cyan-900/40 px-4 py-3 text-sm text-slate-500">
+          <Link to="/login" className="text-cyan-400 hover:text-cyan-300 font-medium">{t('login')}</Link>
           {' '}{t('toComment')}
         </div>
       )}
 
       {loading ? (
         <div className="flex justify-center py-6">
-          <div className="w-5 h-5 border-2 border-blue-600 border-t-transparent rounded-full animate-spin" />
+          <div className="w-5 h-5 border-2 border-cyan-400 border-t-transparent rounded-full animate-spin" />
         </div>
       ) : comments.length === 0 ? (
-        <p className="text-sm text-gray-400 text-center py-4">{t('noComments')}</p>
+        <p className="text-sm text-slate-600 text-center py-4">{t('noComments')}</p>
       ) : (
         <ul className="space-y-4">
           {comments.map(comment => (
             <li key={comment.id} className="flex gap-3">
               <div className="flex-1 min-w-0">
                 <div className="flex items-center justify-between gap-2">
-                  <div className="flex items-center gap-2 text-xs text-gray-500">
-                    <span className="font-medium text-gray-700">{comment.user?.username ?? t('unknownUser')}</span>
+                  <div className="flex items-center gap-2 text-xs text-slate-500">
+                    <span className="font-medium text-slate-300">{comment.user?.username ?? t('unknownUser')}</span>
                     <span>·</span>
                     <span>{new Date(comment.created_at).toLocaleDateString()}</span>
                   </div>
                   {(currentUser?.id === comment.user?.id || currentUser?.id === noteOwnerId) && (
                     <button
-                      onClick={() => requestDeleteComment(comment.id)}
-                      className="text-xs text-red-400 hover:text-red-600 shrink-0 transition"
+                      onClick={() => setConfirmingCommentId(comment.id)}
+                      className="text-xs text-red-500 hover:text-red-400 shrink-0 transition"
                     >
                       {t('deleteComment')}
                     </button>
                   )}
                 </div>
-                <p className="text-sm text-gray-700 mt-1 whitespace-pre-wrap">{comment.content}</p>
+                <p className="text-sm text-slate-400 mt-1 whitespace-pre-wrap">{comment.content}</p>
               </div>
             </li>
           ))}
@@ -127,7 +119,7 @@ function CommentSection({ noteId, currentUser, noteOwnerId }) {
         open={!!confirmingCommentId}
         message={t('confirmDeleteComment')}
         onConfirm={handleConfirmDelete}
-        onCancel={handleCancelDelete}
+        onCancel={() => setConfirmingCommentId(null)}
         confirmLabel={t('yes')}
         cancelLabel={t('no')}
       />

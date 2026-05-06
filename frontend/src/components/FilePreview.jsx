@@ -25,11 +25,10 @@ async function triggerDownload(url, name) {
 
 function DownloadBtn({ file }) {
   const { t } = useLocale()
-
   return (
     <button
       onClick={() => triggerDownload(file.file_url, file.file_name)}
-      className="text-xs text-blue-600 hover:text-blue-800 shrink-0"
+      className="text-xs text-cyan-400 hover:text-cyan-300 shrink-0 transition"
     >
       ↓ {t('download')}
     </button>
@@ -43,44 +42,32 @@ function FilePreview({ files = [] }) {
   if (!files.length) return null
 
   return (
-    <div className="mt-6 border-t border-gray-100 pt-6">
-      <h3 className="text-sm font-semibold text-gray-700 mb-3">{t('attachments')}</h3>
+    <div className="mt-6 border-t border-cyan-900/30 pt-6">
+      <h3 className="text-sm font-semibold text-slate-300 mb-3">{t('attachments')}</h3>
       <div className="space-y-4">
         {files.map(f => (
-          <div key={f.id} className="border border-gray-200 rounded-lg overflow-hidden">
+          <div key={f.id} className="border border-cyan-900/40 rounded-xl overflow-hidden">
             {isImage(f) ? (
               <>
-                <div
-                  className="cursor-pointer"
-                  onClick={() => setLightbox(f.file_url)}
-                  title={t('viewFullSize')}
-                >
-                  <img
-                    src={f.file_url}
-                    alt={f.file_name}
-                    className="w-full max-h-48 object-cover hover:opacity-90 transition"
-                  />
+                <div className="cursor-pointer" onClick={() => setLightbox(f.file_url)} title={t('viewFullSize')}>
+                  <img src={f.file_url} alt={f.file_name} className="w-full max-h-48 object-cover hover:opacity-80 transition" />
                 </div>
-                <div className="px-3 py-2 flex items-center justify-between bg-gray-50 border-t border-gray-200">
-                  <span className="text-sm text-gray-700 truncate">{f.file_name}</span>
+                <div className="px-3 py-2 flex items-center justify-between bg-[#0d1218] border-t border-cyan-900/30">
+                  <span className="text-sm text-slate-400 truncate">{f.file_name}</span>
                   <DownloadBtn file={f} />
                 </div>
               </>
             ) : isPDF(f) ? (
               <>
-                <iframe
-                  src={f.file_url}
-                  title={f.file_name}
-                  className="w-full h-96 border-0"
-                />
-                <div className="px-3 py-2 flex items-center justify-between bg-gray-50 border-t border-gray-200">
-                  <span className="text-sm text-gray-700 truncate">{f.file_name}</span>
+                <iframe src={f.file_url} title={f.file_name} className="w-full h-96 border-0" />
+                <div className="px-3 py-2 flex items-center justify-between bg-[#0d1218] border-t border-cyan-900/30">
+                  <span className="text-sm text-slate-400 truncate">{f.file_name}</span>
                   <DownloadBtn file={f} />
                 </div>
               </>
             ) : (
-              <div className="px-3 py-3 flex items-center justify-between">
-                <span className="text-sm text-gray-700 truncate">{f.file_name}</span>
+              <div className="px-3 py-3 flex items-center justify-between bg-[#10141a]">
+                <span className="text-sm text-slate-400 truncate">{f.file_name}</span>
                 <DownloadBtn file={f} />
               </div>
             )}
@@ -89,22 +76,9 @@ function FilePreview({ files = [] }) {
       </div>
 
       {lightbox && (
-        <div
-          className="fixed inset-0 bg-black/80 flex items-center justify-center z-50 p-4"
-          onClick={() => setLightbox(null)}
-        >
-          <button
-            className="absolute top-4 right-4 text-white text-2xl leading-none hover:text-gray-300"
-            onClick={() => setLightbox(null)}
-          >
-            ✕
-          </button>
-          <img
-            src={lightbox}
-            alt={t('fullSizeImageAlt')}
-            className="max-w-full max-h-full object-contain rounded"
-            onClick={e => e.stopPropagation()}
-          />
+        <div className="fixed inset-0 bg-black/85 flex items-center justify-center z-50 p-4" onClick={() => setLightbox(null)}>
+          <button className="absolute top-4 right-4 text-slate-400 hover:text-white text-2xl leading-none" onClick={() => setLightbox(null)}>✕</button>
+          <img src={lightbox} alt={t('fullSizeImageAlt')} className="max-w-full max-h-full object-contain rounded" onClick={e => e.stopPropagation()} />
         </div>
       )}
     </div>

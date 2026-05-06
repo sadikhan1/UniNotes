@@ -61,9 +61,7 @@ function NoteDetailPage() {
     return () => { document.title = t('appTitle') }
   }, [id, t])
 
-  const handleDelete = () => {
-    setShowDeleteNoteConfirm(true)
-  }
+  const handleDelete = () => setShowDeleteNoteConfirm(true)
 
   const handleConfirmDeleteNote = async () => {
     setShowDeleteNoteConfirm(false)
@@ -73,10 +71,6 @@ function NoteDetailPage() {
     } catch (err) {
       alert(err.message)
     }
-  }
-
-  const handleCancelDeleteNote = () => {
-    setShowDeleteNoteConfirm(false)
   }
 
   const handleLike = async () => {
@@ -109,14 +103,14 @@ function NoteDetailPage() {
 
   if (loading) {
     return (
-      <div className="min-h-screen flex items-center justify-center">
-        <div className="w-8 h-8 border-4 border-blue-600 border-t-transparent rounded-full animate-spin" />
+      <div className="min-h-screen flex items-center justify-center bg-[#0b1117]">
+        <div className="w-8 h-8 border-4 border-cyan-400 border-t-transparent rounded-full animate-spin" />
       </div>
     )
   }
 
   if (error || !note) {
-    return <div className="text-center py-20 text-gray-500">{error || t('noteNotFound')}</div>
+    return <div className="text-center py-20 text-slate-500">{error || t('noteNotFound')}</div>
   }
 
   const isOwner = user?.id === note.user_id
@@ -127,7 +121,7 @@ function NoteDetailPage() {
         <div className="mb-4">
           <Link
             to={`/courses/${encodeURIComponent(note.course)}`}
-            className="inline-flex items-center gap-1.5 text-sm text-gray-500 hover:text-blue-600 transition"
+            className="inline-flex items-center gap-1.5 text-sm text-slate-500 hover:text-cyan-400 transition"
           >
             <svg className="w-4 h-4" viewBox="0 0 20 20" fill="currentColor">
               <path fillRule="evenodd" d="M9.707 16.707a1 1 0 01-1.414 0l-6-6a1 1 0 010-1.414l6-6a1 1 0 011.414 1.414L5.414 9H17a1 1 0 110 2H5.414l4.293 4.293a1 1 0 010 1.414z" clipRule="evenodd" />
@@ -136,26 +130,26 @@ function NoteDetailPage() {
           </Link>
         </div>
       )}
-      <div className="bg-white rounded-lg border border-gray-200 p-6">
+
+      <div className="bg-[#10141a] rounded-xl border border-cyan-900/40 p-6">
         <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-4 mb-4">
-          <h1 className="text-2xl font-bold text-gray-900">{note.title}</h1>
+          <h1 className="text-2xl font-bold text-slate-100">{note.title}</h1>
           <div className="flex flex-wrap items-center gap-2 shrink-0">
             {/* Like button */}
             <div className="relative group">
               <button
                 onClick={handleLike}
-                className={`flex items-center gap-1.5 px-3 py-1.5 text-sm rounded-md border transition ${
+                className={`flex items-center gap-1.5 px-3 py-1.5 text-sm rounded-lg border transition ${
                   liked
-                    ? 'border-red-300 text-red-500 bg-red-50 hover:bg-red-100'
-                    : 'border-gray-300 text-gray-500 hover:bg-gray-50'
+                    ? 'border-red-700/60 text-red-400 bg-red-950/40 hover:bg-red-950/60'
+                    : 'border-cyan-900/50 text-slate-400 hover:bg-cyan-900/20 hover:text-slate-300'
                 } ${!user ? 'cursor-default' : 'cursor-pointer'}`}
-                aria-label={t('likeNote')}
               >
                 <HeartIcon filled={liked} />
                 <span>{likeCount}</span>
               </button>
               {!user && (
-                <span className="pointer-events-none absolute bottom-full left-1/2 -translate-x-1/2 mb-1.5 whitespace-nowrap rounded bg-gray-800 px-2 py-1 text-xs text-white opacity-0 transition-opacity group-hover:opacity-100 z-10">
+                <span className="pointer-events-none absolute bottom-full left-1/2 -translate-x-1/2 mb-1.5 whitespace-nowrap rounded bg-[#10141a] border border-cyan-900/40 px-2 py-1 text-xs text-slate-300 opacity-0 transition-opacity group-hover:opacity-100 z-10">
                   {t('loginToLike')}
                 </span>
               )}
@@ -165,17 +159,16 @@ function NoteDetailPage() {
             <div className="relative group">
               <button
                 onClick={handleSave}
-                className={`flex items-center gap-1.5 px-3 py-1.5 text-sm rounded-md border transition ${
+                className={`flex items-center gap-1.5 px-3 py-1.5 text-sm rounded-lg border transition ${
                   saved
-                    ? 'border-blue-300 text-blue-600 bg-blue-50 hover:bg-blue-100'
-                    : 'border-gray-300 text-gray-500 hover:bg-gray-50'
+                    ? 'border-cyan-600/60 text-cyan-400 bg-cyan-900/30 hover:bg-cyan-900/50'
+                    : 'border-cyan-900/50 text-slate-400 hover:bg-cyan-900/20 hover:text-slate-300'
                 } ${!user ? 'cursor-default' : 'cursor-pointer'}`}
-                aria-label={t('saveNote')}
               >
                 <BookmarkIcon filled={saved} />
               </button>
               {!user && (
-                <span className="pointer-events-none absolute bottom-full left-1/2 -translate-x-1/2 mb-1.5 whitespace-nowrap rounded bg-gray-800 px-2 py-1 text-xs text-white opacity-0 transition-opacity group-hover:opacity-100 z-10">
+                <span className="pointer-events-none absolute bottom-full left-1/2 -translate-x-1/2 mb-1.5 whitespace-nowrap rounded bg-[#10141a] border border-cyan-900/40 px-2 py-1 text-xs text-slate-300 opacity-0 transition-opacity group-hover:opacity-100 z-10">
                   {t('loginToSave')}
                 </span>
               )}
@@ -185,13 +178,13 @@ function NoteDetailPage() {
               <>
                 <Link
                   to={`/notes/${id}/edit`}
-                  className="px-3 py-1.5 text-sm border border-gray-300 rounded-md hover:bg-gray-50 transition"
+                  className="px-3 py-1.5 text-sm border border-cyan-900/50 rounded-lg text-slate-300 hover:bg-cyan-900/20 transition"
                 >
                   {t('edit')}
                 </Link>
                 <button
                   onClick={handleDelete}
-                  className="px-3 py-1.5 text-sm border border-red-200 text-red-600 rounded-md hover:bg-red-50 transition"
+                  className="px-3 py-1.5 text-sm border border-red-800/50 text-red-400 rounded-lg hover:bg-red-950/40 transition"
                 >
                   {t('delete')}
                 </button>
@@ -200,16 +193,16 @@ function NoteDetailPage() {
           </div>
         </div>
 
-        <div className="flex flex-wrap items-center gap-3 text-sm text-gray-500 mb-6">
+        <div className="flex flex-wrap items-center gap-3 text-sm text-slate-500 mb-6">
           {note.author && (
-            <Link to={`/profile/${note.user_id}`} className="text-blue-600 hover:underline font-medium">
+            <Link to={`/profile/${note.user_id}`} className="text-cyan-400 hover:text-cyan-300 font-medium">
               {note.author}
             </Link>
           )}
           {note.course && (
             <Link
               to={`/courses/${encodeURIComponent(note.course)}`}
-              className="bg-blue-50 text-blue-700 px-2 py-0.5 rounded text-xs font-medium hover:bg-blue-100 transition"
+              className="bg-cyan-900/30 text-cyan-400 px-2 py-0.5 rounded text-xs font-medium hover:bg-cyan-900/50 transition"
             >
               {note.course}
             </Link>
@@ -220,15 +213,15 @@ function NoteDetailPage() {
         {note.tags?.length > 0 && (
           <div className="flex flex-wrap gap-1.5 mb-6">
             {note.tags.map(tag => (
-              <span key={tag} className="text-xs bg-gray-100 text-gray-600 px-2 py-0.5 rounded-full">
+              <span key={tag} className="text-xs bg-[#0b1117] border border-cyan-900/40 text-slate-400 px-2 py-0.5 rounded-full">
                 {tag}
               </span>
             ))}
           </div>
         )}
 
-        <div className="text-gray-700 whitespace-pre-wrap leading-relaxed">
-          {note.content || <span className="text-gray-400 italic">{t('noContent')}</span>}
+        <div className="text-slate-300 whitespace-pre-wrap leading-relaxed">
+          {note.content || <span className="text-slate-600 italic">{t('noContent')}</span>}
         </div>
 
         {isOwner
@@ -243,7 +236,7 @@ function NoteDetailPage() {
         open={showDeleteNoteConfirm}
         message={t('confirmDelete')}
         onConfirm={handleConfirmDeleteNote}
-        onCancel={handleCancelDeleteNote}
+        onCancel={() => setShowDeleteNoteConfirm(false)}
         confirmLabel={t('yes')}
         cancelLabel={t('no')}
       />
