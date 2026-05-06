@@ -1,0 +1,14 @@
+UniNotes - Deployment Links
+
+GitHub Repository:
+https://github.com/sadikhan1/UniNotes
+
+Frontend (Vercel):
+[https://yasouninotes.vercel.app]
+
+Backend (Render):
+[INSERT RENDER URL - e.g., https://uninotes-backend.onrender.com]
+
+Backend Health Check:
+GET [RENDER_URL]/api/health
+Expected Response: { status: "ok" }
