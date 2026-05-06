@@ -57,4 +57,46 @@ CREATE INDEX IF NOT EXISTS idx_notes_is_public ON public.notes (is_public);
 CREATE INDEX IF NOT EXISTS idx_files_note_id ON public.files (note_id);
 CREATE INDEX IF NOT EXISTS idx_note_tags_tag_id ON public.note_tags (tag_id);
 
+ALTER TABLE public.notes ENABLE ROW LEVEL SECURITY;
+
+DROP POLICY IF EXISTS "Anyone can read public notes" ON public.notes;
+CREATE POLICY "Anyone can read public notes"
+  ON public.notes FOR SELECT
+  USING (is_public = true OR auth.uid() = user_id);
+
+DROP POLICY IF EXISTS "Authenticated users can insert notes" ON public.notes;
+CREATE POLICY "Authenticated users can insert notes"
+  ON public.notes FOR INSERT
+  WITH CHECK (auth.uid() = user_id);
+
+DROP POLICY IF EXISTS "Users can update their own notes" ON public.notes;
+CREATE POLICY "Users can update their own notes"
+  ON public.notes FOR UPDATE
+  USING (auth.uid() = user_id)
+  WITH CHECK (auth.uid() = user_id);
+
+DROP POLICY IF EXISTS "Users can delete their own notes" ON public.notes;
+CREATE POLICY "Users can delete their own notes"
+  ON public.notes FOR DELETE
+  USING (auth.uid() = user_id);
+
+ALTER TABLE public.files ENABLE ROW LEVEL SECURITY;
+
+DROP POLICY IF EXISTS "Anyone can read files" ON public.files;
+CREATE POLICY "Anyone can read files"
+  ON public.files FOR SELECT
+  USING (true);
+
+DROP POLICY IF EXISTS "Note owners can insert files" ON public.files;
+CREATE POLICY "Note owners can insert files"
+  ON public.files FOR INSERT
+  WITH CHECK (true);
+
+DROP POLICY IF EXISTS "Note owners can delete files" ON public.files;
+CREATE POLICY "Note owners can delete files"
+  ON public.files FOR DELETE
+  USING (
+    auth.uid() = (SELECT user_id FROM public.notes WHERE id = note_id)
+  );
+
 COMMIT;

@@ -3,28 +3,13 @@ import { AuthProvider, useAuth } from './context/AuthContext'
 import Navbar from './components/Navbar'
 import LoginPage from './pages/LoginPage'
 import RegisterPage from './pages/RegisterPage'
-
-function ProtectedRoute({ children }) {
-  const { user, loading } = useAuth()
-
-  if (loading) {
-    return (
-      <div className="min-h-screen flex items-center justify-center">
-        <div className="w-8 h-8 border-4 border-blue-600 border-t-transparent rounded-full animate-spin" />
-      </div>
-    )
-  }
-
-  return user ? children : <Navigate to="/login" replace />
-}
-
-function NotesPage() {
-  return (
-    <div className="min-h-screen flex items-center justify-center">
-      <h1 className="text-2xl font-bold text-gray-900">Notes (coming soon)</h1>
-    </div>
-  )
-}
+import HomePage from './pages/HomePage'
+import NotesPage from './pages/NotesPage'
+import NoteFormPage from './pages/NoteFormPage'
+import NoteDetailPage from './pages/NoteDetailPage'
+import ProfilePage from './pages/ProfilePage'
+import CurriculumPage from './pages/CurriculumPage'
+import Toast from './components/Toast'
 
 function App() {
   return (

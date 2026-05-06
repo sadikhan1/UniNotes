@@ -32,7 +32,7 @@ UniNotes/
 ### 1. Clone the repository
 
 ```bash
-git clone https://github.com/sadikhan0/UniNotes.git
+git clone https://github.com/sadikhan1/UniNotes.git
 cd UniNotes
 ```
 
@@ -74,3 +74,43 @@ VITE_API_URL=http://localhost:5010
 ```
 
 > Never commit real secrets. Only `.env.example` files are tracked in Git.
+
+## Deployment
+
+### Backend on Render
+
+1. Create a new **Web Service** on Render and connect this repository.
+2. Set **Root Directory** to `backend`.
+3. Use these values:
+
+```txt
+Build Command: npm install
+Start Command: npm start
+```
+
+4. Add environment variables from `backend/.env.example`:
+
+```txt
+NODE_ENV=production
+PORT=10000
+FRONTEND_URL=https://your-vercel-app.vercel.app
+SUPABASE_URL=...
+SUPABASE_ANON_KEY=...
+SUPABASE_SERVICE_KEY=...
+```
+
+If you use multiple frontend domains (for example Vercel preview + production), set `FRONTEND_URL` as a comma-separated list.
+
+### Frontend on Vercel
+
+1. Import this repository into Vercel.
+2. Set **Root Directory** to `frontend`.
+3. Add the environment variable:
+
+```txt
+VITE_API_URL=https://your-render-service.onrender.com/api
+```
+
+4. Deploy.
+
+This project includes an SPA rewrite config (`frontend/vercel.json`) so direct route refreshes (e.g. `/notes/123`) work correctly.
