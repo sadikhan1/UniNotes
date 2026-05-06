@@ -11,6 +11,7 @@ import NoteFormPage from './pages/NoteFormPage'
 import NoteDetailPage from './pages/NoteDetailPage'
 import ProfilePage from './pages/ProfilePage'
 import CurriculumPage from './pages/CurriculumPage'
+import CoursePage from './pages/CoursePage'
 import Toast from './components/Toast'
 
 function App() {
@@ -34,6 +35,7 @@ function App() {
             <Route path="/notes/:id" element={<NoteDetailPage />} />
             <Route path="/profile/:id" element={<ProfilePage />} />
             <Route path="/departments/:slug" element={<CurriculumPage />} />
+            <Route path="/courses/:courseCode" element={<CoursePage />} />
             <Route path="*" element={<Navigate to="/notes" replace />} />
           </Routes>
         </div>

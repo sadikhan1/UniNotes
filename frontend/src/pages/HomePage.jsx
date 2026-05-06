@@ -3,8 +3,7 @@ import { Link, useSearchParams } from 'react-router-dom'
 import { getNotes, getCourses } from '../services/api'
 import { useAuth } from '../context/AuthContext'
 import { useLocale } from '../context/LocaleContext'
-import { DEPT_NAME_TO_SLUG } from '../data/curriculum'
-import StudentLoungeHero from '../components/StudentLoungeHero'
+import { DEPARTMENTS, FACULTIES } from '../data/curriculum'
 
 function useDebounce(value, delay) {
   const [debounced, setDebounced] = useState(value)
@@ -15,39 +14,134 @@ function useDebounce(value, delay) {
   return debounced
 }
 
-const DEPARTMENTS = [
-  'Computer Engineering',
-  'Cartoon and Animation',
-  'Economics',
-  'Electrical-Electronics Engineering',
-  'Industrial Engineering',
-  'Industrial Design',
-  'Energy Systems Engineering',
-  'Gastronomy and Culinary Arts',
-  'Visual Communication Design',
-  'Public Relations and Advertising',
-  'Law',
-  'Interior Architecture and Environmental Design',
-  'English Language and Literature',
-  'English Translation and Interpretation',
-  'Civil Engineering',
-  'Business Administration',
-  'Logistics Management',
-  'Mechanical Engineering',
-  'Architecture',
-  'Psychology',
-  'Radio, Television and Cinema',
-  'Agricultural Economics',
-  'Agricultural Machinery and Technologies Engineering',
-  'Tourism Guidance',
-  'International Relations',
-  'International Trade and Finance',
-  'Software Engineering',
-  'New Media and Communication',
-  'Management Information Systems',
-]
+function FacultyGrid({ selectedFaculty, onSelect }) {
+  return (
+    <div className="mb-8">
+      <h2 className="text-sm font-semibold text-gray-500 uppercase tracking-wide mb-3">Browse by Faculty</h2>
+      <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3">
+        {FACULTIES.map(faculty => {
+          const isSelected = selectedFaculty?.slug === faculty.slug
+          return (
+            <button
+              key={faculty.slug}
+              onClick={() => onSelect(isSelected ? null : faculty)}
+              className={`text-left p-4 rounded-xl border-2 transition ${
+                isSelected
+                  ? 'border-blue-600 bg-blue-50'
+                  : 'border-gray-200 bg-white hover:border-blue-300 hover:bg-gray-50'
+              }`}
+            >
+              <div className="text-2xl mb-2">{faculty.icon}</div>
+              <div className={`text-sm font-semibold leading-tight ${isSelected ? 'text-blue-700' : 'text-gray-800'}`}>
+                {faculty.name}
+              </div>
+              <div className="text-xs text-gray-400 mt-1">{faculty.departments.length} departments</div>
+            </button>
+          )
+        })}
+      </div>
+    </div>
+  )
+}
 
-function NoteCard({ note }) {
+function DepartmentGrid({ faculty, selectedDept, onSelect }) {
+  const depts = faculty.departments
+    .map(slug => DEPARTMENTS.find(d => d.slug === slug))
+    .filter(Boolean)
+
+  return (
+    <div className="mb-8">
+      <div className="flex items-center gap-2 mb-3">
+        <span className="text-lg">{faculty.icon}</span>
+        <h2 className="text-sm font-semibold text-gray-500 uppercase tracking-wide">
+          {faculty.name} — Departments
+        </h2>
+      </div>
+      <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3">
+        {depts.map(dept => {
+          const isSelected = selectedDept?.slug === dept.slug
+          const totalCourses = dept.semesters.reduce((acc, s) => acc + s.courses.length, 0)
+          return (
+            <button
+              key={dept.slug}
+              onClick={() => onSelect(isSelected ? null : dept)}
+              className={`text-left p-4 rounded-xl border-2 transition ${
+                isSelected
+                  ? 'border-blue-600 bg-blue-50'
+                  : 'border-gray-200 bg-white hover:border-blue-300 hover:bg-gray-50'
+              }`}
+            >
+              <div className={`text-sm font-semibold leading-tight ${isSelected ? 'text-blue-700' : 'text-gray-800'}`}>
+                {dept.name}
+              </div>
+              <div className="text-xs text-gray-400 mt-1">{totalCourses} courses · {dept.semesters.length} semesters</div>
+              <Link
+                to={`/departments/${dept.slug}`}
+                onClick={e => e.stopPropagation()}
+                className="inline-block mt-2 text-xs text-blue-500 hover:text-blue-700"
+              >
+                View notes →
+              </Link>
+            </button>
+          )
+        })}
+      </div>
+    </div>
+  )
+}
+
+function CourseList({ dept }) {
+  return (
+    <div className="mb-8">
+      <div className="flex items-center justify-between mb-3">
+        <h2 className="text-sm font-semibold text-gray-500 uppercase tracking-wide">
+          {dept.name} — Courses
+        </h2>
+        <Link to={`/departments/${dept.slug}`} className="text-xs text-blue-600 hover:underline">
+          View all notes →
+        </Link>
+      </div>
+      <div className="space-y-4">
+        {dept.semesters.map(sem => (
+          <div key={sem.semester} className="bg-white border border-gray-200 rounded-xl overflow-hidden">
+            <div className="bg-gray-50 border-b border-gray-200 px-4 py-2">
+              <span className="text-xs font-semibold text-gray-600 uppercase tracking-wide">
+                Semester {sem.semester}
+              </span>
+            </div>
+            <div className="divide-y divide-gray-100">
+              {sem.courses.map(course => (
+                <Link
+                  key={course.code}
+                  to={`/courses/${encodeURIComponent(course.code)}`}
+                  className="flex items-center justify-between px-4 py-3 hover:bg-blue-50 transition group"
+                >
+                  <div className="flex items-center gap-3 min-w-0">
+                    <span className="text-xs font-mono font-semibold text-blue-600 shrink-0">{course.code}</span>
+                    <span className="text-sm text-gray-800 truncate group-hover:text-blue-700">{course.name}</span>
+                  </div>
+                  <div className="flex items-center gap-3 shrink-0 ml-4">
+                    <span className="text-xs text-gray-400">{course.tul}</span>
+                    <span className={`text-xs px-2 py-0.5 rounded-full font-medium ${
+                      course.type === 'Required'
+                        ? 'bg-blue-50 text-blue-700'
+                        : 'bg-amber-50 text-amber-700'
+                    }`}>
+                      {course.ects} ECTS
+                    </span>
+                    <span className="text-xs text-gray-300 group-hover:text-blue-400">→</span>
+                  </div>
+                </Link>
+              ))}
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
+  )
+}
+
+function NoteCard({ note, locale }) {
   return (
     <Link
       to={`/notes/${note.id}`}
@@ -86,7 +180,9 @@ function HomePage() {
   const [searchInput, setSearchInput] = useState('')
   const [course, setCourse] = useState(() => searchParams.get('course') ?? '')
   const [tag, setTag] = useState('')
-  const [department, setDepartment] = useState('')
+
+  const [selectedFaculty, setSelectedFaculty] = useState(null)
+  const [selectedDept, setSelectedDept] = useState(null)
 
   useEffect(() => {
     getCourses().then(setCourses).catch(() => {})
@@ -99,28 +195,39 @@ function HomePage() {
     const params = { page, limit: 12 }
     if (debouncedSearch) params.search = debouncedSearch
     if (course) params.course = course
-    if (department) params.course = department
     if (tag) params.tag = tag
 
     getNotes(params)
       .then(data => { setNotes(data.notes); setTotal(data.total); setHasNextPage(data.hasNextPage) })
       .catch(console.error)
       .finally(() => setLoading(false))
-  }, [page, debouncedSearch, course, department, tag])
+  }, [page, debouncedSearch, course, tag])
 
-  useEffect(() => { setPage(1) }, [debouncedSearch, course, department, tag])
+  useEffect(() => { setPage(1) }, [debouncedSearch, course, tag])
   useEffect(() => { fetchNotes() }, [fetchNotes])
 
-  const clearFilters = () => { setSearchInput(''); setCourse(''); setTag(''); setDepartment('') }
-  const hasFilters = searchInput || course || tag || department
+  const clearFilters = () => { setSearchInput(''); setCourse(''); setTag('') }
+  const hasFilters = searchInput || course || tag
+
+  const handleFacultySelect = (faculty) => {
+    setSelectedFaculty(faculty)
+    setSelectedDept(null)
+  }
 
   return (
     <div className="max-w-7xl mx-auto px-4 py-8">
-      <StudentLoungeHero
-        searchInput={searchInput}
-        onSearchChange={setSearchInput}
-        isLoggedIn={Boolean(user)}
-      />
+
+      <FacultyGrid selectedFaculty={selectedFaculty} onSelect={handleFacultySelect} />
+
+      {selectedFaculty && (
+        <DepartmentGrid
+          faculty={selectedFaculty}
+          selectedDept={selectedDept}
+          onSelect={setSelectedDept}
+        />
+      )}
+
+      {selectedDept && <CourseList dept={selectedDept} />}
 
       <div id="notes-list" className="scroll-mt-24" />
 
@@ -135,156 +242,73 @@ function HomePage() {
         )}
       </div>
 
-      <div className="flex gap-6 items-start">
-        {/* Departments sidebar */}
-        <aside className="hidden lg:block w-56 shrink-0">
-          <div className="bg-white border border-gray-200 rounded-lg p-4 sticky top-4">
-            <h2 className="text-xs font-semibold text-gray-500 uppercase tracking-wide mb-3">Yaşar University Departments</h2>
-            <ul className="space-y-0.5">
-              {DEPARTMENTS.map(dept => {
-                const slug = DEPT_NAME_TO_SLUG[dept]
-                return (
-                  <li key={dept}>
-                    {slug ? (
-                      <Link
-                        to={`/departments/${slug}`}
-                        className="block w-full text-left text-xs px-2 py-1.5 rounded transition text-gray-600 hover:bg-gray-100"
-                      >
-                        {dept}
-                        <span className="ml-1 text-blue-400 text-[10px]">→</span>
-                      </Link>
-                    ) : (
-                      <button
-                        onClick={() => { setDepartment(dept === department ? '' : dept); setCourse('') }}
-                        className={`w-full text-left text-xs px-2 py-1.5 rounded transition ${
-                          department === dept
-                            ? 'bg-blue-600 text-white font-medium'
-                            : 'text-gray-600 hover:bg-gray-100'
-                        }`}
-                      >
-                        {dept}
-                      </button>
-                    )}
-                  </li>
-                )
-              })}
-            </ul>
-          </div>
-        </aside>
-
-        {/* Main content */}
-        <div className="flex-1 min-w-0">
-          {/* Mobile departments (horizontal scroll) */}
-          <div className="lg:hidden mb-4 -mx-1">
-            <p className="text-xs font-semibold text-gray-500 uppercase tracking-wide mb-2 px-1">Departments</p>
-            <div className="flex gap-2 overflow-x-auto pb-2">
-              {DEPARTMENTS.map(dept => {
-                const slug = DEPT_NAME_TO_SLUG[dept]
-                return slug ? (
-                  <Link
-                    key={dept}
-                    to={`/departments/${slug}`}
-                    className="shrink-0 text-xs px-3 py-1.5 rounded-full border border-blue-300 text-blue-700 hover:bg-blue-50 transition"
-                  >
-                    {dept}
-                  </Link>
-                ) : (
-                  <button
-                    key={dept}
-                    onClick={() => { setDepartment(dept === department ? '' : dept); setCourse('') }}
-                    className={`shrink-0 text-xs px-3 py-1.5 rounded-full border transition ${
-                      department === dept
-                        ? 'bg-blue-600 border-blue-600 text-white font-medium'
-                        : 'border-gray-300 text-gray-600 hover:bg-gray-50'
-                    }`}
-                  >
-                    {dept}
-                  </button>
-                )
-              })}
-            </div>
-          </div>
-
-          {/* Filters */}
-          <div className="bg-white border border-gray-200 rounded-lg p-4 mb-6 flex flex-wrap gap-3 items-end">
-            <div className="flex-1 min-w-48">
-              <label className="block text-xs font-medium text-gray-600 mb-1">{t('searchNotes')}</label>
-              <input
-                type="text"
-                placeholder={t('searchNotes')}
-                value={searchInput}
-                onChange={e => setSearchInput(e.target.value)}
-                className="w-full px-3 py-2 border border-gray-300 rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
-              />
-            </div>
-            <div className="min-w-36">
-              <label className="block text-xs font-medium text-gray-600 mb-1">{t('course')}</label>
-              <select
-                value={course}
-                onChange={e => { setCourse(e.target.value); setDepartment('') }}
-                className="w-full px-3 py-2 border border-gray-300 rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
-              >
-                <option value="">{t('allCourses')}</option>
-              {courses.map(c => <option key={c} value={c}>{c}</option>)}
-              </select>
-            </div>
-            <div className="min-w-36">
-              <label className="block text-xs font-medium text-gray-600 mb-1">{t('tags')}</label>
-              <input
-                type="text"
-                placeholder="e.g. exam"
-                value={tag}
-                onChange={e => setTag(e.target.value)}
-                className="w-full px-3 py-2 border border-gray-300 rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
-              />
-            </div>
-            {hasFilters && (
-              <button onClick={clearFilters} className="px-4 py-2 text-sm text-gray-500 hover:text-red-600 border border-gray-300 rounded-md hover:border-red-300 transition">
-                {t('clearFilters')}
-              </button>
-            )}
-          </div>
-
-          {department && (
-            <div className="mb-4 flex items-center gap-2">
-              <span className="text-sm font-medium text-blue-700 bg-blue-50 border border-blue-200 px-3 py-1 rounded-full">
-                {department}
-              </span>
-              <button onClick={() => setDepartment('')} className="text-xs text-gray-400 hover:text-gray-600">
-                ✕ {t('remove')}
-              </button>
-            </div>
-          )}
-
-          {loading ? (
-            <div className="flex justify-center py-20">
-              <div className="w-8 h-8 border-4 border-blue-600 border-t-transparent rounded-full animate-spin" />
-            </div>
-          ) : notes.length === 0 ? (
-            <div className="text-center py-20 text-gray-500">
-              {hasFilters ? t('noNotesMatchFilters') : t('noNotesFound')}
-            </div>
-          ) : (
-            <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-4">
-              {notes.map(note => <NoteCard key={note.id} note={note} />)}
-            </div>
-          )}
-
-          {(page > 1 || hasNextPage) && (
-            <div className="flex justify-center items-center gap-4 mt-8">
-              <button onClick={() => setPage(p => p - 1)} disabled={page === 1}
-                className="px-4 py-2 text-sm border border-gray-300 rounded-md disabled:opacity-40 hover:bg-gray-50 transition">
-                {t('previous')}
-              </button>
-              <span className="text-sm text-gray-600">{t('page')} {page}</span>
-              <button onClick={() => setPage(p => p + 1)} disabled={!hasNextPage}
-                className="px-4 py-2 text-sm border border-gray-300 rounded-md disabled:opacity-40 hover:bg-gray-50 transition">
-                {t('next')}
-              </button>
-            </div>
-          )}
+      {/* Filters */}
+      <div className="bg-white border border-gray-200 rounded-lg p-4 mb-6 flex flex-wrap gap-3 items-end">
+        <div className="flex-1 min-w-48">
+          <label className="block text-xs font-medium text-gray-600 mb-1">{t('searchNotes')}</label>
+          <input
+            type="text"
+            placeholder={t('searchNotes')}
+            value={searchInput}
+            onChange={e => setSearchInput(e.target.value)}
+            className="w-full px-3 py-2 border border-gray-300 rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+          />
         </div>
+        <div className="min-w-36">
+          <label className="block text-xs font-medium text-gray-600 mb-1">{t('course')}</label>
+          <select
+            value={course}
+            onChange={e => setCourse(e.target.value)}
+            className="w-full px-3 py-2 border border-gray-300 rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+          >
+            <option value="">{t('allCourses')}</option>
+            {courses.map(c => <option key={c} value={c}>{c}</option>)}
+          </select>
+        </div>
+        <div className="min-w-36">
+          <label className="block text-xs font-medium text-gray-600 mb-1">{t('tags')}</label>
+          <input
+            type="text"
+            placeholder="e.g. exam"
+            value={tag}
+            onChange={e => setTag(e.target.value)}
+            className="w-full px-3 py-2 border border-gray-300 rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+          />
+        </div>
+        {hasFilters && (
+          <button onClick={clearFilters} className="px-4 py-2 text-sm text-gray-500 hover:text-red-600 border border-gray-300 rounded-md hover:border-red-300 transition">
+            {t('clearFilters')}
+          </button>
+        )}
       </div>
+
+      {loading ? (
+        <div className="flex justify-center py-20">
+          <div className="w-8 h-8 border-4 border-blue-600 border-t-transparent rounded-full animate-spin" />
+        </div>
+      ) : notes.length === 0 ? (
+        <div className="text-center py-20 text-gray-500">
+          {hasFilters ? t('noNotesMatchFilters') : t('noNotesFound')}
+        </div>
+      ) : (
+        <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-4">
+          {notes.map(note => <NoteCard key={note.id} note={note} locale={locale} />)}
+        </div>
+      )}
+
+      {(page > 1 || hasNextPage) && (
+        <div className="flex justify-center items-center gap-4 mt-8">
+          <button onClick={() => setPage(p => p - 1)} disabled={page === 1}
+            className="px-4 py-2 text-sm border border-gray-300 rounded-md disabled:opacity-40 hover:bg-gray-50 transition">
+            {t('previous')}
+          </button>
+          <span className="text-sm text-gray-600">{t('page')} {page}</span>
+          <button onClick={() => setPage(p => p + 1)} disabled={!hasNextPage}
+            className="px-4 py-2 text-sm border border-gray-300 rounded-md disabled:opacity-40 hover:bg-gray-50 transition">
+            {t('next')}
+          </button>
+        </div>
+      )}
     </div>
   )
 }

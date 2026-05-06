@@ -1944,6 +1944,90 @@ export function getDepartmentBySlug(slug) {
   return DEPARTMENTS.find(d => d.slug === slug)
 }
 
+export const FACULTIES = [
+  {
+    slug: 'muhendislik',
+    name: 'Faculty of Engineering',
+    nametr: 'Mühendislik Fakültesi',
+    icon: '⚙️',
+    departments: [
+      'bilgisayar-muhendisligi',
+      'elektrik-elektronik-muhendisligi',
+      'endustri-muhendisligi',
+      'enerji-sistemleri-muhendisligi',
+      'insaat-muhendisligi',
+      'makine-muhendisligi',
+      'yazilim-muhendisligi',
+    ],
+  },
+  {
+    slug: 'mimarlik',
+    name: 'Faculty of Architecture',
+    nametr: 'Mimarlık Fakültesi',
+    icon: '🏛️',
+    departments: [
+      'mimarlik',
+      'ic-mimarlik-cevre-tasarimi',
+      'endustriyel-tasarim',
+    ],
+  },
+  {
+    slug: 'iletisim',
+    name: 'Faculty of Communication',
+    nametr: 'İletişim Fakültesi',
+    icon: '📡',
+    departments: [
+      'halkla-iliskiler-reklamcilik',
+      'radyo-tv-sinema',
+      'yeni-medya-iletisim',
+      'cizgi-film-animasyon',
+      'muzik',
+      'gorsel-iletisim-tasarimi',
+    ],
+  },
+  {
+    slug: 'iibf',
+    name: 'Faculty of Economics & Admin. Sciences',
+    nametr: 'İktisadi ve İdari Bilimler Fakültesi',
+    icon: '📊',
+    departments: [
+      'isletme',
+      'ekonomi',
+      'uluslararasi-iliskiler',
+      'uluslararasi-ticaret-finansman',
+      'lojistik-yonetimi',
+    ],
+  },
+  {
+    slug: 'hukuk',
+    name: 'Faculty of Law',
+    nametr: 'Hukuk Fakültesi',
+    icon: '⚖️',
+    departments: ['hukuk'],
+  },
+  {
+    slug: 'fen-edebiyat',
+    name: 'Faculty of Arts & Sciences',
+    nametr: 'Fen-Edebiyat Fakültesi',
+    icon: '📚',
+    departments: [
+      'ingiliz-dili-edebiyati',
+      'mutercim-tercumanlyk',
+      'psikoloji',
+    ],
+  },
+  {
+    slug: 'ziraat',
+    name: 'Faculty of Agriculture',
+    nametr: 'Ziraat Fakültesi',
+    icon: '🌾',
+    departments: [
+      'tarım-makineleri-muhendisligi',
+      'tarim-ekonomisi',
+    ],
+  },
+]
+
 // Map from Turkish department names (used in homepage sidebar) to slugs
 export const DEPT_NAME_TO_SLUG = {
   'Bilgisayar Mühendisliği': 'bilgisayar-muhendisligi',
