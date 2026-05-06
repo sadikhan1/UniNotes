@@ -30,28 +30,28 @@ function NoteCard({ note, isOwn }) {
   return (
     <Link
       to={`/notes/${note.id}`}
-      className="block bg-white rounded-lg border border-gray-200 p-4 hover:shadow-md transition"
+      className="block bg-[#10141a] rounded-xl border border-cyan-900/40 p-4 hover:border-cyan-700/60 hover:bg-cyan-900/10 transition"
     >
       <div className="flex items-start justify-between gap-2">
-        <h3 className="font-semibold text-gray-900 truncate">{note.title}</h3>
+        <h3 className="font-semibold text-slate-100 truncate">{note.title}</h3>
         <div className="flex items-center gap-1 shrink-0">
           {isOwn && !note.is_public && (
-            <span className="text-xs bg-gray-100 text-gray-500 px-1.5 py-0.5 rounded">{t('private')}</span>
+            <span className="text-xs bg-[#0b1117] border border-cyan-900/40 text-slate-500 px-1.5 py-0.5 rounded">{t('private')}</span>
           )}
           {note.files?.length > 0 && (
-            <span className="text-xs bg-blue-50 text-blue-600 px-1.5 py-0.5 rounded">
+            <span className="text-xs bg-cyan-900/30 text-cyan-400 px-1.5 py-0.5 rounded">
               {note.files.length} file{note.files.length > 1 ? 's' : ''}
             </span>
           )}
         </div>
       </div>
 
-      <p className="text-sm text-gray-500 mt-1">by {note.author}</p>
+      <p className="text-sm text-slate-500 mt-1">by {note.author}</p>
 
       {note.tags?.length > 0 && (
         <div className="flex flex-wrap gap-1 mt-2">
           {note.tags.map(tag => (
-            <span key={tag} className="text-xs bg-gray-100 text-gray-600 px-2 py-0.5 rounded-full">{tag}</span>
+            <span key={tag} className="text-xs bg-[#0b1117] border border-cyan-900/30 text-slate-500 px-2 py-0.5 rounded-full">{tag}</span>
           ))}
         </div>
       )}
@@ -59,7 +59,7 @@ function NoteCard({ note, isOwn }) {
       {note.files?.length > 0 && (
         <div className="mt-3 space-y-1">
           {note.files.map(file => (
-            <div key={file.id} className="flex items-center gap-2 text-xs text-gray-500">
+            <div key={file.id} className="flex items-center gap-2 text-xs text-slate-600">
               <span><FileIcon type={file.file_type} /></span>
               <span className="truncate">{file.file_name}</span>
             </div>
@@ -67,7 +67,7 @@ function NoteCard({ note, isOwn }) {
         </div>
       )}
 
-      <div className="flex items-center justify-between mt-3 text-xs text-gray-400">
+      <div className="flex items-center justify-between mt-3 text-xs text-slate-600">
         <span>{new Date(note.created_at).toLocaleDateString()}</span>
         <span>♥ {note.like_count ?? 0}</span>
       </div>
@@ -93,9 +93,7 @@ function CoursePage() {
   useEffect(() => {
     setLoading(true)
 
-    const fetches = [
-      getNotes({ course: decoded, page, limit: 12 }),
-    ]
+    const fetches = [getNotes({ course: decoded, page, limit: 12 })]
     if (user) {
       fetches.push(getMyNotes({ course: decoded, limit: 50 }))
     }
@@ -117,9 +115,9 @@ function CoursePage() {
 
   if (!found) {
     return (
-      <div className="max-w-3xl mx-auto px-4 py-16 text-center text-gray-500">
+      <div className="max-w-3xl mx-auto px-4 py-16 text-center text-slate-500">
         {t('courseNotFound')}{' '}
-        <Link to="/notes" className="text-blue-600 hover:underline">{t('goBack')}</Link>
+        <Link to="/notes" className="text-cyan-400 hover:text-cyan-300">{t('goBack')}</Link>
       </div>
     )
   }
@@ -131,57 +129,59 @@ function CoursePage() {
   return (
     <div className="max-w-3xl mx-auto px-4 py-8">
       {/* Breadcrumb */}
-      <nav className="flex items-center gap-2 text-xs text-gray-400 mb-6">
-        <Link to="/notes" className="hover:text-gray-600">{t('home')}</Link>
+      <nav className="flex items-center gap-2 text-xs text-slate-600 mb-6">
+        <Link to="/notes" className="hover:text-cyan-400 transition">{t('home')}</Link>
         <span>›</span>
-        <Link to={`/departments/${dept.slug}`} className="hover:text-gray-600">{dept.name}</Link>
+        <Link to={`/departments/${dept.slug}`} className="hover:text-cyan-400 transition">{dept.name}</Link>
         <span>›</span>
-        <span className="text-gray-600 font-medium">{course.code}</span>
+        <span className="text-slate-400 font-medium">{course.code}</span>
       </nav>
 
       {/* Course info card */}
-      <div className="bg-white border border-gray-200 rounded-xl p-6 mb-8">
+      <div className="bg-[#10141a] border border-cyan-900/40 rounded-xl p-6 mb-8">
         <div className="flex items-start justify-between gap-4">
           <div>
-            <span className="text-xs font-mono font-semibold text-blue-600 bg-blue-50 px-2 py-1 rounded">
+            <span className="text-xs font-mono font-semibold text-cyan-400 bg-cyan-900/30 px-2 py-1 rounded">
               {course.code}
             </span>
-            <h1 className="text-xl font-bold text-gray-900 mt-3">{course.name}</h1>
-            <p className="text-sm text-gray-500 mt-1">{dept.name} · {t('semester')} {semester}</p>
+            <h1 className="text-xl font-bold text-slate-100 mt-3">{course.name}</h1>
+            <p className="text-sm text-slate-500 mt-1">{dept.name} · {t('semester')} {semester}</p>
           </div>
           <div className="text-right shrink-0">
             <div className={`inline-block text-xs px-3 py-1 rounded-full font-medium ${
-              course.type === 'Required' ? 'bg-blue-50 text-blue-700' : 'bg-amber-50 text-amber-700'
+              course.type === 'Required'
+                ? 'bg-cyan-900/30 text-cyan-400'
+                : 'bg-amber-900/30 text-amber-400'
             }`}>
               {courseTypeLabel}
             </div>
-            <div className="text-2xl font-bold text-gray-900 mt-2">{course.ects}</div>
-            <div className="text-xs text-gray-400">{t('ects')}</div>
+            <div className="text-2xl font-bold text-slate-100 mt-2">{course.ects}</div>
+            <div className="text-xs text-slate-500">{t('ects')}</div>
           </div>
         </div>
-        <div className="mt-4 pt-4 border-t border-gray-100 flex flex-wrap items-center gap-6 text-sm text-gray-500">
-          <span>T+U+L: <span className="font-medium text-gray-700">{course.tul}</span></span>
+        <div className="mt-4 pt-4 border-t border-cyan-900/30 flex flex-wrap items-center gap-6 text-sm text-slate-500">
+          <span>T+U+L: <span className="font-medium text-slate-300">{course.tul}</span></span>
           {exam ? (
-            <div className="flex items-center gap-2 bg-red-50 border border-red-200 rounded-lg px-3 py-2">
+            <div className="flex items-center gap-2 bg-red-950/40 border border-red-800/50 rounded-lg px-3 py-2">
               <span className="text-lg">📅</span>
               <div>
-                <div className="text-xs text-red-500 font-semibold uppercase tracking-wide">Final Exam</div>
-                <div className="font-semibold text-red-700">
+                <div className="text-xs text-red-400 font-semibold uppercase tracking-wide">Final Exam</div>
+                <div className="font-semibold text-red-300">
                   {new Date(exam.date).toLocaleDateString('en-GB', { day: 'numeric', month: 'long', weekday: 'long' })}
                 </div>
-                <div className="text-xs text-red-600">{exam.start} – {exam.end}{exam.note ? ` · ${exam.note}` : ''}</div>
+                <div className="text-xs text-red-400">{exam.start} – {exam.end}{exam.note ? ` · ${exam.note}` : ''}</div>
               </div>
             </div>
           ) : (
-            <span className="text-xs text-gray-400 italic">No exam date available</span>
+            <span className="text-xs text-slate-600 italic">No exam date available</span>
           )}
         </div>
       </div>
 
-      {/* My private notes section */}
+      {/* My private notes */}
       {myPrivateNotes.length > 0 && (
         <div className="mb-8">
-          <h2 className="text-sm font-semibold text-gray-500 uppercase tracking-wide mb-3">{t('myNotes')}</h2>
+          <h2 className="text-xs font-semibold text-slate-500 uppercase tracking-wide mb-3">{t('myNotes')}</h2>
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             {myPrivateNotes.map(note => (
               <NoteCard key={note.id} note={note} isOwn />
@@ -190,21 +190,21 @@ function CoursePage() {
         </div>
       )}
 
-      {/* Public notes section */}
+      {/* Public notes */}
       <div className="flex items-center justify-between mb-4">
-        <h2 className="text-lg font-bold text-gray-900">
+        <h2 className="text-lg font-bold text-slate-100">
           {myPrivateNotes.length > 0 ? t('publicNotes') : t('notes')}
-          {total > 0 && <span className="text-gray-400 font-normal text-base ml-1">({total})</span>}
+          {total > 0 && <span className="text-slate-500 font-normal text-base ml-1">({total})</span>}
         </h2>
         {user ? (
           <Link
             to={`/notes/new?course=${encodeURIComponent(decoded)}`}
-            className="bg-blue-600 text-white px-4 py-2 rounded-md text-sm font-medium hover:bg-blue-700 transition"
+            className="bg-cyan-400 text-[#0b1117] px-4 py-2 rounded-lg text-sm font-semibold hover:bg-cyan-300 transition"
           >
             + {t('createNote')}
           </Link>
         ) : (
-          <Link to="/login" className="text-sm text-blue-600 hover:underline">
+          <Link to="/login" className="text-sm text-cyan-400 hover:text-cyan-300">
             {t('loginToCreateNote')}
           </Link>
         )}
@@ -212,15 +212,15 @@ function CoursePage() {
 
       {loading ? (
         <div className="flex justify-center py-16">
-          <div className="w-8 h-8 border-4 border-blue-600 border-t-transparent rounded-full animate-spin" />
+          <div className="w-8 h-8 border-4 border-cyan-400 border-t-transparent rounded-full animate-spin" />
         </div>
       ) : publicNotes.length === 0 ? (
-        <div className="text-center py-16 text-gray-400">
+        <div className="text-center py-16 text-slate-600">
           <p className="text-lg mb-2">{t('noPublicNotes')}</p>
           {user && (
             <Link
               to={`/notes/new?course=${encodeURIComponent(decoded)}`}
-              className="text-blue-600 hover:underline text-sm"
+              className="text-cyan-400 hover:text-cyan-300 text-sm"
             >
               {t('beFirstToShare')}
             </Link>
@@ -235,12 +235,12 @@ function CoursePage() {
       {(page > 1 || hasNextPage) && (
         <div className="flex justify-center items-center gap-4 mt-8">
           <button onClick={() => setPage(p => p - 1)} disabled={page === 1}
-            className="px-4 py-2 text-sm border border-gray-300 rounded-md disabled:opacity-40 hover:bg-gray-50 transition">
+            className="px-4 py-2 text-sm border border-cyan-900/50 rounded-lg text-slate-400 disabled:opacity-40 hover:bg-cyan-900/20 transition">
             {t('previous')}
           </button>
-          <span className="text-sm text-gray-600">{t('page')} {page}</span>
+          <span className="text-sm text-slate-500">{t('page')} {page}</span>
           <button onClick={() => setPage(p => p + 1)} disabled={!hasNextPage}
-            className="px-4 py-2 text-sm border border-gray-300 rounded-md disabled:opacity-40 hover:bg-gray-50 transition">
+            className="px-4 py-2 text-sm border border-cyan-900/50 rounded-lg text-slate-400 disabled:opacity-40 hover:bg-cyan-900/20 transition">
             {t('next')}
           </button>
         </div>

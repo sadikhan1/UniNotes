@@ -30,7 +30,7 @@ function groupByWeek(dates) {
   const weeks = []
   let week = []
   dates.forEach(date => {
-    const day = new Date(date).getDay() // 0=Sun
+    const day = new Date(date).getDay()
     if (week.length > 0 && day === 0) {
       weeks.push(week)
       week = []
@@ -51,18 +51,18 @@ function ExamCalendarPage() {
 
   if (!dept) {
     return (
-      <div className="max-w-3xl mx-auto px-4 py-16 text-center text-gray-500">
+      <div className="max-w-3xl mx-auto px-4 py-16 text-center text-slate-500">
         Department not found.{' '}
-        <Link to="/notes" className="text-blue-600 hover:underline">Go back</Link>
+        <Link to="/notes" className="text-cyan-400 hover:text-cyan-300">Go back</Link>
       </div>
     )
   }
 
   if (!exams.length) {
     return (
-      <div className="max-w-3xl mx-auto px-4 py-16 text-center text-gray-500">
+      <div className="max-w-3xl mx-auto px-4 py-16 text-center text-slate-500">
         <p className="text-lg mb-2">No exam schedule available for {dept.name}.</p>
-        <Link to="/notes" className="text-blue-600 hover:underline text-sm">Go back</Link>
+        <Link to="/notes" className="text-cyan-400 hover:text-cyan-300 text-sm">Go back</Link>
       </div>
     )
   }
@@ -80,54 +80,58 @@ function ExamCalendarPage() {
   return (
     <div className="max-w-6xl mx-auto px-4 py-8">
       <div className="mb-6">
-        <Link to="/notes" className="text-sm text-gray-400 hover:text-gray-600">← Home</Link>
-        <h1 className="text-2xl font-bold text-gray-900 mt-2">{dept.name}</h1>
-        <p className="text-sm text-gray-500 mt-1">Final Exam Schedule · May 2026</p>
+        <Link to="/notes" className="text-sm text-slate-500 hover:text-cyan-400 transition">← Home</Link>
+        <h1 className="text-2xl font-bold text-slate-100 mt-2">{dept.name}</h1>
+        <p className="text-sm text-slate-500 mt-1">Final Exam Schedule · May 2026</p>
       </div>
 
       <div className="space-y-8">
         {weeks.map((weekDates, wi) => (
-          <div key={wi} className="overflow-x-auto">
+          <div key={wi} className="overflow-x-auto rounded-xl border border-cyan-900/40">
             <table className="w-full border-collapse text-sm">
               <thead>
                 <tr>
-                  <th className="w-24 px-2 py-2 text-xs text-gray-400 font-normal border border-gray-200 bg-gray-50" />
+                  <th className="w-24 px-2 py-2 text-xs text-slate-600 font-normal border-b border-r border-cyan-900/30 bg-[#0d1218]" />
                   {weekDates.map(date => {
                     const d = new Date(date)
                     const isHoliday = date === HOLIDAY
                     return (
-                      <th key={date} className={`px-2 py-2 border border-gray-200 text-center font-medium ${isHoliday ? 'bg-orange-50' : 'bg-gray-50'}`}>
-                        <div className="text-xs text-gray-400">{DAY_NAMES[d.getDay()]}</div>
-                        <div className={`font-bold ${isHoliday ? 'text-orange-500' : 'text-gray-700'}`}>
+                      <th key={date} className={`px-2 py-2 border-b border-r border-cyan-900/30 text-center font-medium ${
+                        isHoliday ? 'bg-amber-950/40' : 'bg-[#0d1218]'
+                      }`}>
+                        <div className="text-xs text-slate-600">{DAY_NAMES[d.getDay()]}</div>
+                        <div className={`font-bold ${isHoliday ? 'text-amber-400' : 'text-slate-300'}`}>
                           {d.getDate()} {d.toLocaleString('en', { month: 'short' })}
                         </div>
-                        {isHoliday && <div className="text-[10px] text-orange-400 font-normal">19 Mayıs</div>}
+                        {isHoliday && <div className="text-[10px] text-amber-500 font-normal">19 Mayıs</div>}
                       </th>
                     )
                   })}
                 </tr>
               </thead>
-              <tbody>
+              <tbody className="bg-[#10141a]">
                 {TIME_SLOTS.map(slot => (
-                  <tr key={slot}>
-                    <td className="px-2 py-2 text-xs text-gray-400 text-right border border-gray-200 bg-gray-50 whitespace-nowrap">
-                      {slot}<br /><span className="text-gray-300">{SLOT_ENDS[slot]}</span>
+                  <tr key={slot} className="border-b border-cyan-900/20">
+                    <td className="px-2 py-2 text-xs text-slate-600 text-right border-r border-cyan-900/20 bg-[#0d1218] whitespace-nowrap">
+                      {slot}<br /><span className="text-slate-700">{SLOT_ENDS[slot]}</span>
                     </td>
                     {weekDates.map(date => {
                       const key = `${date}__${slot}`
                       const cellExams = examMap[key] || []
                       const isHoliday = date === HOLIDAY
                       return (
-                        <td key={date} className={`border border-gray-200 px-1 py-1 align-top min-w-[110px] ${isHoliday ? 'bg-orange-50/50' : ''}`}>
+                        <td key={date} className={`border-r border-cyan-900/20 px-1 py-1 align-top min-w-[110px] ${
+                          isHoliday ? 'bg-amber-950/10' : ''
+                        }`}>
                           {cellExams.map(exam => (
                             <Link
                               key={exam.course}
                               to={`/courses/${encodeURIComponent(exam.course)}`}
-                              className="block mb-1 px-2 py-1.5 rounded text-xs font-semibold bg-blue-100 text-blue-800 hover:bg-blue-200 transition truncate"
+                              className="block mb-1 px-2 py-1.5 rounded text-xs font-semibold bg-cyan-900/40 text-cyan-400 hover:bg-cyan-900/60 hover:text-cyan-300 transition truncate"
                               title={exam.course + (exam.note ? ` (${exam.note})` : '')}
                             >
                               {exam.course}
-                              {exam.note && <span className="ml-1 font-normal text-blue-500">({exam.note})</span>}
+                              {exam.note && <span className="ml-1 font-normal text-cyan-600">({exam.note})</span>}
                             </Link>
                           ))}
                         </td>

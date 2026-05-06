@@ -85,13 +85,8 @@ function FileUploader({ noteId, initialFiles = [] }) {
     }
   }
 
-  function requestDeleteFile(fileId) {
-    setConfirmDeleteFileId(fileId)
-  }
-
   async function handleConfirmDeleteFile() {
     if (!confirmDeleteFileId) return
-
     try {
       await deleteFile(confirmDeleteFileId)
       setFiles(prev => prev.filter(f => f.id !== confirmDeleteFileId))
@@ -102,13 +97,9 @@ function FileUploader({ noteId, initialFiles = [] }) {
     }
   }
 
-  function handleCancelDeleteFile() {
-    setConfirmDeleteFileId(null)
-  }
-
   return (
-    <div className="mt-6 border-t border-gray-100 pt-6">
-      <h3 className="text-sm font-semibold text-gray-700 mb-3">{t('attachments')}</h3>
+    <div className="mt-6 border-t border-cyan-900/30 pt-6">
+      <h3 className="text-sm font-semibold text-slate-300 mb-3">{t('attachments')}</h3>
 
       {/* Drop zone */}
       <div
@@ -116,8 +107,10 @@ function FileUploader({ noteId, initialFiles = [] }) {
         onDragLeave={() => setDragOver(false)}
         onDrop={onDrop}
         onClick={() => inputRef.current.click()}
-        className={`border-2 border-dashed rounded-lg p-6 text-center cursor-pointer transition ${
-          dragOver ? 'border-blue-500 bg-blue-50' : 'border-gray-300 hover:border-gray-400 hover:bg-gray-50'
+        className={`border-2 border-dashed rounded-xl p-6 text-center cursor-pointer transition ${
+          dragOver
+            ? 'border-cyan-500 bg-cyan-900/20'
+            : 'border-cyan-900/50 hover:border-cyan-700/60 hover:bg-cyan-900/10'
         }`}
       >
         <input
@@ -127,29 +120,31 @@ function FileUploader({ noteId, initialFiles = [] }) {
           className="hidden"
           onChange={e => { if (e.target.files[0]) handleSelect(e.target.files[0]); e.target.value = '' }}
         />
-        <p className="text-sm text-gray-500">{t('dragDropText')} <span className="text-blue-600">{t('clickToBrowse')}</span></p>
-        <p className="text-xs text-gray-400 mt-1">{t('fileTypes')}</p>
+        <p className="text-sm text-slate-500">
+          {t('dragDropText')} <span className="text-cyan-400">{t('clickToBrowse')}</span>
+        </p>
+        <p className="text-xs text-slate-600 mt-1">{t('fileTypes')}</p>
       </div>
 
       {/* Selected file + upload button */}
       {selected && (
-        <div className="mt-3 flex items-center justify-between bg-gray-50 border border-gray-200 rounded-md px-3 py-2">
+        <div className="mt-3 flex items-center justify-between bg-[#0b1117] border border-cyan-900/50 rounded-lg px-3 py-2">
           <div>
-            <p className="text-sm font-medium text-gray-800 truncate max-w-xs">{selected.name}</p>
-            <p className="text-xs text-gray-400">{formatSize(selected.size)}</p>
+            <p className="text-sm font-medium text-slate-300 truncate max-w-xs">{selected.name}</p>
+            <p className="text-xs text-slate-600">{formatSize(selected.size)}</p>
           </div>
           <div className="flex items-center gap-2 shrink-0">
-            <button onClick={() => setSelected(null)} className="text-xs text-gray-400 hover:text-gray-600">
+            <button onClick={() => setSelected(null)} className="text-xs text-slate-500 hover:text-slate-300">
               {t('cancel')}
             </button>
             <button
               onClick={handleUpload}
               disabled={uploading}
-              className="px-3 py-1.5 text-xs bg-blue-600 text-white rounded-md hover:bg-blue-700 disabled:opacity-60 flex items-center gap-1.5 transition"
+              className="px-3 py-1.5 text-xs bg-cyan-400 text-[#0b1117] rounded-lg hover:bg-cyan-300 disabled:opacity-60 flex items-center gap-1.5 transition font-medium"
             >
               {uploading ? (
                 <>
-                  <span className="w-3 h-3 border-2 border-white border-t-transparent rounded-full animate-spin" />
+                  <span className="w-3 h-3 border-2 border-[#0b1117] border-t-transparent rounded-full animate-spin" />
                   {t('uploading')}
                 </>
               ) : t('uploadFile')}
@@ -158,89 +153,50 @@ function FileUploader({ noteId, initialFiles = [] }) {
         </div>
       )}
 
-      {success && <p className="text-sm text-green-600 mt-2">{success}</p>}
-      {error && <p className="text-sm text-red-600 mt-2">{error}</p>}
+      {success && <p className="text-sm text-emerald-400 mt-2">{success}</p>}
+      {error && <p className="text-sm text-red-400 mt-2">{error}</p>}
 
-      {/* Uploaded files with preview */}
+      {/* Uploaded files */}
       {files.length > 0 && (
         <div className="mt-4 space-y-4">
           {files.map(f => (
-            <div key={f.id} className="border border-gray-200 rounded-lg overflow-hidden">
+            <div key={f.id} className="border border-cyan-900/40 rounded-xl overflow-hidden">
               {isImage(f) ? (
                 <>
-                  <div
-                    className="cursor-pointer"
-                    onClick={() => setLightbox(f.file_url)}
-                    title={t('viewFullSize')}
-                  >
-                    <img
-                      src={f.file_url}
-                      alt={f.file_name}
-                      className="w-full max-h-48 object-cover hover:opacity-90 transition"
-                    />
+                  <div className="cursor-pointer" onClick={() => setLightbox(f.file_url)} title={t('viewFullSize')}>
+                    <img src={f.file_url} alt={f.file_name} className="w-full max-h-48 object-cover hover:opacity-80 transition" />
                   </div>
-                  <div className="px-3 py-2 flex items-center justify-between bg-gray-50 border-t border-gray-200">
-                    <span className="text-sm text-gray-700 truncate">{f.file_name}</span>
+                  <div className="px-3 py-2 flex items-center justify-between bg-[#0d1218] border-t border-cyan-900/30">
+                    <span className="text-sm text-slate-400 truncate">{f.file_name}</span>
                     <div className="flex items-center gap-3 shrink-0 ml-3">
-                      <button
-                        onClick={() => triggerDownload(f.file_url, f.file_name)}
-                        className="text-xs text-blue-600 hover:text-blue-800"
-                      >
+                      <button onClick={() => triggerDownload(f.file_url, f.file_name)} className="text-xs text-cyan-400 hover:text-cyan-300">
                         ↓ {t('download')}
                       </button>
-                      <button
-                        onClick={() => requestDeleteFile(f.id)}
-                        className="text-gray-400 hover:text-red-500 transition text-sm"
-                        title={t('removeFileTitle')}
-                      >
-                        ✕
-                      </button>
+                      <button onClick={() => setConfirmDeleteFileId(f.id)} className="text-slate-600 hover:text-red-400 transition text-sm" title={t('removeFileTitle')}>✕</button>
                     </div>
                   </div>
                 </>
               ) : isPDF(f) ? (
                 <>
-                  <iframe
-                    src={f.file_url}
-                    title={f.file_name}
-                    className="w-full h-96 border-0"
-                  />
-                  <div className="px-3 py-2 flex items-center justify-between bg-gray-50 border-t border-gray-200">
-                    <span className="text-sm text-gray-700 truncate">{f.file_name}</span>
+                  <iframe src={f.file_url} title={f.file_name} className="w-full h-96 border-0" />
+                  <div className="px-3 py-2 flex items-center justify-between bg-[#0d1218] border-t border-cyan-900/30">
+                    <span className="text-sm text-slate-400 truncate">{f.file_name}</span>
                     <div className="flex items-center gap-3 shrink-0 ml-3">
-                      <button
-                        onClick={() => triggerDownload(f.file_url, f.file_name)}
-                        className="text-xs text-blue-600 hover:text-blue-800"
-                      >
+                      <button onClick={() => triggerDownload(f.file_url, f.file_name)} className="text-xs text-cyan-400 hover:text-cyan-300">
                         ↓ {t('download')}
                       </button>
-                      <button
-                        onClick={() => requestDeleteFile(f.id)}
-                        className="text-gray-400 hover:text-red-500 transition text-sm"
-                        title={t('removeFileTitle')}
-                      >
-                        ✕
-                      </button>
+                      <button onClick={() => setConfirmDeleteFileId(f.id)} className="text-slate-600 hover:text-red-400 transition text-sm" title={t('removeFileTitle')}>✕</button>
                     </div>
                   </div>
                 </>
               ) : (
-                <div className="px-3 py-3 flex items-center justify-between">
-                  <span className="text-sm text-gray-700 truncate">{f.file_name}</span>
+                <div className="px-3 py-3 flex items-center justify-between bg-[#10141a]">
+                  <span className="text-sm text-slate-400 truncate">{f.file_name}</span>
                   <div className="flex items-center gap-3 shrink-0 ml-3">
-                    <button
-                      onClick={() => triggerDownload(f.file_url, f.file_name)}
-                      className="text-xs text-blue-600 hover:text-blue-800"
-                    >
+                    <button onClick={() => triggerDownload(f.file_url, f.file_name)} className="text-xs text-cyan-400 hover:text-cyan-300">
                       ↓ {t('download')}
                     </button>
-                    <button
-                      onClick={() => requestDeleteFile(f.id)}
-                      className="text-gray-400 hover:text-red-500 transition text-sm"
-                      title={t('removeFileTitle')}
-                    >
-                      ✕
-                    </button>
+                    <button onClick={() => setConfirmDeleteFileId(f.id)} className="text-slate-600 hover:text-red-400 transition text-sm" title={t('removeFileTitle')}>✕</button>
                   </div>
                 </div>
               )}
@@ -253,29 +209,15 @@ function FileUploader({ noteId, initialFiles = [] }) {
         open={!!confirmDeleteFileId}
         message={t('confirmDeleteFile')}
         onConfirm={handleConfirmDeleteFile}
-        onCancel={handleCancelDeleteFile}
+        onCancel={() => setConfirmDeleteFileId(null)}
         confirmLabel={t('yes')}
         cancelLabel={t('no')}
       />
 
-      {/* Lightbox for full-size image */}
       {lightbox && (
-        <div
-          className="fixed inset-0 bg-black/80 flex items-center justify-center z-50 p-4"
-          onClick={() => setLightbox(null)}
-        >
-          <button
-            className="absolute top-4 right-4 text-white text-2xl leading-none hover:text-gray-300"
-            onClick={() => setLightbox(null)}
-          >
-            ✕
-          </button>
-          <img
-            src={lightbox}
-            alt={t('fullSizeImageAlt')}
-            className="max-w-full max-h-full object-contain rounded"
-            onClick={e => e.stopPropagation()}
-          />
+        <div className="fixed inset-0 bg-black/85 flex items-center justify-center z-50 p-4" onClick={() => setLightbox(null)}>
+          <button className="absolute top-4 right-4 text-slate-400 hover:text-white text-2xl leading-none" onClick={() => setLightbox(null)}>✕</button>
+          <img src={lightbox} alt={t('fullSizeImageAlt')} className="max-w-full max-h-full object-contain rounded" onClick={e => e.stopPropagation()} />
         </div>
       )}
     </div>

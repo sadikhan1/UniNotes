@@ -71,68 +71,70 @@ function NoteFormPage() {
     }
   }
 
+  const inputClass = (hasError) =>
+    `w-full px-3 py-2.5 bg-[#0b1117] border rounded-lg text-slate-100 placeholder-slate-600
+     focus:outline-none focus:ring-2 focus:ring-cyan-500/40 focus:border-cyan-600 transition
+     ${hasError ? 'border-red-600' : 'border-cyan-900/50'}`
+
   return (
     <div className="max-w-2xl mx-auto px-4 py-8">
-      <h1 className="text-2xl font-bold text-gray-900 mb-6">
+      <h1 className="text-2xl font-bold text-slate-100 mb-6">
         {isEdit ? t('editNote') : t('createNote')}
       </h1>
 
-      <form onSubmit={handleSubmit} className="bg-white p-6 rounded-lg border border-gray-200 space-y-5">
+      <form onSubmit={handleSubmit} className="bg-[#10141a] border border-cyan-900/40 rounded-xl p-6 space-y-5">
         {errors.api && (
-          <div className="rounded-md bg-red-50 p-3 text-sm text-red-700 border border-red-200">
+          <div className="rounded-lg bg-red-950/60 border border-red-800/50 p-3 text-sm text-red-400">
             {errors.api}
           </div>
         )}
 
         <div>
-          {errors.title && <p className="text-sm text-red-600 mb-1">{errors.title}</p>}
-          <label className="block text-sm font-medium text-gray-700 mb-1">{t('title')} *</label>
+          {errors.title && <p className="text-xs text-red-400 mb-1">{errors.title}</p>}
+          <label className="block text-sm font-medium text-slate-400 mb-1">{t('title')} *</label>
           <input
             type="text"
             value={formData.title}
             onChange={handleChange('title')}
-            placeholder={t('noteTitlePlaceholder')}
-            className={`w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 ${
-              errors.title ? 'border-red-500' : 'border-gray-300'
-            }`}
+            placeholder={t('title')}
+            className={inputClass(errors.title)}
           />
         </div>
 
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1">{t('content')}</label>
+          <label className="block text-sm font-medium text-slate-400 mb-1">{t('content')}</label>
           <textarea
             rows={8}
             value={formData.content}
             onChange={handleChange('content')}
             placeholder={t('noteContentPlaceholder')}
-            className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+            className={`w-full px-3 py-2.5 bg-[#0b1117] border border-cyan-900/50 rounded-lg text-slate-100 placeholder-slate-600
+              focus:outline-none focus:ring-2 focus:ring-cyan-500/40 focus:border-cyan-600 transition resize-y`}
           />
         </div>
 
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1">{t('course')}</label>
+          <label className="block text-sm font-medium text-slate-400 mb-1">{t('course')}</label>
           <input
             type="text"
             value={formData.course}
             onChange={handleChange('course')}
             placeholder={t('coursePlaceholder')}
-            className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+            className={inputClass(false)}
           />
         </div>
 
         <div>
-          {errors.tags && <p className="text-sm text-red-600 mb-1">{errors.tags}</p>}
-          <label className="block text-sm font-medium text-gray-700 mb-1">
-            {t('tags')} <span className="text-gray-400 font-normal">({t('tagsPlaceholder')})</span>
+          {errors.tags && <p className="text-xs text-red-400 mb-1">{errors.tags}</p>}
+          <label className="block text-sm font-medium text-slate-400 mb-1">
+            {t('tags')} <span className="text-slate-600 font-normal">({t('tagsPlaceholder')})</span>
           </label>
           <input
             type="text"
             value={formData.tags}
             onChange={handleChange('tags')}
             placeholder="e.g. exam, midterm, calculus"
-            className={`w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 ${
-              errors.tags ? 'border-red-500' : 'border-gray-300'
-            }`}
+            className={inputClass(errors.tags)}
           />
         </div>
 
@@ -141,16 +143,16 @@ function NoteFormPage() {
             type="button"
             onClick={() => setFormData(p => ({ ...p, is_public: !p.is_public }))}
             className={`relative w-11 h-6 rounded-full transition-colors ${
-              formData.is_public ? 'bg-blue-600' : 'bg-gray-300'
+              formData.is_public ? 'bg-cyan-400' : 'bg-slate-700'
             }`}
           >
             <span
-              className={`absolute top-0.5 left-0.5 w-5 h-5 bg-white rounded-full shadow transition-transform ${
+              className={`absolute top-0.5 left-0.5 w-5 h-5 bg-[#0b1117] rounded-full shadow transition-transform ${
                 formData.is_public ? 'translate-x-5' : ''
               }`}
             />
           </button>
-          <span className="text-sm text-gray-700">
+          <span className="text-sm text-slate-300">
             {formData.is_public ? t('public') : t('private')}
           </span>
         </div>
@@ -159,14 +161,14 @@ function NoteFormPage() {
           <button
             type="submit"
             disabled={loading}
-            className="flex-1 bg-blue-600 text-white py-2 rounded-md font-medium hover:bg-blue-700 transition disabled:opacity-60"
+            className="flex-1 bg-cyan-400 text-[#0b1117] py-2.5 rounded-lg font-semibold hover:bg-cyan-300 transition disabled:opacity-60"
           >
             {loading ? t('saving') : isEdit ? t('saveNote') : t('createNote')}
           </button>
           <button
             type="button"
             onClick={() => navigate(-1)}
-            className="px-6 py-2 border border-gray-300 rounded-md text-sm text-gray-600 hover:bg-gray-50 transition"
+            className="px-6 py-2.5 border border-cyan-900/50 rounded-lg text-sm text-slate-400 hover:bg-cyan-900/20 transition"
           >
             {t('cancel')}
           </button>

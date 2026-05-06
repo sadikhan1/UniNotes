@@ -5,6 +5,7 @@ export const tr = {
   login: 'Giriş',
   register: 'Kayıt Ol',
   logout: 'Çıkış',
+  profile: 'Profilim',
 
   // Authentication
   signInTitle: 'Hesabınıza giriş yapın',
@@ -25,6 +26,7 @@ export const tr = {
   usernameMin: 'Kullanıcı adı en az 3 karakter olmalı',
   passwordMinLength: 'Şifre en az 8 karakter olmalı',
   invalidEmail: 'Lütfen geçerli bir e-posta adresi girin',
+  invalidStudentEmail: 'Yalnızca Yaşar Üniversitesi öğrenci e-postalarına izin verilmektedir (örn. 22070006013@stu.yasar.edu.tr)',
   emailVerification: 'Giriş yapmadan önce e-postanızı doğrulayın. Doğrulama bağlantısı için gelen kutunuzu kontrol edin.',
   checkEmailTitle: 'E-postanızı kontrol edin',
   checkEmailMessage: 'Doğrulama bağlantısını gönderdik',

@@ -26,6 +26,7 @@ export const en = {
   usernameMin: 'Username must be at least 3 characters',
   passwordMinLength: 'Password must be at least 8 characters',
   invalidEmail: 'Please enter a valid email',
+  invalidStudentEmail: 'Only Yaşar University student emails are allowed (e.g. 22070006013@stu.yasar.edu.tr)',
   emailVerification: 'Please verify your email before logging in. Check your inbox for the verification link.',
   checkEmailTitle: 'Check your email',
   checkEmailMessage: 'We\'ve sent a verification link to',
