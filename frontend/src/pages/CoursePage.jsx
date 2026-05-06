@@ -26,6 +26,7 @@ function FileIcon({ type }) {
 }
 
 function NoteCard({ note, isOwn }) {
+  const { t } = useLocale()
   return (
     <Link
       to={`/notes/${note.id}`}
@@ -125,6 +126,7 @@ function CoursePage() {
 
   const { course, dept, semester } = found
   const courseTypeLabel = course.type === 'Required' ? t('required') : t('elective')
+  const exam = getExamForCourse(dept.slug, course.code)
 
   return (
     <div className="max-w-3xl mx-auto px-4 py-8">
