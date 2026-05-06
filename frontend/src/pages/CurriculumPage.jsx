@@ -1,5 +1,6 @@
 import { useParams, useNavigate, Link } from 'react-router-dom'
 import { useEffect } from 'react'
+import { useLocale } from '../context/LocaleContext'
 import { getDepartmentBySlug } from '../data/curriculum'
 import AcademicCalendar from '../components/AcademicCalendar'
 
