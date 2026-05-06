@@ -1,7 +1,11 @@
+import { useLocale } from '../context/LocaleContext'
+
 function NotesPage() {
+  const { t } = useLocale()
+
   return (
     <div className="min-h-screen flex items-center justify-center">
-      <h1 className="text-2xl font-bold text-gray-900">Notes</h1>
+      <h1 className="text-2xl font-bold text-gray-900">{t('notes')}</h1>
     </div>
   )
 }

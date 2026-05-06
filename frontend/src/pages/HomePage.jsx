@@ -2,6 +2,7 @@ import { useState, useEffect, useCallback } from 'react'
 import { Link, useSearchParams } from 'react-router-dom'
 import { getNotes, getCourses } from '../services/api'
 import { useAuth } from '../context/AuthContext'
+import { useLocale } from '../context/LocaleContext'
 import { DEPT_NAME_TO_SLUG } from '../data/curriculum'
 import StudentLoungeHero from '../components/StudentLoungeHero'
 
@@ -63,7 +64,7 @@ function NoteCard({ note }) {
         </div>
       )}
       <div className="flex items-center justify-between mt-3 text-xs text-gray-400">
-        <span>{new Date(note.created_at).toLocaleDateString()}</span>
+        <span>{new Date(note.created_at).toLocaleDateString(locale)}</span>
         <span>♥ {note.like_count ?? 0}</span>
       </div>
     </Link>
@@ -72,6 +73,7 @@ function NoteCard({ note }) {
 
 function HomePage() {
   const { user } = useAuth()
+  const { t, locale } = useLocale()
   const [searchParams] = useSearchParams()
 
   const [notes, setNotes] = useState([])
@@ -124,11 +126,11 @@ function HomePage() {
 
       <div className="flex items-center justify-between mb-6">
         <h1 className="text-2xl font-bold text-gray-900">
-          Public Notes {total > 0 && <span className="text-gray-400 font-normal text-lg">({total})</span>}
+          {t('recentNotes')} {total > 0 && <span className="text-gray-400 font-normal text-lg">({total})</span>}
         </h1>
         {user && (
           <Link to="/notes/new" className="bg-blue-600 text-white px-4 py-2 rounded-md text-sm font-medium hover:bg-blue-700 transition">
-            + New Note
+            + {t('createNote')}
           </Link>
         )}
       </div>
@@ -206,28 +208,28 @@ function HomePage() {
           {/* Filters */}
           <div className="bg-white border border-gray-200 rounded-lg p-4 mb-6 flex flex-wrap gap-3 items-end">
             <div className="flex-1 min-w-48">
-              <label className="block text-xs font-medium text-gray-600 mb-1">Search</label>
+              <label className="block text-xs font-medium text-gray-600 mb-1">{t('searchNotes')}</label>
               <input
                 type="text"
-                placeholder="Search title or content..."
+                placeholder={t('searchNotes')}
                 value={searchInput}
                 onChange={e => setSearchInput(e.target.value)}
                 className="w-full px-3 py-2 border border-gray-300 rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
               />
             </div>
             <div className="min-w-36">
-              <label className="block text-xs font-medium text-gray-600 mb-1">Course</label>
+              <label className="block text-xs font-medium text-gray-600 mb-1">{t('course')}</label>
               <select
                 value={course}
                 onChange={e => { setCourse(e.target.value); setDepartment('') }}
                 className="w-full px-3 py-2 border border-gray-300 rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
               >
-                <option value="">All courses</option>
+                <option value="">{t('allCourses')}</option>
               {courses.map(c => <option key={c} value={c}>{c}</option>)}
               </select>
             </div>
             <div className="min-w-36">
-              <label className="block text-xs font-medium text-gray-600 mb-1">Tag</label>
+              <label className="block text-xs font-medium text-gray-600 mb-1">{t('tags')}</label>
               <input
                 type="text"
                 placeholder="e.g. exam"
@@ -238,7 +240,7 @@ function HomePage() {
             </div>
             {hasFilters && (
               <button onClick={clearFilters} className="px-4 py-2 text-sm text-gray-500 hover:text-red-600 border border-gray-300 rounded-md hover:border-red-300 transition">
-                Clear filters
+                {t('clearFilters')}
               </button>
             )}
           </div>
@@ -249,7 +251,7 @@ function HomePage() {
                 {department}
               </span>
               <button onClick={() => setDepartment('')} className="text-xs text-gray-400 hover:text-gray-600">
-                ✕ remove
+                ✕ {t('remove')}
               </button>
             </div>
           )}
@@ -260,7 +262,7 @@ function HomePage() {
             </div>
           ) : notes.length === 0 ? (
             <div className="text-center py-20 text-gray-500">
-              {hasFilters ? 'No notes match your filters.' : 'No notes found. Be the first to share one!'}
+              {hasFilters ? t('noNotesMatchFilters') : t('noNotesFound')}
             </div>
           ) : (
             <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-4">
@@ -272,12 +274,12 @@ function HomePage() {
             <div className="flex justify-center items-center gap-4 mt-8">
               <button onClick={() => setPage(p => p - 1)} disabled={page === 1}
                 className="px-4 py-2 text-sm border border-gray-300 rounded-md disabled:opacity-40 hover:bg-gray-50 transition">
-                Previous
+                {t('previous')}
               </button>
-              <span className="text-sm text-gray-600">Page {page}</span>
+              <span className="text-sm text-gray-600">{t('page')} {page}</span>
               <button onClick={() => setPage(p => p + 1)} disabled={!hasNextPage}
                 className="px-4 py-2 text-sm border border-gray-300 rounded-md disabled:opacity-40 hover:bg-gray-50 transition">
-                Next
+                {t('next')}
               </button>
             </div>
           )}

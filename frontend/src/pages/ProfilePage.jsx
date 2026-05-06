@@ -2,6 +2,8 @@ import { useState, useEffect } from 'react'
 import { useParams, Link } from 'react-router-dom'
 import { getUser, getUserNotes, updateUsername, getSavedNotes } from '../services/api'
 import { useAuth } from '../context/AuthContext'
+import { useLocale } from '../context/LocaleContext'
+import { useLocale } from '../context/LocaleContext'
 
 function NoteCard({ note }) {
   return (
@@ -26,6 +28,7 @@ function NoteCard({ note }) {
 function ProfilePage() {
   const { id } = useParams()
   const { user: authUser } = useAuth()
+  const { t } = useLocale()
   const isOwnProfile = authUser?.id === id
 
   const [profile, setProfile] = useState(null)
@@ -83,7 +86,7 @@ function ProfilePage() {
   }
 
   if (!profile) {
-    return <div className="text-center py-20 text-gray-500">User not found.</div>
+    return <div className="text-center py-20 text-gray-500">{t('userNotFound')}</div>
   }
 
   return (
@@ -100,8 +103,8 @@ function ProfilePage() {
                   className="px-3 py-1.5 border border-gray-300 rounded-md text-lg font-bold focus:outline-none focus:ring-2 focus:ring-blue-500"
                   autoFocus
                 />
-                <button onClick={handleUsernameUpdate} className="text-sm text-blue-600 font-medium hover:text-blue-700">Save</button>
-                <button onClick={() => setEditingUsername(false)} className="text-sm text-gray-500 hover:text-gray-700">Cancel</button>
+                <button onClick={handleUsernameUpdate} className="text-sm text-blue-600 font-medium hover:text-blue-700">{t('saveNote')}</button>
+                <button onClick={() => setEditingUsername(false)} className="text-sm text-gray-500 hover:text-gray-700">{t('cancel')}</button>
               </div>
             ) : (
               <div className="flex items-center gap-3">
@@ -111,19 +114,19 @@ function ProfilePage() {
                     onClick={() => { setNewUsername(profile.username); setEditingUsername(true) }}
                     className="text-xs text-gray-400 hover:text-blue-600 transition"
                   >
-                    Edit username
+                    {t('editUsername')}
                   </button>
                 )}
               </div>
             )}
             {usernameError && <p className="text-sm text-red-600 mt-1">{usernameError}</p>}
             <p className="text-sm text-gray-500 mt-1">
-              Joined {new Date(profile.created_at).toLocaleDateString()}
+              {t('joined')} {new Date(profile.created_at).toLocaleDateString()}
             </p>
           </div>
           <div className="text-center">
             <p className="text-2xl font-bold text-blue-600">{profile.note_count}</p>
-            <p className="text-xs text-gray-500">public notes</p>
+            <p className="text-xs text-gray-500">{t('publicNotes')}</p>
           </div>
         </div>
       </div>
@@ -154,12 +157,12 @@ function ProfilePage() {
       )}
 
       {!isOwnProfile && (
-        <h2 className="text-lg font-semibold text-gray-900 mb-4">Public Notes</h2>
+        <h2 className="text-lg font-semibold text-gray-900 mb-4">{t('publicNotes')}</h2>
       )}
 
       {activeTab === 'public' && (
         notes.length === 0 ? (
-          <p className="text-gray-500 text-center py-12">No public notes yet.</p>
+          <p className="text-gray-500 text-center py-12">{t('noPublicNotes')}</p>
         ) : (
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
             {notes.map(note => <NoteCard key={note.id} note={note} />)}
@@ -173,7 +176,7 @@ function ProfilePage() {
             <div className="w-8 h-8 border-4 border-blue-600 border-t-transparent rounded-full animate-spin" />
           </div>
         ) : savedNotes.length === 0 ? (
-          <p className="text-gray-500 text-center py-12">No saved notes yet.</p>
+          <p className="text-gray-500 text-center py-12">{t('noSavedNotes')}</p>
         ) : (
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
             {savedNotes.map(note => <NoteCard key={note.id} note={note} />)}
