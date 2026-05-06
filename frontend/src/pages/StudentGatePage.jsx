@@ -1,9 +1,20 @@
 import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
+import { useAuth } from '../context/AuthContext'
 
 function StudentGatePage() {
   const navigate = useNavigate()
+  const { login } = useAuth()
   const [showTeacherMessage, setShowTeacherMessage] = useState(false)
+
+  const handleStudentClick = () => {
+    // Auto login and navigate to notes
+    login('guest-session', {
+      email: 'student@uninotes.local',
+      user_metadata: { username: 'student' },
+    })
+    navigate('/notes', { replace: true })
+  }
 
   return (
     <main className="min-h-screen flex items-center justify-center bg-[#0b1117] px-4 py-12 text-slate-100">
@@ -16,7 +27,7 @@ function StudentGatePage() {
         <div className="mt-8 flex flex-col justify-center gap-3 sm:flex-row">
           <button
             type="button"
-            onClick={() => navigate('/login')}
+            onClick={handleStudentClick}
             className="rounded-md bg-cyan-400 px-8 py-3 font-bold text-[#0b1117] transition hover:bg-cyan-300 focus:outline-none focus:ring-2 focus:ring-cyan-200"
           >
             Yes

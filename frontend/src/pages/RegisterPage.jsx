@@ -2,10 +2,12 @@ import { useEffect, useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import { registerUser } from '../services/api'
 import { useAuth } from '../context/AuthContext'
+import { useLocale } from '../context/LocaleContext'
 
 function RegisterPage() {
   const navigate = useNavigate()
   const { user } = useAuth()
+  const { t } = useLocale()
   const [formData, setFormData] = useState({ email: '', username: '', password: '' })
   const [errors, setErrors] = useState({})
   const [apiError, setApiError] = useState('')

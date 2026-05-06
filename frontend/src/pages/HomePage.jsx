@@ -2,6 +2,7 @@ import { useState, useEffect, useCallback } from 'react'
 import { Link, useSearchParams, useLocation } from 'react-router-dom'
 import { getNotes, getCourses } from '../services/api'
 import { useAuth } from '../context/AuthContext'
+import { useLocale } from '../context/LocaleContext'
 import { DEPARTMENTS as CURRICULUM_DEPARTMENTS } from '../data/curriculum'
 import StudentLoungeHero from '../components/StudentLoungeHero'
 import AcademicCalendar from '../components/AcademicCalendar'
@@ -176,16 +177,15 @@ function HomePage() {
           <div className="bg-[#151c25] border border-cyan-900/60 rounded-lg p-4 sticky top-4">
             <h2 className="text-xs font-semibold text-cyan-400 uppercase tracking-wide mb-3">Yasar University Departments</h2>
             <ul className="space-y-0.5">
-              {DEPARTMENTS.map(dept => {
-                const slug = DEPT_NAME_TO_SLUG[dept] ?? dept.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '')
-                const linkTo = `/departments/${slug}`
+              {CURRICULUM_DEPARTMENTS.map(dept => {
+                const linkTo = `/departments/${dept.slug}`
                 return (
-                  <li key={dept}>
+                  <li key={dept.slug}>
                     <Link
                       to={linkTo}
                       className="block w-full text-left text-xs px-2 py-1.5 rounded transition text-slate-300 hover:bg-cyan-900/25"
                     >
-                      {dept}
+                      {dept.name}
                       <span className="ml-1 text-cyan-400 text-[10px]">→</span>
                     </Link>
                   </li>
@@ -201,16 +201,15 @@ function HomePage() {
           <div className="lg:hidden mb-4 -mx-1">
             <p className="text-xs font-semibold text-cyan-400 uppercase tracking-wide mb-2 px-1">Departments</p>
             <div className="flex gap-2 overflow-x-auto pb-2">
-              {DEPARTMENTS.map(dept => {
-                const slug = DEPT_NAME_TO_SLUG[dept] ?? dept.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '')
-                const linkTo = `/departments/${slug}`
+              {CURRICULUM_DEPARTMENTS.map(dept => {
+                const linkTo = `/departments/${dept.slug}`
                 return (
                   <Link
-                    key={dept}
+                    key={dept.slug}
                     to={linkTo}
                     className="shrink-0 text-xs px-3 py-1.5 rounded-full border border-cyan-700 text-cyan-300 hover:bg-cyan-900/25 transition"
                   >
-                    {dept}
+                    {dept.name}
                   </Link>
                 )
               })}

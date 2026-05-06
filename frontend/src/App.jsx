@@ -1,6 +1,7 @@
 import { Routes, Route, Navigate, useLocation } from 'react-router-dom'
 import { useState, useEffect } from 'react'
 import { AuthProvider } from './context/AuthContext'
+import { LocaleProvider } from './context/LocaleContext'
 import './App.css'
 import ProtectedRoute from './components/ProtectedRoute'
 import Navbar from './components/Navbar'
@@ -42,7 +43,7 @@ function App() {
     return () => {
       document.body.style.overflow = ''
     }
-  }, [showSplash])
+  }, [showSplash]) // eslint-disable-line react-hooks/exhaustive-deps
 
   useEffect(() => {
     // Smooth page-to-page transitions should begin from top unless user targets a hash.
@@ -52,31 +53,33 @@ function App() {
   }, [location.pathname, location.search, location.hash])
 
   return (
-    <AuthProvider>
-      {showSplash && <Splash />}
-      <div className={`min-h-screen ${isStudentLoungePage || isDepartmentsPage ? 'bg-[#0b1117]' : 'bg-gray-50'}`}>
-        {!(isStudentLoungePage || isDepartmentsPage || isGatePage) && <Navbar />}
-        <Toast />
-        <div key={routeTransitionKey} className="page-transition-layer">
-          <Routes>
-            <Route path="/" element={<StudentGatePage />} />
-            <Route path="/login" element={<LoginPage />} />
-            <Route path="/register" element={<RegisterPage />} />
-            <Route path="/notes" element={<ProtectedRoute><HomePage /></ProtectedRoute>} />
-            <Route path="/notes/new" element={
-              <ProtectedRoute><NoteFormPage /></ProtectedRoute>
-            } />
-            <Route path="/notes/:id/edit" element={
-              <ProtectedRoute><NoteFormPage /></ProtectedRoute>
-            } />
-            <Route path="/notes/:id" element={<ProtectedRoute><NoteDetailPage /></ProtectedRoute>} />
-            <Route path="/profile/:id" element={<ProtectedRoute><ProfilePage /></ProtectedRoute>} />
-            <Route path="/departments/:slug" element={<ProtectedRoute><CurriculumPage /></ProtectedRoute>} />
-            <Route path="*" element={<Navigate to="/login" replace />} />
-          </Routes>
+    <LocaleProvider>
+      <AuthProvider>
+        {showSplash && <Splash />}
+        <div className={`min-h-screen ${isStudentLoungePage || isDepartmentsPage ? 'bg-[#0b1117]' : 'bg-gray-50'}`}>
+          {!(isStudentLoungePage || isDepartmentsPage || isGatePage) && <Navbar />}
+          <Toast />
+          <div key={routeTransitionKey} className="page-transition-layer">
+            <Routes>
+              <Route path="/" element={<StudentGatePage />} />
+              <Route path="/login" element={<LoginPage />} />
+              <Route path="/register" element={<RegisterPage />} />
+              <Route path="/notes" element={<ProtectedRoute><HomePage /></ProtectedRoute>} />
+              <Route path="/notes/new" element={
+                <ProtectedRoute><NoteFormPage /></ProtectedRoute>
+              } />
+              <Route path="/notes/:id/edit" element={
+                <ProtectedRoute><NoteFormPage /></ProtectedRoute>
+              } />
+              <Route path="/notes/:id" element={<ProtectedRoute><NoteDetailPage /></ProtectedRoute>} />
+              <Route path="/profile/:id" element={<ProtectedRoute><ProfilePage /></ProtectedRoute>} />
+              <Route path="/departments/:slug" element={<ProtectedRoute><CurriculumPage /></ProtectedRoute>} />
+              <Route path="*" element={<Navigate to="/login" replace />} />
+            </Routes>
+          </div>
         </div>
-      </div>
-    </AuthProvider>
+      </AuthProvider>
+    </LocaleProvider>
   )
 }
 

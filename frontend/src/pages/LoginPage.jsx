@@ -6,6 +6,7 @@ import { useLocale } from '../context/LocaleContext'
 function LoginPage() {
   const navigate = useNavigate()
   const { user, login } = useAuth()
+  const { t } = useLocale()
   const [formData, setFormData] = useState({ email: '', password: '' })
   const [errors, setErrors] = useState({})
   const [serverError, setServerError] = useState('')
