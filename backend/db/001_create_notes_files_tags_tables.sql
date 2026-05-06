@@ -90,7 +90,9 @@ CREATE POLICY "Anyone can read files"
 DROP POLICY IF EXISTS "Note owners can insert files" ON public.files;
 CREATE POLICY "Note owners can insert files"
   ON public.files FOR INSERT
-  WITH CHECK (true);
+  WITH CHECK (
+    auth.uid() = (SELECT user_id FROM public.notes WHERE id = note_id)
+  );
 
 DROP POLICY IF EXISTS "Note owners can delete files" ON public.files;
 CREATE POLICY "Note owners can delete files"

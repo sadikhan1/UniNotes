@@ -133,12 +133,15 @@ export const en = {
   elective: 'Elective',
 
   // Toast Messages
-  noteCreated: 'Note created successfully!',
-  noteUpdated: 'Note updated successfully!',
-  noteDeleted: 'Note deleted successfully!',
-  commentAdded: 'Comment added!',
-  commentDeleted: 'Comment deleted!',
-  fileUploaded: 'File uploaded successfully!',
+  noteCreated: '🎉 Note launched into the library!',
+  noteUpdated: '✏️ Note refreshed and updated!',
+  noteDeleted: '🗑️ Note removed from your collection!',
+  commentAdded: '💬 Comment posted successfully!',
+  commentDeleted: '🗑️ Comment deleted.',
+  confirmDeleteComment: '⚠️ Do you really want to delete this comment?',
+  fileUploaded: '📎 File uploaded and ready!',
+  fileUploadFailed: '⚠️ Upload failed — check the file and try again.',
+  confirmDeleteFile: '⚠️ Do you really want to delete this file?',
   loginRequired: 'Please log in to continue',
 
   // Language
