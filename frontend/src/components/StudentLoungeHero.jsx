@@ -1,36 +1,27 @@
 import { Link } from 'react-router-dom'
 import { useLocale } from '../context/LocaleContext'
 import './StudentLoungeHero.css'
+import shushCustom from '../assets/shush-custom.svg'
 
 function StudentLoungeHero({ searchInput, onSearchChange, isLoggedIn }) {
   const { t } = useLocale()
 
   return (
-    <section className="student-lounge" aria-label={t('heroBannerLabel')}>
-      <div className="sl-browser-header">
-        <div className="sl-traffic-lights" aria-hidden="true">
-          <span className="sl-red" />
-          <span className="sl-yellow" />
-          <span className="sl-green" />
-        </div>
-        <div className="sl-url-bar">stu.yasar.edu.tr</div>
-      </div>
-
+    <section className="student-lounge" aria-label="Student Lounge banner">
       <div className="sl-page-content">
         <div className="sl-background-overlay" aria-hidden="true" />
 
         <div className="sl-header">
           <div className="sl-logo-group">
-            <div className="sl-main-logo" aria-hidden="true">YU</div>
             <div className="sl-university-name">YASAR<br />UNIVERSITY</div>
           </div>
 
-          <div className="sl-platform-title-group">
-            <div className="sl-platform-name">{t('heroPlatformTitle')}</div>
-            <div className="sl-platform-subtitle">
-              {t('heroPlatformSubtitle')}
-              <span className="sl-lock" aria-hidden="true">🔒</span>
+          <div className="platform-title-wrapper">
+            <div className="sl-platform-title-group">
+              <div className="sl-platform-name">ARAMIZDA</div>
+              <div className="sl-platform-subtitle">TOP SECRET STUDENT PLATFORM</div>
             </div>
+            <img src={shushCustom} alt="Sus İşareti" className="shush-icon" />
           </div>
 
           <div className="sl-banned-group">

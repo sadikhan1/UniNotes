@@ -1,0 +1,40 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+  <!-- Circle ring -->
+  <circle cx="256" cy="256" r="224" fill="none" stroke="#0D55A5" stroke-width="22"/>
+
+  <!-- Left arm -->
+  <path d="
+    M 248,440
+    C 242,420 224,394 204,368
+    C 178,334 152,298 150,258
+    C 148,228 162,210 180,208
+    C 192,206 204,213 208,224
+    C 194,240 190,264 196,290
+    C 204,318 224,350 228,400
+    Z
+  " fill="#0D55A5"/>
+
+  <!-- Right arm -->
+  <path d="
+    M 264,440
+    C 270,420 288,394 308,368
+    C 334,334 360,298 362,258
+    C 364,228 350,210 332,208
+    C 320,206 308,213 304,224
+    C 318,240 322,264 316,290
+    C 308,318 288,350 284,400
+    Z
+  " fill="#0D55A5"/>
+
+  <!-- Stem -->
+  <rect x="248" y="302" width="16" height="132" rx="8" fill="#0D55A5"/>
+
+  <!-- Center leaf (upright) -->
+  <ellipse cx="256" cy="216" rx="28" ry="60" fill="#0D55A5"/>
+
+  <!-- Left leaf -->
+  <ellipse cx="206" cy="268" rx="24" ry="52" fill="#0D55A5" transform="rotate(-38 206 268)"/>
+
+  <!-- Right leaf -->
+  <ellipse cx="306" cy="268" rx="24" ry="52" fill="#0D55A5" transform="rotate(38 306 268)"/>
+</svg>
