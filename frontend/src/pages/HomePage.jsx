@@ -83,6 +83,7 @@ function HomePage() {
   const [notes, setNotes] = useState([])
   const [total, setTotal] = useState(0)
   const [page, setPage] = useState(1)
+  const [courses, setCourses] = useState([])
   const [hasNextPage, setHasNextPage] = useState(false)
   const [loading, setLoading] = useState(true)
 
@@ -114,6 +115,14 @@ function HomePage() {
 
   const debouncedSearch = useDebounce(searchInput, 300)
   const hasFilters = searchInput || course || tag
+
+  useEffect(() => {
+    let mounted = true
+    getCourses()
+      .then(data => { if (mounted && Array.isArray(data)) setCourses(data) })
+      .catch(() => { if (mounted) setCourses([]) })
+    return () => { mounted = false }
+  }, [])
 
   // If the user searches a department name, show a curriculum preview
   const matchedDept = debouncedSearch
