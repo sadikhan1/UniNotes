@@ -4,6 +4,7 @@ import { getNotes, getMyNotes } from '../services/api'
 import { useAuth } from '../context/AuthContext'
 import { useLocale } from '../context/LocaleContext'
 import { DEPARTMENTS } from '../data/curriculum'
+import { getExamForCourse } from '../data/examSchedule'
 
 function findCourse(courseCode) {
   for (const dept of DEPARTMENTS) {
@@ -156,8 +157,22 @@ function CoursePage() {
             <div className="text-xs text-gray-400">{t('ects')}</div>
           </div>
         </div>
-        <div className="mt-4 pt-4 border-t border-gray-100 text-sm text-gray-500">
-          T+U+L: <span className="font-medium text-gray-700">{course.tul}</span>
+        <div className="mt-4 pt-4 border-t border-gray-100 flex flex-wrap items-center gap-6 text-sm text-gray-500">
+          <span>T+U+L: <span className="font-medium text-gray-700">{course.tul}</span></span>
+          {exam ? (
+            <div className="flex items-center gap-2 bg-red-50 border border-red-200 rounded-lg px-3 py-2">
+              <span className="text-lg">📅</span>
+              <div>
+                <div className="text-xs text-red-500 font-semibold uppercase tracking-wide">Final Exam</div>
+                <div className="font-semibold text-red-700">
+                  {new Date(exam.date).toLocaleDateString('en-GB', { day: 'numeric', month: 'long', weekday: 'long' })}
+                </div>
+                <div className="text-xs text-red-600">{exam.start} – {exam.end}{exam.note ? ` · ${exam.note}` : ''}</div>
+              </div>
+            </div>
+          ) : (
+            <span className="text-xs text-gray-400 italic">No exam date available</span>
+          )}
         </div>
       </div>
 

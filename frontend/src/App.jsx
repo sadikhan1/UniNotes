@@ -12,6 +12,7 @@ import NoteDetailPage from './pages/NoteDetailPage'
 import ProfilePage from './pages/ProfilePage'
 import CurriculumPage from './pages/CurriculumPage'
 import CoursePage from './pages/CoursePage'
+import ExamCalendarPage from './pages/ExamCalendarPage'
 import Toast from './components/Toast'
 
 function App() {
@@ -36,6 +37,7 @@ function App() {
             <Route path="/profile/:id" element={<ProfilePage />} />
             <Route path="/departments/:slug" element={<CurriculumPage />} />
             <Route path="/courses/:courseCode" element={<CoursePage />} />
+            <Route path="/departments/:slug/exams" element={<ExamCalendarPage />} />
             <Route path="*" element={<Navigate to="/notes" replace />} />
           </Routes>
         </div>
