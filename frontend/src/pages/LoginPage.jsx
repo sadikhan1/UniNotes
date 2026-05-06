@@ -16,7 +16,7 @@ function LoginPage() {
   const validateField = (name, value) => {
     const newErrors = { ...errors }
     if (!value.trim()) {
-      newErrors[name] = `${name.charAt(0).toUpperCase() + name.slice(1)} is required`
+      newErrors[name] = t(`${name}Required`)
     } else {
       delete newErrors[name]
     }
@@ -52,6 +52,10 @@ function LoginPage() {
     } catch (err) {
       if (err.status === 403) {
         setEmailUnverified(true)
+      } else if (err.status === 0 || err.message === 'Network request failed') {
+        setServerError(t('networkError'))
+      } else if (err.status === 401) {
+        setServerError(t('invalidCredentials'))
       } else {
         setServerError(err.message)
       }
