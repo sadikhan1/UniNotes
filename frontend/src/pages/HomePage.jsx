@@ -130,14 +130,6 @@ function HomePage() {
     : null
 
   const fetchNotes = useCallback(() => {
-    if (!hasFilters) {
-      setNotes([])
-      setTotal(0)
-      setHasNextPage(false)
-      setLoading(false)
-      return
-    }
-
     setLoading(true)
     const params = { page, limit: 12 }
     if (debouncedSearch) {
@@ -149,10 +141,18 @@ function HomePage() {
     }
     if (course) params.course = course
     if (tag) params.tag = tag
-
     getNotes(params)
-      .then(data => { setNotes(data.notes); setTotal(data.total); setHasNextPage(data.hasNextPage) })
-      .catch(console.error)
+      .then(data => {
+        setNotes(data.notes)
+        setTotal(data.total)
+        setHasNextPage(data.hasNextPage)
+      })
+      .catch(err => {
+        console.error('Failed to fetch notes', err)
+        setNotes([])
+        setTotal(0)
+        setHasNextPage(false)
+      })
       .finally(() => setLoading(false))
   }, [page, debouncedSearch, course, tag, hasFilters])
 
