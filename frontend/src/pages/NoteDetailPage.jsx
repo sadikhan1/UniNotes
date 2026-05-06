@@ -113,6 +113,19 @@ function NoteDetailPage() {
 
   return (
     <div className="max-w-3xl mx-auto px-4 py-8">
+      {note.course && (
+        <div className="mb-4">
+          <Link
+            to={`/courses/${encodeURIComponent(note.course)}`}
+            className="inline-flex items-center gap-1.5 text-sm text-gray-500 hover:text-blue-600 transition"
+          >
+            <svg className="w-4 h-4" viewBox="0 0 20 20" fill="currentColor">
+              <path fillRule="evenodd" d="M9.707 16.707a1 1 0 01-1.414 0l-6-6a1 1 0 010-1.414l6-6a1 1 0 011.414 1.414L5.414 9H17a1 1 0 110 2H5.414l4.293 4.293a1 1 0 010 1.414z" clipRule="evenodd" />
+            </svg>
+            {note.course}
+          </Link>
+        </div>
+      )}
       <div className="bg-white rounded-lg border border-gray-200 p-6">
         <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-4 mb-4">
           <h1 className="text-2xl font-bold text-gray-900">{note.title}</h1>
@@ -184,9 +197,12 @@ function NoteDetailPage() {
             </Link>
           )}
           {note.course && (
-            <span className="bg-blue-50 text-blue-700 px-2 py-0.5 rounded text-xs font-medium">
+            <Link
+              to={`/courses/${encodeURIComponent(note.course)}`}
+              className="bg-blue-50 text-blue-700 px-2 py-0.5 rounded text-xs font-medium hover:bg-blue-100 transition"
+            >
               {note.course}
-            </span>
+            </Link>
           )}
           <span>{new Date(note.created_at).toLocaleDateString(locale)}</span>
         </div>

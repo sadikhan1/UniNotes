@@ -40,6 +40,7 @@ function CurriculumPage() {
 }
 
 function SemesterTable({ semester }) {
+  const { t } = useLocale()
   const totalEcts = semester.courses.reduce((sum, c) => sum + c.ects, 0)
 
   return (
