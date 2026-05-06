@@ -11,54 +11,18 @@
   width: 100%;
   max-width: 100%;
   margin: 0 0 2rem;
-  background-color: var(--sl-light);
-  border-radius: 0.75rem;
-  overflow: hidden;
-  border: 1px solid #dcdcdc;
-  box-shadow: 0 18px 40px rgba(0, 0, 0, 0.28);
+  background-color: transparent;
+  border-radius: 0;
+  overflow: visible;
+  border: 0;
+  box-shadow: none;
 }
 
+.student-lounge,
 .student-lounge *,
 .student-lounge *::before,
 .student-lounge *::after {
   box-sizing: border-box;
-}
-
-.sl-browser-header {
-  height: 40px;
-  background-color: #e8eaed;
-  border-bottom: 1px solid #dadce0;
-  display: flex;
-  align-items: center;
-  padding: 0 15px;
-  gap: 15px;
-}
-
-.sl-traffic-lights {
-  display: flex;
-  gap: 7px;
-}
-
-.sl-traffic-lights span {
-  width: 12px;
-  height: 12px;
-  border-radius: 999px;
-  display: inline-block;
-}
-
-.sl-red { background-color: #ff5f57; }
-.sl-yellow { background-color: #ffbd2e; }
-.sl-green { background-color: #28c940; }
-
-.sl-url-bar {
-  background-color: #ffffff;
-  padding: 5px 20px;
-  border-radius: 999px;
-  flex-grow: 1;
-  font-size: 12px;
-  color: #5f6368;
-  text-align: center;
-  max-width: 500px;
 }
 
 .sl-page-content {
@@ -93,57 +57,19 @@
 
 .sl-header {
   display: flex;
-  justify-content: space-between;
-  align-items: flex-start;
-  gap: 1.5rem;
-  padding: 42px 56px 24px;
+  justify-content: center;
+  align-items: center;
+  padding: 26px 56px 18px;
   position: relative;
   z-index: 2;
 }
 
-.sl-logo-group {
-  text-align: center;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 12px;
-}
-
-.sl-main-logo {
-  width: 145px;
-  height: 145px;
-  border: 12px solid var(--sl-teal);
-  border-radius: 50%;
-  display: grid;
-  place-items: center;
-  color: var(--sl-teal);
-  font-weight: 700;
-  font-size: 2.25rem;
-  letter-spacing: 0.15rem;
-  box-shadow: 0 0 24px rgba(0, 192, 216, 0.35);
-}
-
-.sl-university-name {
-  font-size: 1.5rem;
-  color: var(--sl-teal-dark);
-  font-weight: 700;
-  text-transform: uppercase;
-  letter-spacing: 2px;
-  line-height: 1.15;
-}
-
-.sl-platform-title-group {
-  text-align: center;
-  margin-top: 22px;
-}
-
-.sl-platform-name {
-  font-size: clamp(2rem, 6vw, 3.5rem);
-  color: var(--sl-teal);
-  font-weight: 700;
-  text-transform: uppercase;
-  letter-spacing: 8px;
-  text-shadow: 0 0 14px var(--sl-teal), 0 0 28px rgba(0, 192, 216, 0.8);
+.sl-header-image {
+  display: block;
+  width: min(1400px, 100%);
+  height: auto;
+  border-radius: 14px;
+  box-shadow: 0 16px 48px rgba(0, 0, 0, 0.42);
 }
 
 .sl-platform-subtitle {
@@ -223,6 +149,7 @@
 
 .sl-main {
   display: flex;
+  justify-content: center;
   padding: 26px 56px 44px;
   position: relative;
   z-index: 2;
@@ -230,7 +157,8 @@
 }
 
 .sl-left-content {
-  width: 45%;
+  display: none;
+  width: 0;
   position: relative;
 }
 
@@ -271,11 +199,12 @@
 }
 
 .sl-right-content {
-  width: 55%;
-  margin-left: auto;
+  width: 100%;
+  max-width: 640px;
+  margin: 0 auto;
   display: flex;
   flex-direction: column;
-  align-items: flex-end;
+  align-items: center;
   justify-content: flex-end;
   gap: 18px;
 }
@@ -291,7 +220,7 @@
   background-color: var(--sl-panel);
   padding: 20px 24px;
   border-radius: 12px;
-  text-align: left;
+  text-align: center;
   width: 100%;
   max-width: 500px;
   box-shadow: 0 6px 12px rgba(0, 0, 0, 0.45);
@@ -313,6 +242,8 @@
   gap: 14px;
   width: 100%;
   max-width: 500px;
+  justify-content: center;
+  margin: 0 auto;
 }
 
 .sl-search-bar {
@@ -362,6 +293,15 @@
   color: var(--sl-teal);
 }
 
+/* Center the small icon/plus inside the share button */
+.sl-note-share-btn > span[aria-hidden="true"] {
+  display: inline-grid;
+  place-items: center;
+  width: 18px;
+  height: 18px;
+  line-height: 1;
+}
+
 @media (max-width: 1024px) {
   .sl-header,
   .sl-nav,
@@ -370,32 +310,16 @@
     padding-right: 24px;
   }
 
-  .sl-main {
-    min-height: 250px;
+  .sl-header-image {
+    width: 100%;
   }
 
-  .sl-banned-group {
-    margin-right: 0;
+  .sl-main {
+    min-height: 250px;
   }
 }
 
 @media (max-width: 820px) {
-  .sl-header {
-    flex-direction: column;
-    align-items: flex-start;
-    gap: 1rem;
-  }
-
-  .sl-platform-title-group,
-  .sl-banned-group {
-    text-align: left;
-    margin-top: 0;
-  }
-
-  .sl-banned-stamp {
-    transform: rotate(-8deg);
-  }
-
   .sl-main {
     flex-direction: column;
     gap: 20px;
@@ -418,27 +342,6 @@
 @media (max-width: 620px) {
   .student-lounge {
     border-radius: 0.6rem;
-  }
-
-  .sl-url-bar {
-    max-width: 100%;
-    font-size: 11px;
-    padding: 4px 10px;
-  }
-
-  .sl-main-logo {
-    width: 112px;
-    height: 112px;
-    border-width: 9px;
-    font-size: 1.7rem;
-  }
-
-  .sl-university-name {
-    font-size: 1.05rem;
-  }
-
-  .sl-platform-name {
-    letter-spacing: 4px;
   }
 
   .sl-action-bar {

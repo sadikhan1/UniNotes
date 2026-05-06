@@ -6,37 +6,16 @@ function StudentLoungeHero({ searchInput, onSearchChange, isLoggedIn }) {
   const { t } = useLocale()
 
   return (
-    <section className="student-lounge" aria-label={t('heroBannerLabel')}>
-      <div className="sl-browser-header">
-        <div className="sl-traffic-lights" aria-hidden="true">
-          <span className="sl-red" />
-          <span className="sl-yellow" />
-          <span className="sl-green" />
-        </div>
-        <div className="sl-url-bar">stu.yasar.edu.tr</div>
-      </div>
-
+    <section className="student-lounge" aria-label="Student Lounge banner">
       <div className="sl-page-content">
         <div className="sl-background-overlay" aria-hidden="true" />
 
         <div className="sl-header">
-          <div className="sl-logo-group">
-            <div className="sl-main-logo" aria-hidden="true">YU</div>
-            <div className="sl-university-name">YASAR<br />UNIVERSITY</div>
-          </div>
-
-          <div className="sl-platform-title-group">
-            <div className="sl-platform-name">{t('heroPlatformTitle')}</div>
-            <div className="sl-platform-subtitle">
-              {t('heroPlatformSubtitle')}
-              <span className="sl-lock" aria-hidden="true">🔒</span>
-            </div>
-          </div>
-
-          <div className="sl-banned-group">
-            <div className="sl-banned-stamp">{t('banned')}</div>
-            <div className="sl-banned-subtitle">{t('teachers')}</div>
-          </div>
+          <img
+            src="/images/background.png"
+            alt="Aramizda – Top Secret Student Platform"
+            className="sl-header-image"
+          />
         </div>
 
         <nav className="sl-nav" aria-label={t('heroNavigationLabel')}>
@@ -57,8 +36,6 @@ function StudentLoungeHero({ searchInput, onSearchChange, isLoggedIn }) {
           </div>
 
           <div className="sl-right-content">
-            <div className="sl-user-profile" aria-hidden="true">◉</div>
-
             <div className="sl-message-box">
               <p className="sl-message-text">{t('heroMessage')}</p>
               <p className="sl-message-hashtags">{t('heroHashtags')}</p>

@@ -1922,127 +1922,46 @@ export function getDepartmentBySlug(slug) {
   return DEPARTMENTS.find(d => d.slug === slug)
 }
 
-export function getLocalizedFacultyName(faculty, locale) {
-  return locale === 'tr' ? (faculty.nametr || faculty.name) : faculty.name
+function buildAcademicCalendar(department) {
+  const year = new Date().getFullYear()
+
+  return [
+    {
+      date: `${year}-09-16`,
+      title: 'Fall Semester Start',
+      desc: `${department.name} students start the fall term.`,
+    },
+    {
+      date: `${year}-10-15`,
+      title: 'Midterm Period',
+      desc: `${department.shortName} midterm exams and project reviews.`,
+    },
+    {
+      date: `${year}-12-20`,
+      title: 'Fall Final Exams',
+      desc: `${department.name} final exam week for the fall semester.`,
+    },
+    {
+      date: `${year + 1}-02-03`,
+      title: 'Spring Semester Start',
+      desc: `${department.shortName} spring term begins.`,
+    },
+    {
+      date: `${year + 1}-03-18`,
+      title: 'Add/Drop Deadline',
+      desc: `${department.name} course add/drop deadline.`,
+    },
+    {
+      date: `${year + 1}-05-25`,
+      title: 'Spring Final Exams',
+      desc: `${department.shortName} final exam period for the spring semester.`,
+    },
+  ]
 }
 
-export function getLocalizedDeptName(dept, locale) {
-  if (locale !== 'tr') return dept.name
-  const trNames = {
-    'bilgisayar-muhendisligi': 'Bilgisayar Mühendisliği',
-    'elektrik-elektronik-muhendisligi': 'Elektrik-Elektronik Mühendisliği',
-    'endustri-muhendisligi': 'Endüstri Mühendisliği',
-    'enerji-sistemleri-muhendisligi': 'Enerji Sistemleri Mühendisliği',
-    'insaat-muhendisligi': 'İnşaat Mühendisliği',
-    'makine-muhendisligi': 'Makine Mühendisliği',
-    'yazilim-muhendisligi': 'Yazılım Mühendisliği',
-    'mimarlik': 'Mimarlık',
-    'ic-mimarlik-cevre-tasarimi': 'İç Mimarlık ve Çevre Tasarımı',
-    'endustriyel-tasarim': 'Endüstriyel Tasarım',
-    'gorsel-iletisim-tasarimi': 'Görsel İletişim Tasarımı',
-    'cizgi-film-animasyon': 'Çizgi Film ve Animasyon',
-    'muzik': 'Müzik',
-    'halkla-iliskiler-reklamcilik': 'Halkla İlişkiler ve Reklamcılık',
-    'radyo-tv-sinema': 'Radyo, Televizyon ve Sinema',
-    'yeni-medya-iletisim': 'Yeni Medya ve İletişim',
-    'hukuk': 'Hukuk',
-    'isletme': 'İşletme',
-    'ekonomi': 'Ekonomi',
-    'uluslararasi-iliskiler': 'Uluslararası İlişkiler',
-    'ingiliz-dili-edebiyati': 'İngiliz Dili ve Edebiyatı',
-    'mutercim-tercumanlyk': 'Mütercim ve Tercümanlık',
-    'tarım-makineleri-muhendisligi': 'Tarım Makineleri Mühendisliği',
-    'tarim-ekonomisi': 'Tarım Ekonomisi',
-    'psikoloji': 'Psikoloji',
-    'lojistik-yonetimi': 'Lojistik Yönetimi',
-    'uluslararasi-ticaret-finansman': 'Uluslararası Ticaret ve Finansman',
-  }
-  return trNames[dept.slug] || dept.name
-}
-
-export const FACULTIES = [
-  {
-    slug: 'muhendislik',
-    name: 'Faculty of Engineering',
-    nametr: 'Mühendislik Fakültesi',
-    icon: '⚙️',
-    departments: [
-      'bilgisayar-muhendisligi',
-      'elektrik-elektronik-muhendisligi',
-      'endustri-muhendisligi',
-      'enerji-sistemleri-muhendisligi',
-      'insaat-muhendisligi',
-      'makine-muhendisligi',
-      'yazilim-muhendisligi',
-    ],
-  },
-  {
-    slug: 'mimarlik',
-    name: 'Faculty of Architecture',
-    nametr: 'Mimarlık Fakültesi',
-    icon: '🏛️',
-    departments: [
-      'mimarlik',
-      'ic-mimarlik-cevre-tasarimi',
-      'endustriyel-tasarim',
-    ],
-  },
-  {
-    slug: 'iletisim',
-    name: 'Faculty of Communication',
-    nametr: 'İletişim Fakültesi',
-    icon: '📡',
-    departments: [
-      'halkla-iliskiler-reklamcilik',
-      'radyo-tv-sinema',
-      'yeni-medya-iletisim',
-      'cizgi-film-animasyon',
-      'muzik',
-      'gorsel-iletisim-tasarimi',
-    ],
-  },
-  {
-    slug: 'iibf',
-    name: 'Faculty of Economics & Admin. Sciences',
-    nametr: 'İktisadi ve İdari Bilimler Fakültesi',
-    icon: '📊',
-    departments: [
-      'isletme',
-      'ekonomi',
-      'uluslararasi-iliskiler',
-      'uluslararasi-ticaret-finansman',
-      'lojistik-yonetimi',
-    ],
-  },
-  {
-    slug: 'hukuk',
-    name: 'Faculty of Law',
-    nametr: 'Hukuk Fakültesi',
-    icon: '⚖️',
-    departments: ['hukuk'],
-  },
-  {
-    slug: 'fen-edebiyat',
-    name: 'Faculty of Arts & Sciences',
-    nametr: 'Fen-Edebiyat Fakültesi',
-    icon: '📚',
-    departments: [
-      'ingiliz-dili-edebiyati',
-      'mutercim-tercumanlyk',
-      'psikoloji',
-    ],
-  },
-  {
-    slug: 'ziraat',
-    name: 'Faculty of Agriculture',
-    nametr: 'Ziraat Fakültesi',
-    icon: '🌾',
-    departments: [
-      'tarım-makineleri-muhendisligi',
-      'tarim-ekonomisi',
-    ],
-  },
-]
+DEPARTMENTS.forEach(department => {
+  department.academicCalendar = buildAcademicCalendar(department)
+})
 
 // Map from Turkish department names (used in homepage sidebar) to slugs
 export const DEPT_NAME_TO_SLUG = {

@@ -19,10 +19,10 @@ function Navbar() {
   const username = user?.user_metadata?.username || user?.email?.split('@')[0] || ''
 
   return (
-    <nav className="bg-white border-b border-gray-200 px-4 py-3">
+    <nav className="border-b border-cyan-900/60 bg-[#0b1117]/95 px-4 py-3 text-slate-100 backdrop-blur-sm">
       <div className="max-w-6xl mx-auto flex flex-wrap items-center justify-between gap-3">
-        <Link to="/" className="text-xl font-bold text-blue-600 shrink-0">
-          {t('appTitle')}
+        <Link to="/" className="text-xl font-bold text-cyan-300 shrink-0 tracking-wide">
+          UniNotes
         </Link>
 
         <div className="flex items-center gap-3 shrink-0 ml-auto">
@@ -47,24 +47,17 @@ function Navbar() {
           </div>
 
           {user ? (
-            <div className="flex items-center border border-gray-200 rounded-lg overflow-hidden text-sm">
-              <Link
-                to="/profile"
-                className="flex items-center gap-1.5 px-3 py-1.5 text-gray-700 hover:bg-gray-50 transition font-medium"
-              >
-                <svg className="w-4 h-4 text-gray-400 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5.121 17.804A13.937 13.937 0 0112 16c2.5 0 4.847.655 6.879 1.804M15 10a3 3 0 11-6 0 3 3 0 016 0z" />
-                </svg>
-                <span className="max-w-[100px] truncate">{username}</span>
-              </Link>
-              <div className="w-px h-6 bg-gray-200" />
+            <>
+              <span className="hidden sm:inline text-sm text-slate-300 font-medium max-w-[12rem] truncate">
+                {user.user_metadata?.username || user.email}
+              </span>
               <button
                 onClick={handleLogout}
-                className="px-3 py-1.5 text-red-600 hover:bg-red-50 transition font-medium"
+                className="text-sm text-slate-400 hover:text-red-300 transition"
               >
                 {t('logout')}
               </button>
-            </div>
+            </>
           ) : (
             <>
               <Link to="/login" className={`text-sm transition ${isActive('/login')}`}>
@@ -72,8 +65,8 @@ function Navbar() {
               </Link>
               <Link
                 to="/register"
-                className={`text-sm font-medium bg-blue-600 text-white px-4 py-1.5 rounded-full hover:bg-blue-700 transition ${
-                  location.pathname === '/register' ? 'ring-2 ring-blue-400' : ''
+                className={`text-sm font-semibold bg-cyan-400 text-[#0b1117] px-4 py-1.5 rounded-full hover:bg-cyan-300 transition ${
+                  location.pathname === '/register' ? 'ring-2 ring-cyan-300/60' : ''
                 }`}
               >
                 {t('register')}

@@ -1,15 +1,24 @@
-import { useState } from 'react'
-import { Link } from 'react-router-dom'
+import { useEffect, useState } from 'react'
+import { Link, useNavigate } from 'react-router-dom'
 import { registerUser } from '../services/api'
+import { useAuth } from '../context/AuthContext'
 import { useLocale } from '../context/LocaleContext'
 
 function RegisterPage() {
+  const navigate = useNavigate()
+  const { user } = useAuth()
   const { t } = useLocale()
   const [formData, setFormData] = useState({ email: '', username: '', password: '' })
   const [errors, setErrors] = useState({})
   const [apiError, setApiError] = useState('')
   const [success, setSuccess] = useState(false)
   const [registeredEmail, setRegisteredEmail] = useState('')
+
+  useEffect(() => {
+    if (user) {
+      navigate('/notes', { replace: true })
+    }
+  }, [user, navigate])
 
   const validateField = (name, value) => {
     const newErrors = { ...errors }
@@ -79,19 +88,20 @@ function RegisterPage() {
 
   if (success) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">
-        <div className="max-w-md w-full space-y-8 text-center">
-          <div className="bg-white p-8 rounded-lg shadow">
-            <h2 className="text-2xl font-bold text-gray-900 mb-4">{t('checkEmailTitle')}</h2>
-            <p className="text-gray-600 mb-6">
-              {t('checkEmailMessage')} <strong>{registeredEmail || t('yourEmail')}</strong>.
+      <div className="min-h-screen flex items-center justify-center bg-[#0b1117] px-4 py-12 sm:px-6 lg:px-8">
+        <div className="absolute inset-0 pointer-events-none bg-[radial-gradient(circle_at_top,rgba(0,192,216,0.15),transparent_35%),radial-gradient(circle_at_bottom_right,rgba(200,45,59,0.12),transparent_30%)]" />
+        <div className="relative z-10 max-w-md w-full space-y-8 text-center">
+          <div className="rounded-2xl border border-cyan-900/60 bg-[#10141a]/90 p-8 shadow-[0_20px_50px_rgba(0,0,0,0.45)] backdrop-blur-sm">
+            <h2 className="text-2xl font-bold text-cyan-100 mb-4">Check your email</h2>
+            <p className="text-slate-300 mb-6">
+              We've sent a verification link to <strong>{registeredEmail || 'your email'}</strong>.
             </p>
-            <p className="text-gray-600 mb-6">
-              {t('verifyEmailMessage')}
+            <p className="text-slate-400 mb-6">
+              Please verify your email address to complete registration.
             </p>
             <Link
               to="/login"
-              className="inline-block text-blue-600 hover:text-blue-700 font-medium"
+              className="inline-block font-semibold text-cyan-300 hover:text-cyan-200"
             >
               {t('backToLogin')}
             </Link>
@@ -102,16 +112,21 @@ function RegisterPage() {
   }
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">
-      <div className="max-w-md w-full space-y-8">
-        <div>
-          <h2 className="mt-6 text-center text-3xl font-extrabold text-gray-900">
-            {t('createAccountTitle')}
+    <div className="min-h-screen flex items-center justify-center bg-[#0b1117] px-4 py-12 sm:px-6 lg:px-8">
+      <div className="absolute inset-0 pointer-events-none bg-[radial-gradient(circle_at_top,rgba(0,192,216,0.15),transparent_35%),radial-gradient(circle_at_bottom_right,rgba(200,45,59,0.12),transparent_30%)]" />
+      <div className="relative z-10 max-w-md w-full space-y-8">
+        <div className="text-center">
+          <p className="text-xs uppercase tracking-[0.35em] text-cyan-300/70 mb-3">UniNotes Access</p>
+          <h2 className="text-3xl sm:text-4xl font-extrabold text-cyan-100">
+            Create your account
           </h2>
+          <p className="mt-3 text-sm text-slate-400">
+            Join the same dark, neon-styled student lounge.
+          </p>
         </div>
-        <form className="mt-8 space-y-6 bg-white p-8 rounded-lg shadow" onSubmit={handleSubmit}>
+        <form className="mt-8 space-y-6 rounded-2xl border border-cyan-900/60 bg-[#10141a]/90 p-8 shadow-[0_20px_50px_rgba(0,0,0,0.45)] backdrop-blur-sm" onSubmit={handleSubmit}>
           {apiError && (
-            <div className="rounded-md bg-red-50 p-4 text-sm text-red-700 border border-red-200">
+            <div className="rounded-md border border-red-500/40 bg-red-950/40 p-4 text-sm text-red-200">
               {apiError}
             </div>
           )}
@@ -126,8 +141,8 @@ function RegisterPage() {
               placeholder={t('email')}
               value={formData.email}
               onChange={handleChange}
-              className={`w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 ${
-                errors.email ? 'border-red-500' : 'border-gray-300'
+              className={`w-full rounded-md border bg-[#0f141c] px-3 py-2 text-slate-100 placeholder:text-slate-500 focus:outline-none focus:ring-2 focus:ring-cyan-500 ${
+                errors.email ? 'border-red-500/80' : 'border-cyan-900/80'
               }`}
             />
           </div>
@@ -142,8 +157,8 @@ function RegisterPage() {
               placeholder={t('username')}
               value={formData.username}
               onChange={handleChange}
-              className={`w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 ${
-                errors.username ? 'border-red-500' : 'border-gray-300'
+              className={`w-full rounded-md border bg-[#0f141c] px-3 py-2 text-slate-100 placeholder:text-slate-500 focus:outline-none focus:ring-2 focus:ring-cyan-500 ${
+                errors.username ? 'border-red-500/80' : 'border-cyan-900/80'
               }`}
             />
           </div>
@@ -158,23 +173,23 @@ function RegisterPage() {
               placeholder={t('passwordMin')}
               value={formData.password}
               onChange={handleChange}
-              className={`w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 ${
-                errors.password ? 'border-red-500' : 'border-gray-300'
+              className={`w-full rounded-md border bg-[#0f141c] px-3 py-2 text-slate-100 placeholder:text-slate-500 focus:outline-none focus:ring-2 focus:ring-cyan-500 ${
+                errors.password ? 'border-red-500/80' : 'border-cyan-900/80'
               }`}
             />
           </div>
 
           <button
             type="submit"
-            className="w-full bg-blue-600 text-white py-2 px-4 rounded-md font-medium hover:bg-blue-700 transition"
+            className="w-full rounded-md bg-cyan-400 px-4 py-2 font-semibold text-[#0b1117] transition hover:bg-cyan-300"
           >
             {t('register')}
           </button>
 
-          <p className="text-center text-gray-600">
-            {t('haveAccount')}{' '}
-            <Link to="/login" className="text-blue-600 hover:text-blue-700 font-medium">
-              {t('signIn')}
+          <p className="text-center text-sm text-slate-400">
+            Already have an account?{' '}
+            <Link to="/login" className="font-semibold text-cyan-300 hover:text-cyan-200">
+              Sign in
             </Link>
           </p>
         </form>

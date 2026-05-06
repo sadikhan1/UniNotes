@@ -1,17 +1,23 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
-import { loginUser } from '../services/api'
 import { useAuth } from '../context/AuthContext'
 import { useLocale } from '../context/LocaleContext'
+import { loginUser } from '../services/api'
 
 function LoginPage() {
   const navigate = useNavigate()
-  const { login } = useAuth()
+  const { user, login } = useAuth()
   const { t } = useLocale()
   const [formData, setFormData] = useState({ email: '', password: '' })
   const [errors, setErrors] = useState({})
   const [serverError, setServerError] = useState('')
   const [emailUnverified, setEmailUnverified] = useState(false)
+
+  useEffect(() => {
+    if (user) {
+      navigate('/notes', { replace: true })
+    }
+  }, [user, navigate])
 
   const validateField = (name, value) => {
     const newErrors = { ...errors }
@@ -34,51 +40,53 @@ function LoginPage() {
   const handleSubmit = async (e) => {
     e.preventDefault()
 
+    setErrors({})
+    setServerError('')
+    setEmailUnverified(false)
+
     const newErrors = {}
     if (!formData.email.trim()) newErrors.email = t('emailRequired')
     if (!formData.password.trim()) newErrors.password = t('passwordRequired')
-
-    if (Object.keys(newErrors).length > 0) {
+    if (Object.keys(newErrors).length) {
       setErrors(newErrors)
       return
     }
 
     try {
-      setServerError('')
-      setEmailUnverified(false)
       const data = await loginUser(formData.email, formData.password)
       login(data.access_token, data.user)
-      navigate('/notes')
+      navigate('/notes', { replace: true })
     } catch (err) {
       if (err.status === 403) {
         setEmailUnverified(true)
-      } else if (err.status === 0 || err.message === 'Network request failed') {
-        setServerError(t('networkError'))
-      } else if (err.status === 401) {
-        setServerError(t('invalidCredentials'))
       } else {
-        setServerError(err.message)
+        setServerError(err.message || 'Invalid email or password.')
       }
     }
   }
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">
-      <div className="max-w-md w-full space-y-8">
-        <div>
-          <h2 className="mt-6 text-center text-3xl font-extrabold text-gray-900">
-            {t('signInTitle')}
+    <div className="min-h-screen flex items-center justify-center bg-[#0b1117] px-4 py-12 sm:px-6 lg:px-8">
+      <div className="absolute inset-0 pointer-events-none bg-[radial-gradient(circle_at_top,rgba(0,192,216,0.15),transparent_35%),radial-gradient(circle_at_bottom_right,rgba(200,45,59,0.12),transparent_30%)]" />
+      <div className="relative z-10 max-w-md w-full space-y-8">
+        <div className="text-center">
+          <p className="text-xs uppercase tracking-[0.35em] text-cyan-300/70 mb-3">UniNotes Access</p>
+          <h2 className="text-3xl sm:text-4xl font-extrabold text-cyan-100">
+            Sign in to your account
           </h2>
+          <p className="mt-3 text-sm text-slate-400">
+            Continue to the student lounge with the same dark neon theme.
+          </p>
         </div>
-        <form className="mt-8 space-y-6 bg-white p-8 rounded-lg shadow" onSubmit={handleSubmit}>
+        <form className="mt-8 space-y-6 rounded-2xl border border-cyan-900/60 bg-[#10141a]/90 p-8 shadow-[0_20px_50px_rgba(0,0,0,0.45)] backdrop-blur-sm" onSubmit={handleSubmit}>
           {serverError && (
-            <div className="rounded-md bg-red-50 p-4 text-sm text-red-700 border border-red-200">
+            <div className="rounded-md border border-red-500/40 bg-red-950/40 p-4 text-sm text-red-200">
               {serverError}
             </div>
           )}
           {emailUnverified && (
-            <div className="rounded-md bg-yellow-50 p-4 text-sm text-yellow-800 border border-yellow-200">
-              {t('emailVerification')}
+            <div className="rounded-md border border-amber-500/40 bg-amber-950/40 p-4 text-sm text-amber-100">
+              Please verify your email before logging in. Check your inbox for the verification link.
             </div>
           )}
 
@@ -92,8 +100,8 @@ function LoginPage() {
               placeholder={t('email')}
               value={formData.email}
               onChange={handleChange}
-              className={`w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 ${
-                errors.email ? 'border-red-500' : 'border-gray-300'
+              className={`w-full rounded-md border bg-[#0f141c] px-3 py-2 text-slate-100 placeholder:text-slate-500 focus:outline-none focus:ring-2 focus:ring-cyan-500 ${
+                errors.email ? 'border-red-500/80' : 'border-cyan-900/80'
               }`}
             />
           </div>
@@ -108,23 +116,23 @@ function LoginPage() {
               placeholder={t('password')}
               value={formData.password}
               onChange={handleChange}
-              className={`w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 ${
-                errors.password ? 'border-red-500' : 'border-gray-300'
+              className={`w-full rounded-md border bg-[#0f141c] px-3 py-2 text-slate-100 placeholder:text-slate-500 focus:outline-none focus:ring-2 focus:ring-cyan-500 ${
+                errors.password ? 'border-red-500/80' : 'border-cyan-900/80'
               }`}
             />
           </div>
 
           <button
             type="submit"
-            className="w-full bg-blue-600 text-white py-2 px-4 rounded-md font-medium hover:bg-blue-700 transition"
+            className="w-full rounded-md bg-cyan-400 px-4 py-2 font-semibold text-[#0b1117] transition hover:bg-cyan-300"
           >
             {t('signIn')}
           </button>
 
-          <p className="text-center text-gray-600">
-            {t('noAccount')}{' '}
-            <Link to="/register" className="text-blue-600 hover:text-blue-700 font-medium">
-              {t('register')}
+          <p className="text-center text-sm text-slate-400">
+            Don't have an account?{' '}
+            <Link to="/register" className="font-semibold text-cyan-300 hover:text-cyan-200">
+              Register
             </Link>
           </p>
         </form>
