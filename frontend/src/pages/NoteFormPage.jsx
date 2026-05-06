@@ -1,10 +1,12 @@
 import { useState, useEffect } from 'react'
 import { useNavigate, useParams } from 'react-router-dom'
 import { createNote, updateNote, getNote } from '../services/api'
+import { useLocale } from '../context/LocaleContext'
 
 function NoteFormPage() {
   const navigate = useNavigate()
   const { id } = useParams()
+  const { t } = useLocale()
   const isEdit = Boolean(id)
 
   const [formData, setFormData] = useState({
@@ -34,9 +36,9 @@ function NoteFormPage() {
 
   const validate = () => {
     const errs = {}
-    if (!formData.title.trim()) errs.title = 'Title is required'
+    if (!formData.title.trim()) errs.title = t('titleRequired')
     const tagList = formData.tags.split(',').map(t => t.trim()).filter(Boolean)
-    if (tagList.length > 10) errs.tags = 'Maximum 10 tags allowed'
+    if (tagList.length > 10) errs.tags = t('maxTagsError')
     return errs
   }
 
@@ -71,7 +73,7 @@ function NoteFormPage() {
   return (
     <div className="max-w-2xl mx-auto px-4 py-8">
       <h1 className="text-2xl font-bold text-gray-900 mb-6">
-        {isEdit ? 'Edit Note' : 'New Note'}
+        {isEdit ? t('editNote') : t('createNote')}
       </h1>
 
       <form onSubmit={handleSubmit} className="bg-white p-6 rounded-lg border border-gray-200 space-y-5">
@@ -83,11 +85,12 @@ function NoteFormPage() {
 
         <div>
           {errors.title && <p className="text-sm text-red-600 mb-1">{errors.title}</p>}
-          <label className="block text-sm font-medium text-gray-700 mb-1">Title *</label>
+          <label className="block text-sm font-medium text-gray-700 mb-1">{t('title')} *</label>
           <input
             type="text"
             value={formData.title}
             onChange={handleChange('title')}
+            placeholder={t('noteTitlePlaceholder')}
             className={`w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 ${
               errors.title ? 'border-red-500' : 'border-gray-300'
             }`}
@@ -95,22 +98,23 @@ function NoteFormPage() {
         </div>
 
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1">Content</label>
+          <label className="block text-sm font-medium text-gray-700 mb-1">{t('content')}</label>
           <textarea
             rows={8}
             value={formData.content}
             onChange={handleChange('content')}
+            placeholder={t('noteContentPlaceholder')}
             className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
           />
         </div>
 
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1">Course</label>
+          <label className="block text-sm font-medium text-gray-700 mb-1">{t('course')}</label>
           <input
             type="text"
             value={formData.course}
             onChange={handleChange('course')}
-            placeholder="e.g. CS101"
+            placeholder={t('coursePlaceholder')}
             className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
           />
         </div>
@@ -118,7 +122,7 @@ function NoteFormPage() {
         <div>
           {errors.tags && <p className="text-sm text-red-600 mb-1">{errors.tags}</p>}
           <label className="block text-sm font-medium text-gray-700 mb-1">
-            Tags <span className="text-gray-400 font-normal">(comma separated, max 10)</span>
+            {t('tags')} <span className="text-gray-400 font-normal">({t('tagsPlaceholder')})</span>
           </label>
           <input
             type="text"
@@ -146,7 +150,7 @@ function NoteFormPage() {
             />
           </button>
           <span className="text-sm text-gray-700">
-            {formData.is_public ? 'Public' : 'Private'}
+            {formData.is_public ? t('public') : t('private')}
           </span>
         </div>
 
@@ -156,14 +160,14 @@ function NoteFormPage() {
             disabled={loading}
             className="flex-1 bg-blue-600 text-white py-2 rounded-md font-medium hover:bg-blue-700 transition disabled:opacity-60"
           >
-            {loading ? 'Saving...' : isEdit ? 'Save Changes' : 'Create Note'}
+            {loading ? t('saving') : isEdit ? t('saveNote') : t('createNote')}
           </button>
           <button
             type="button"
             onClick={() => navigate(-1)}
             className="px-6 py-2 border border-gray-300 rounded-md text-sm text-gray-600 hover:bg-gray-50 transition"
           >
-            Cancel
+            {t('cancel')}
           </button>
         </div>
       </form>

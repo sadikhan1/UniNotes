@@ -1,16 +1,18 @@
 import { useParams, useNavigate, Link } from 'react-router-dom'
 import { getDepartmentBySlug } from '../data/curriculum'
+import { useLocale } from '../context/LocaleContext'
 
 function CurriculumPage() {
   const { slug } = useParams()
   const navigate = useNavigate()
+  const { t } = useLocale()
   const dept = getDepartmentBySlug(slug)
 
   if (!dept) {
     return (
       <div className="text-center py-20 text-gray-500">
-        Department not found.{' '}
-        <Link to="/notes" className="text-blue-600 hover:underline">Go back to home</Link>
+        {t('departmentNotFound')}{' '}
+        <Link to="/notes" className="text-blue-600 hover:underline">{t('goBackHome')}</Link>
       </div>
     )
   }
@@ -22,10 +24,10 @@ function CurriculumPage() {
           onClick={() => navigate(-1)}
           className="text-sm text-gray-500 hover:text-gray-700 flex items-center gap-1 mb-4"
         >
-          ← Back
+          ← {t('back')}
         </button>
         <h1 className="text-2xl font-bold text-gray-900">{dept.name}</h1>
-        <p className="text-sm text-gray-500 mt-1">Yaşar University · Curriculum</p>
+        <p className="text-sm text-gray-500 mt-1">Yaşar University · {t('curriculum')}</p>
       </div>
 
       <div className="space-y-8">
@@ -44,10 +46,10 @@ function SemesterTable({ semester }) {
     <div>
       <div className="flex items-center gap-3 mb-3">
         <h2 className="text-base font-semibold text-gray-800">
-          Semester {semester.semester}
+          {t('semester')} {semester.semester}
         </h2>
         <span className="text-xs text-gray-400 bg-gray-100 px-2 py-0.5 rounded-full">
-          {totalEcts} ECTS
+          {totalEcts} {t('ects')}
         </span>
       </div>
 
@@ -55,11 +57,11 @@ function SemesterTable({ semester }) {
         <table className="w-full text-sm border-collapse">
           <thead>
             <tr className="bg-gray-50 text-xs text-gray-500 uppercase tracking-wide">
-              <th className="text-left px-3 py-2 border border-gray-200 font-medium w-28">Course Code</th>
-              <th className="text-left px-3 py-2 border border-gray-200 font-medium">Course Name</th>
+              <th className="text-left px-3 py-2 border border-gray-200 font-medium w-28">{t('courseCode')}</th>
+              <th className="text-left px-3 py-2 border border-gray-200 font-medium">{t('courseName')}</th>
               <th className="text-center px-3 py-2 border border-gray-200 font-medium w-20">T+P+L</th>
-              <th className="text-center px-3 py-2 border border-gray-200 font-medium w-24">Type</th>
-              <th className="text-center px-3 py-2 border border-gray-200 font-medium w-16">ECTS</th>
+              <th className="text-center px-3 py-2 border border-gray-200 font-medium w-24">{t('courseType')}</th>
+              <th className="text-center px-3 py-2 border border-gray-200 font-medium w-16">{t('ects')}</th>
             </tr>
           </thead>
           <tbody>
@@ -74,7 +76,9 @@ function SemesterTable({ semester }) {
 }
 
 function CourseRow({ course }) {
+  const { t } = useLocale()
   const isElective = course.type === 'Elective'
+  const typeLabel = isElective ? t('elective') : t('required')
 
   return (
     <tr className={`border-b border-gray-100 hover:bg-blue-50 transition-colors ${isElective ? 'bg-gray-50/50' : 'bg-white'}`}>
@@ -111,7 +115,7 @@ function CourseRow({ course }) {
             ? 'bg-orange-50 text-orange-600'
             : 'bg-blue-50 text-blue-700'
         }`}>
-          {course.type}
+          {typeLabel}
         </span>
       </td>
       <td className="px-3 py-2.5 border border-gray-200 text-center font-semibold text-gray-700">
