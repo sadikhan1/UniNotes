@@ -20,7 +20,14 @@ function App() {
           <Route path="/" element={<Navigate to="/notes" replace />} />
           <Route path="/login" element={<LoginPage />} />
           <Route path="/register" element={<RegisterPage />} />
-          <Route path="/notes" element={<NotesPage />} />
+          <Route path="/notes" element={<HomePage />} />
+          <Route path="/notes/new" element={
+            <ProtectedRoute><NoteFormPage /></ProtectedRoute>
+          } />
+          <Route path="/notes/:id/edit" element={
+            <ProtectedRoute><NoteFormPage /></ProtectedRoute>
+          } />
+          <Route path="/notes/:id" element={<NoteDetailPage />} />
         </Routes>
       </div>
     </AuthProvider>
