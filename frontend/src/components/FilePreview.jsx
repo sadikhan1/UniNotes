@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import { useLocale } from '../context/LocaleContext'
 
 function isImage(f) {
   return f.file_type?.startsWith('image/') || /\.(png|jpe?g)$/i.test(f.file_name)
@@ -23,24 +24,27 @@ async function triggerDownload(url, name) {
 }
 
 function DownloadBtn({ file }) {
+  const { t } = useLocale()
+
   return (
     <button
       onClick={() => triggerDownload(file.file_url, file.file_name)}
       className="text-xs text-blue-600 hover:text-blue-800 shrink-0"
     >
-      ↓ Download
+      ↓ {t('download')}
     </button>
   )
 }
 
 function FilePreview({ files = [] }) {
+  const { t } = useLocale()
   const [lightbox, setLightbox] = useState(null)
 
   if (!files.length) return null
 
   return (
     <div className="mt-6 border-t border-gray-100 pt-6">
-      <h3 className="text-sm font-semibold text-gray-700 mb-3">Attachments</h3>
+      <h3 className="text-sm font-semibold text-gray-700 mb-3">{t('attachments')}</h3>
       <div className="space-y-4">
         {files.map(f => (
           <div key={f.id} className="border border-gray-200 rounded-lg overflow-hidden">
@@ -49,7 +53,7 @@ function FilePreview({ files = [] }) {
                 <div
                   className="cursor-pointer"
                   onClick={() => setLightbox(f.file_url)}
-                  title="Click to view full size"
+                  title={t('viewFullSize')}
                 >
                   <img
                     src={f.file_url}
@@ -97,7 +101,7 @@ function FilePreview({ files = [] }) {
           </button>
           <img
             src={lightbox}
-            alt="Full size"
+            alt={t('fullSizeImageAlt')}
             className="max-w-full max-h-full object-contain rounded"
             onClick={e => e.stopPropagation()}
           />

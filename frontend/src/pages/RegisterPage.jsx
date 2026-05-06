@@ -26,19 +26,19 @@ function RegisterPage() {
     } else if (name === 'email') {
       const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
       if (!emailRegex.test(value)) {
-        newErrors[name] = 'Please enter a valid email'
+        newErrors[name] = t('invalidEmail')
       } else {
         delete newErrors[name]
       }
     } else if (name === 'username') {
       if (value.trim().length < 3) {
-        newErrors[name] = 'Username must be at least 3 characters'
+        newErrors[name] = t('usernameMin')
       } else {
         delete newErrors[name]
       }
     } else if (name === 'password') {
       if (value.length < 8) {
-        newErrors[name] = 'Password must be at least 8 characters'
+        newErrors[name] = t('passwordMinLength')
       } else {
         delete newErrors[name]
       }
@@ -59,14 +59,14 @@ function RegisterPage() {
 
     // Validate all fields before submission
     const newErrors = {}
-    if (!formData.email.trim()) newErrors.email = 'Email is required'
-    else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email)) newErrors.email = 'Please enter a valid email'
+    if (!formData.email.trim()) newErrors.email = t('emailRequired')
+    else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email)) newErrors.email = t('invalidEmail')
 
-    if (!formData.username.trim()) newErrors.username = 'Username is required'
-    else if (formData.username.trim().length < 3) newErrors.username = 'Username must be at least 3 characters'
+    if (!formData.username.trim()) newErrors.username = t('usernameRequired')
+    else if (formData.username.trim().length < 3) newErrors.username = t('usernameMin')
 
-    if (!formData.password) newErrors.password = 'Password is required'
-    else if (formData.password.length < 8) newErrors.password = 'Password must be at least 8 characters'
+    if (!formData.password) newErrors.password = t('passwordRequired')
+    else if (formData.password.length < 8) newErrors.password = t('passwordMinLength')
 
     if (Object.keys(newErrors).length > 0) {
       setErrors(newErrors)
@@ -101,7 +101,7 @@ function RegisterPage() {
               to="/login"
               className="inline-block font-semibold text-cyan-300 hover:text-cyan-200"
             >
-              Back to login →
+              {t('backToLogin')}
             </Link>
           </div>
         </div>
@@ -136,7 +136,7 @@ function RegisterPage() {
             <input
               name="email"
               type="email"
-              placeholder="Email address"
+              placeholder={t('email')}
               value={formData.email}
               onChange={handleChange}
               className={`w-full rounded-md border bg-[#0f141c] px-3 py-2 text-slate-100 placeholder:text-slate-500 focus:outline-none focus:ring-2 focus:ring-cyan-500 ${
@@ -152,7 +152,7 @@ function RegisterPage() {
             <input
               name="username"
               type="text"
-              placeholder="Username"
+              placeholder={t('username')}
               value={formData.username}
               onChange={handleChange}
               className={`w-full rounded-md border bg-[#0f141c] px-3 py-2 text-slate-100 placeholder:text-slate-500 focus:outline-none focus:ring-2 focus:ring-cyan-500 ${
@@ -168,7 +168,7 @@ function RegisterPage() {
             <input
               name="password"
               type="password"
-              placeholder="Password (min 8 characters)"
+              placeholder={t('passwordMin')}
               value={formData.password}
               onChange={handleChange}
               className={`w-full rounded-md border bg-[#0f141c] px-3 py-2 text-slate-100 placeholder:text-slate-500 focus:outline-none focus:ring-2 focus:ring-cyan-500 ${
@@ -181,7 +181,7 @@ function RegisterPage() {
             type="submit"
             className="w-full rounded-md bg-cyan-400 px-4 py-2 font-semibold text-[#0b1117] transition hover:bg-cyan-300"
           >
-            Register
+            {t('register')}
           </button>
 
           <p className="text-center text-sm text-slate-400">

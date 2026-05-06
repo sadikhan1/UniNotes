@@ -1,14 +1,20 @@
 import { Link, useLocation, useNavigate } from 'react-router-dom'
 import { useAuth } from '../context/AuthContext'
+import { useLocale } from '../context/LocaleContext'
 
 function Navbar() {
   const { user, logout } = useAuth()
+  const { locale, setLocale, t } = useLocale()
   const location = useLocation()
   const navigate = useNavigate()
 
   const handleLogout = () => {
     logout()
     navigate('/login')
+  }
+
+  const handleLanguageChange = (newLocale) => {
+    setLocale(newLocale)
   }
 
   const isActive = (path) =>
@@ -22,6 +28,30 @@ function Navbar() {
         </Link>
 
         <div className="flex items-center gap-3 shrink-0 ml-auto">
+          {/* Language Switcher */}
+          <div className="flex items-center gap-1 border border-gray-200 rounded-md p-1">
+            <button
+              onClick={() => handleLanguageChange('en')}
+              className={`px-2 py-1 text-xs font-medium rounded transition ${
+                locale === 'en'
+                  ? 'bg-blue-600 text-white'
+                  : 'text-gray-600 hover:bg-gray-100'
+              }`}
+            >
+              EN
+            </button>
+            <button
+              onClick={() => handleLanguageChange('tr')}
+              className={`px-2 py-1 text-xs font-medium rounded transition ${
+                locale === 'tr'
+                  ? 'bg-blue-600 text-white'
+                  : 'text-gray-600 hover:bg-gray-100'
+              }`}
+            >
+              TR
+            </button>
+          </div>
+
           {user ? (
             <>
               <span className="hidden sm:inline text-sm text-slate-300 font-medium max-w-[12rem] truncate">
@@ -31,13 +61,13 @@ function Navbar() {
                 onClick={handleLogout}
                 className="text-sm text-slate-400 hover:text-red-300 transition"
               >
-                Logout
+                {t('logout')}
               </button>
             </>
           ) : (
             <>
               <Link to="/login" className={`text-sm transition ${isActive('/login')}`}>
-                Login
+                {t('login')}
               </Link>
               <Link
                 to="/register"
@@ -45,7 +75,7 @@ function Navbar() {
                   location.pathname === '/register' ? 'ring-2 ring-cyan-300/60' : ''
                 }`}
               >
-                Register
+                {t('register')}
               </Link>
             </>
           )}

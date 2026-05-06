@@ -6,6 +6,7 @@ import AcademicCalendar from '../components/AcademicCalendar'
 function CurriculumPage() {
   const { slug } = useParams()
   const navigate = useNavigate()
+  const { t } = useLocale()
   const dept = getDepartmentBySlug(slug)
 
   useEffect(() => {
@@ -90,7 +91,9 @@ function SemesterTable({ semester }) {
 }
 
 function CourseRow({ course }) {
+  const { t } = useLocale()
   const isElective = course.type === 'Elective'
+  const typeLabel = isElective ? t('elective') : t('required')
 
   return (
     <tr className={`border-b border-cyan-950/40 transition-colors ${isElective ? 'bg-[#101722]' : 'bg-[#0e141c]'} hover:bg-cyan-950/25`}>
@@ -127,7 +130,7 @@ function CourseRow({ course }) {
             ? 'bg-amber-950/60 text-amber-300 border border-amber-800/60'
             : 'bg-cyan-950/60 text-cyan-300 border border-cyan-800/60'
         }`}>
-          {course.type}
+          {typeLabel}
         </span>
       </td>
       <td className="px-3 py-2.5 border border-cyan-900/50 text-center font-semibold text-slate-100">

@@ -77,6 +77,7 @@ function NoteCard({ note }) {
 
 function HomePage() {
   const { user } = useAuth()
+  const { t, locale } = useLocale()
   const [searchParams] = useSearchParams()
 
   const [notes, setNotes] = useState([])
@@ -224,7 +225,7 @@ function HomePage() {
               <label className="block text-xs font-medium text-cyan-400 mb-1">Search</label>
               <input
                 type="text"
-                placeholder="Search title or content..."
+                placeholder={t('searchNotes')}
                 value={searchInput}
                 onChange={e => setSearchInput(e.target.value)}
                 className="w-full px-3 py-2 border border-cyan-800/80 bg-[#0f141c] text-slate-100 rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-cyan-500"
@@ -237,7 +238,7 @@ function HomePage() {
                 onChange={e => { setCourse(e.target.value); setDepartment('') }}
                 className="w-full px-3 py-2 border border-cyan-800/80 bg-[#0f141c] text-slate-100 rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-cyan-500"
               >
-                <option value="">All courses</option>
+                <option value="">{t('allCourses')}</option>
               {courses.map(c => <option key={c} value={c}>{c}</option>)}
               </select>
             </div>

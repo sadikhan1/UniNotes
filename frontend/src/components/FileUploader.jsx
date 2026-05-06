@@ -1,5 +1,6 @@
 import { useState, useRef } from 'react'
 import { uploadFile, deleteFile } from '../services/api'
+import { useLocale } from '../context/LocaleContext'
 
 const ALLOWED_TYPES = ['application/pdf', 'image/png', 'image/jpeg']
 const MAX_SIZE = 10 * 1024 * 1024
@@ -33,6 +34,7 @@ async function triggerDownload(url, name) {
 }
 
 function FileUploader({ noteId, initialFiles = [] }) {
+  const { t } = useLocale()
   const [files, setFiles] = useState(initialFiles)
   const [selected, setSelected] = useState(null)
   const [uploading, setUploading] = useState(false)
@@ -42,8 +44,8 @@ function FileUploader({ noteId, initialFiles = [] }) {
   const inputRef = useRef()
 
   function validate(file) {
-    if (!ALLOWED_TYPES.includes(file.type)) return 'Only PDF, PNG, JPG files are allowed.'
-    if (file.size > MAX_SIZE) return 'File must be under 10 MB.'
+    if (!ALLOWED_TYPES.includes(file.type)) return t('fileTypeError')
+    if (file.size > MAX_SIZE) return t('fileSizeError')
     return null
   }
 
@@ -87,7 +89,7 @@ function FileUploader({ noteId, initialFiles = [] }) {
 
   return (
     <div className="mt-6 border-t border-gray-100 pt-6">
-      <h3 className="text-sm font-semibold text-gray-700 mb-3">Attachments</h3>
+      <h3 className="text-sm font-semibold text-gray-700 mb-3">{t('attachments')}</h3>
 
       {/* Drop zone */}
       <div
@@ -106,8 +108,8 @@ function FileUploader({ noteId, initialFiles = [] }) {
           className="hidden"
           onChange={e => { if (e.target.files[0]) handleSelect(e.target.files[0]); e.target.value = '' }}
         />
-        <p className="text-sm text-gray-500">Drag & drop or <span className="text-blue-600">click to browse</span></p>
-        <p className="text-xs text-gray-400 mt-1">PDF, PNG, JPG — max 10 MB</p>
+        <p className="text-sm text-gray-500">{t('dragDropText')} <span className="text-blue-600">{t('clickToBrowse')}</span></p>
+        <p className="text-xs text-gray-400 mt-1">{t('fileTypes')}</p>
       </div>
 
       {/* Selected file + upload button */}
@@ -119,7 +121,7 @@ function FileUploader({ noteId, initialFiles = [] }) {
           </div>
           <div className="flex items-center gap-2 shrink-0">
             <button onClick={() => setSelected(null)} className="text-xs text-gray-400 hover:text-gray-600">
-              Cancel
+              {t('cancel')}
             </button>
             <button
               onClick={handleUpload}
@@ -129,9 +131,9 @@ function FileUploader({ noteId, initialFiles = [] }) {
               {uploading ? (
                 <>
                   <span className="w-3 h-3 border-2 border-white border-t-transparent rounded-full animate-spin" />
-                  Uploading...
+                  {t('uploading')}
                 </>
-              ) : 'Upload'}
+              ) : t('uploadFile')}
             </button>
           </div>
         </div>
@@ -149,7 +151,7 @@ function FileUploader({ noteId, initialFiles = [] }) {
                   <div
                     className="cursor-pointer"
                     onClick={() => setLightbox(f.file_url)}
-                    title="Click to view full size"
+                    title={t('viewFullSize')}
                   >
                     <img
                       src={f.file_url}
@@ -164,12 +166,12 @@ function FileUploader({ noteId, initialFiles = [] }) {
                         onClick={() => triggerDownload(f.file_url, f.file_name)}
                         className="text-xs text-blue-600 hover:text-blue-800"
                       >
-                        ↓ Download
+                        ↓ {t('download')}
                       </button>
                       <button
                         onClick={() => handleDelete(f.id)}
                         className="text-gray-400 hover:text-red-500 transition text-sm"
-                        title="Remove file"
+                        title={t('removeFileTitle')}
                       >
                         ✕
                       </button>
@@ -190,12 +192,12 @@ function FileUploader({ noteId, initialFiles = [] }) {
                         onClick={() => triggerDownload(f.file_url, f.file_name)}
                         className="text-xs text-blue-600 hover:text-blue-800"
                       >
-                        ↓ Download
+                        ↓ {t('download')}
                       </button>
                       <button
                         onClick={() => handleDelete(f.id)}
                         className="text-gray-400 hover:text-red-500 transition text-sm"
-                        title="Remove file"
+                        title={t('removeFileTitle')}
                       >
                         ✕
                       </button>
@@ -210,12 +212,12 @@ function FileUploader({ noteId, initialFiles = [] }) {
                       onClick={() => triggerDownload(f.file_url, f.file_name)}
                       className="text-xs text-blue-600 hover:text-blue-800"
                     >
-                      ↓ Download
+                      ↓ {t('download')}
                     </button>
                     <button
                       onClick={() => handleDelete(f.id)}
                       className="text-gray-400 hover:text-red-500 transition text-sm"
-                      title="Remove file"
+                      title={t('removeFileTitle')}
                     >
                       ✕
                     </button>
@@ -241,7 +243,7 @@ function FileUploader({ noteId, initialFiles = [] }) {
           </button>
           <img
             src={lightbox}
-            alt="Full size"
+            alt={t('fullSizeImageAlt')}
             className="max-w-full max-h-full object-contain rounded"
             onClick={e => e.stopPropagation()}
           />

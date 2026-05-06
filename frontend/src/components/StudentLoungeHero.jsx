@@ -1,8 +1,11 @@
 import { Link } from 'react-router-dom'
+import { useLocale } from '../context/LocaleContext'
 import './StudentLoungeHero.css'
 import shushCustom from '../assets/shush-custom.svg'
 
 function StudentLoungeHero({ searchInput, onSearchChange, isLoggedIn }) {
+  const { t } = useLocale()
+
   return (
     <section className="student-lounge" aria-label="Student Lounge banner">
       <div className="sl-page-content">
@@ -22,18 +25,18 @@ function StudentLoungeHero({ searchInput, onSearchChange, isLoggedIn }) {
           </div>
 
           <div className="sl-banned-group">
-            <div className="sl-banned-stamp">BANNED</div>
-            <div className="sl-banned-subtitle">TEACHERS</div>
+            <div className="sl-banned-stamp">{t('banned')}</div>
+            <div className="sl-banned-subtitle">{t('teachers')}</div>
           </div>
         </div>
 
-        <nav className="sl-nav" aria-label="Student lounge quick navigation">
+        <nav className="sl-nav" aria-label={t('heroNavigationLabel')}>
           <ul>
-            <li><a href="#notes-list">TUM BOLUMLER NOTLARI</a></li>
-            <li><a href="#notes-list">CIKMIS SORULAR</a></li>
-            <li><a href="#notes-list">BOLUM SOHBET</a></li>
-            <li><a href="#notes-list">DERS PROGRAMI</a></li>
-            <li><a href="#notes-list">DUYURULAR</a></li>
+            <li><a href="#notes-list">{t('heroNavNotes')}</a></li>
+            <li><a href="#notes-list">{t('heroNavPastExams')}</a></li>
+            <li><a href="#notes-list">{t('heroNavLounge')}</a></li>
+            <li><a href="#notes-list">{t('heroNavCurriculum')}</a></li>
+            <li><a href="#notes-list">{t('heroNavAnnouncements')}</a></li>
           </ul>
         </nav>
 
@@ -48,8 +51,8 @@ function StudentLoungeHero({ searchInput, onSearchChange, isLoggedIn }) {
             <div className="sl-user-profile" aria-hidden="true">◉</div>
 
             <div className="sl-message-box">
-              <p className="sl-message-text">Vize haftasi yaklasiyor, notlarini paylas!</p>
-              <p className="sl-message-hashtags">#FinalMaratonu #PaylasKazandir</p>
+              <p className="sl-message-text">{t('heroMessage')}</p>
+              <p className="sl-message-hashtags">{t('heroHashtags')}</p>
             </div>
 
             <div className="sl-action-bar">
@@ -58,7 +61,7 @@ function StudentLoungeHero({ searchInput, onSearchChange, isLoggedIn }) {
                 <input
                   id="hero-note-search"
                   type="search"
-                  placeholder="Not ara"
+                  placeholder={t('heroSearchPlaceholder')}
                   value={searchInput}
                   onChange={event => onSearchChange(event.target.value)}
                 />
@@ -66,12 +69,12 @@ function StudentLoungeHero({ searchInput, onSearchChange, isLoggedIn }) {
 
               {isLoggedIn ? (
                 <Link className="sl-note-share-btn" to="/notes/new">
-                  NOT PAYLAS
+                  {t('heroShareNote')}
                   <span aria-hidden="true">＋</span>
                 </Link>
               ) : (
                 <Link className="sl-note-share-btn" to="/login">
-                  GIRIS YAP
+                  {t('heroLogin')}
                   <span aria-hidden="true">→</span>
                 </Link>
               )}

@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react'
 import { useParams, Link, useNavigate } from 'react-router-dom'
 import { getNote, deleteNote, toggleLike, toggleSave } from '../services/api'
 import { useAuth } from '../context/AuthContext'
+import { useLocale } from '../context/LocaleContext'
 import FileUploader from '../components/FileUploader'
 import FilePreview from '../components/FilePreview'
 import CommentSection from '../components/CommentSection'
@@ -34,6 +35,7 @@ function NoteDetailPage() {
   const { id } = useParams()
   const navigate = useNavigate()
   const { user } = useAuth()
+  const { t, locale } = useLocale()
 
   const [note, setNote] = useState(null)
   const [loading, setLoading] = useState(true)
@@ -43,7 +45,7 @@ function NoteDetailPage() {
   const [saved, setSaved] = useState(false)
 
   useEffect(() => {
-    document.title = 'Loading...'
+    document.title = t('loading')
     getNote(id)
       .then(n => {
         setNote(n)
@@ -54,14 +56,14 @@ function NoteDetailPage() {
       })
       .catch(err => setError(err.message))
       .finally(() => setLoading(false))
-    return () => { document.title = 'UniNotes' }
-  }, [id])
+    return () => { document.title = t('appTitle') }
+  }, [id, t])
 
   const handleDelete = async () => {
-    if (!window.confirm('Delete this note? This cannot be undone.')) return
+    if (!window.confirm(t('confirmDelete'))) return
     try {
       await deleteNote(id)
-      navigate('/', { state: { toast: 'Note deleted.' } })
+      navigate('/', { state: { toast: t('noteDeleted') } })
     } catch (err) {
       alert(err.message)
     }
@@ -104,7 +106,7 @@ function NoteDetailPage() {
   }
 
   if (error || !note) {
-    return <div className="text-center py-20 text-gray-500">{error || 'Note not found.'}</div>
+    return <div className="text-center py-20 text-gray-500">{error || t('noteNotFound')}</div>
   }
 
   const isOwner = user?.id === note.user_id
@@ -124,14 +126,14 @@ function NoteDetailPage() {
                     ? 'border-red-300 text-red-500 bg-red-50 hover:bg-red-100'
                     : 'border-gray-300 text-gray-500 hover:bg-gray-50'
                 } ${!user ? 'cursor-default' : 'cursor-pointer'}`}
-                aria-label="Like note"
+                aria-label={t('likeNote')}
               >
                 <HeartIcon filled={liked} />
                 <span>{likeCount}</span>
               </button>
               {!user && (
                 <span className="pointer-events-none absolute bottom-full left-1/2 -translate-x-1/2 mb-1.5 whitespace-nowrap rounded bg-gray-800 px-2 py-1 text-xs text-white opacity-0 transition-opacity group-hover:opacity-100 z-10">
-                  Log in to like
+                  {t('loginToLike')}
                 </span>
               )}
             </div>
@@ -145,13 +147,13 @@ function NoteDetailPage() {
                     ? 'border-blue-300 text-blue-600 bg-blue-50 hover:bg-blue-100'
                     : 'border-gray-300 text-gray-500 hover:bg-gray-50'
                 } ${!user ? 'cursor-default' : 'cursor-pointer'}`}
-                aria-label="Save note"
+                aria-label={t('saveNote')}
               >
                 <BookmarkIcon filled={saved} />
               </button>
               {!user && (
                 <span className="pointer-events-none absolute bottom-full left-1/2 -translate-x-1/2 mb-1.5 whitespace-nowrap rounded bg-gray-800 px-2 py-1 text-xs text-white opacity-0 transition-opacity group-hover:opacity-100 z-10">
-                  Log in to save
+                  {t('loginToSave')}
                 </span>
               )}
             </div>
@@ -162,13 +164,13 @@ function NoteDetailPage() {
                   to={`/notes/${id}/edit`}
                   className="px-3 py-1.5 text-sm border border-gray-300 rounded-md hover:bg-gray-50 transition"
                 >
-                  Edit
+                  {t('edit')}
                 </Link>
                 <button
                   onClick={handleDelete}
                   className="px-3 py-1.5 text-sm border border-red-200 text-red-600 rounded-md hover:bg-red-50 transition"
                 >
-                  Delete
+                  {t('delete')}
                 </button>
               </>
             )}
@@ -186,7 +188,7 @@ function NoteDetailPage() {
               {note.course}
             </span>
           )}
-          <span>{new Date(note.created_at).toLocaleDateString()}</span>
+          <span>{new Date(note.created_at).toLocaleDateString(locale)}</span>
         </div>
 
         {note.tags?.length > 0 && (
@@ -200,7 +202,7 @@ function NoteDetailPage() {
         )}
 
         <div className="text-gray-700 whitespace-pre-wrap leading-relaxed">
-          {note.content || <span className="text-gray-400 italic">No content.</span>}
+          {note.content || <span className="text-gray-400 italic">{t('noContent')}</span>}
         </div>
 
         {isOwner
