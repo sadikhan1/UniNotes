@@ -2,10 +2,12 @@ import { useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import { loginUser } from '../services/api'
 import { useAuth } from '../context/AuthContext'
+import { useLocale } from '../context/LocaleContext'
 
 function LoginPage() {
   const navigate = useNavigate()
   const { login } = useAuth()
+  const { t } = useLocale()
   const [formData, setFormData] = useState({ email: '', password: '' })
   const [errors, setErrors] = useState({})
   const [serverError, setServerError] = useState('')
@@ -33,8 +35,8 @@ function LoginPage() {
     e.preventDefault()
 
     const newErrors = {}
-    if (!formData.email.trim()) newErrors.email = 'Email is required'
-    if (!formData.password.trim()) newErrors.password = 'Password is required'
+    if (!formData.email.trim()) newErrors.email = t('emailRequired')
+    if (!formData.password.trim()) newErrors.password = t('passwordRequired')
 
     if (Object.keys(newErrors).length > 0) {
       setErrors(newErrors)
@@ -61,7 +63,7 @@ function LoginPage() {
       <div className="max-w-md w-full space-y-8">
         <div>
           <h2 className="mt-6 text-center text-3xl font-extrabold text-gray-900">
-            Sign in to your account
+            {t('signInTitle')}
           </h2>
         </div>
         <form className="mt-8 space-y-6 bg-white p-8 rounded-lg shadow" onSubmit={handleSubmit}>
@@ -72,7 +74,7 @@ function LoginPage() {
           )}
           {emailUnverified && (
             <div className="rounded-md bg-yellow-50 p-4 text-sm text-yellow-800 border border-yellow-200">
-              Please verify your email before logging in. Check your inbox for the verification link.
+              {t('emailVerification')}
             </div>
           )}
 
@@ -83,7 +85,7 @@ function LoginPage() {
             <input
               name="email"
               type="email"
-              placeholder="Email address"
+              placeholder={t('email')}
               value={formData.email}
               onChange={handleChange}
               className={`w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 ${
@@ -99,7 +101,7 @@ function LoginPage() {
             <input
               name="password"
               type="password"
-              placeholder="Password"
+              placeholder={t('password')}
               value={formData.password}
               onChange={handleChange}
               className={`w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 ${
@@ -112,13 +114,13 @@ function LoginPage() {
             type="submit"
             className="w-full bg-blue-600 text-white py-2 px-4 rounded-md font-medium hover:bg-blue-700 transition"
           >
-            Sign in
+            {t('signIn')}
           </button>
 
           <p className="text-center text-gray-600">
-            Don't have an account?{' '}
+            {t('noAccount')}{' '}
             <Link to="/register" className="text-blue-600 hover:text-blue-700 font-medium">
-              Register
+              {t('register')}
             </Link>
           </p>
         </form>
