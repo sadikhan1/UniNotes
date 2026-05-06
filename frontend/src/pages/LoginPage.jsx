@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import { useAuth } from '../context/AuthContext'
 import { useLocale } from '../context/LocaleContext'
+import { loginUser } from '../services/api'
 
 function LoginPage() {
   const navigate = useNavigate()
@@ -43,13 +44,25 @@ function LoginPage() {
     setServerError('')
     setEmailUnverified(false)
 
-    const fallbackEmail = formData.email.trim() || 'student@uninotes.local'
-    const fallbackUsername = fallbackEmail.split('@')[0] || 'student'
-    login('guest-session', {
-      email: fallbackEmail,
-      user_metadata: { username: fallbackUsername },
-    })
-    navigate('/notes', { replace: true })
+    const newErrors = {}
+    if (!formData.email.trim()) newErrors.email = t('emailRequired')
+    if (!formData.password.trim()) newErrors.password = t('passwordRequired')
+    if (Object.keys(newErrors).length) {
+      setErrors(newErrors)
+      return
+    }
+
+    try {
+      const data = await loginUser(formData.email, formData.password)
+      login(data.access_token, data.user)
+      navigate('/notes', { replace: true })
+    } catch (err) {
+      if (err.status === 403) {
+        setEmailUnverified(true)
+      } else {
+        setServerError(err.message || 'Invalid email or password.')
+      }
+    }
   }
 
   return (
