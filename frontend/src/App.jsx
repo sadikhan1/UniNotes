@@ -7,6 +7,7 @@ import HomePage from './pages/HomePage'
 import NoteFormPage from './pages/NoteFormPage'
 import NoteDetailPage from './pages/NoteDetailPage'
 import ProfilePage from './pages/ProfilePage'
+import CurriculumPage from './pages/CurriculumPage'
 
 function ProtectedRoute({ children }) {
   const { user, loading } = useAuth()
@@ -40,6 +41,7 @@ function App() {
           } />
           <Route path="/notes/:id" element={<NoteDetailPage />} />
           <Route path="/profile/:id" element={<ProfilePage />} />
+          <Route path="/departments/:slug" element={<CurriculumPage />} />
         </Routes>
       </div>
     </AuthProvider>
