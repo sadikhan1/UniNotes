@@ -12,8 +12,8 @@ function StudentLoungeHero({ searchInput, onSearchChange, isLoggedIn }) {
 
         <div className="sl-header">
           <img
-            src="/images/header2.png"
-            alt="UniNotes Header"
+            src="/images/background.png"
+            alt="Aramizda – Top Secret Student Platform"
             className="sl-header-image"
           />
         </div>
