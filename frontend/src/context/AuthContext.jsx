@@ -1,6 +1,7 @@
 import { createContext, useContext, useEffect, useState } from 'react'
 
 const AuthContext = createContext(null)
+const BASE_URL = import.meta.env.VITE_API_URL ?? '/api'
 
 export function AuthProvider({ children }) {
   const [user, setUser] = useState(null)
@@ -13,7 +14,7 @@ export function AuthProvider({ children }) {
       setLoading(false)
       return
     }
-    fetch('/api/auth/me', {
+    fetch(`${BASE_URL}/auth/me`, {
       headers: { Authorization: `Bearer ${token}` },
     })
       .then(res => (res.ok ? res.json() : Promise.reject()))
@@ -32,7 +33,7 @@ export function AuthProvider({ children }) {
   }
 
   function logout() {
-    fetch('/api/auth/logout', {
+    fetch(`${BASE_URL}/auth/logout`, {
       method: 'POST',
       headers: { Authorization: `Bearer ${localStorage.getItem('token')}` },
     }).catch(() => {})
