@@ -13,6 +13,7 @@ import NoteFormPage from './pages/NoteFormPage'
 import NoteDetailPage from './pages/NoteDetailPage'
 import ProfilePage from './pages/ProfilePage'
 import CurriculumPage from './pages/CurriculumPage'
+import CoursePage from './pages/CoursePage'
 import Toast from './components/Toast'
 import Splash from './components/Splash'
 

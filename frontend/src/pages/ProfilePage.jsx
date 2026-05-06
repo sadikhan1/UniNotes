@@ -3,7 +3,6 @@ import { useParams, Link } from 'react-router-dom'
 import { getUser, getUserNotes, updateUsername, getSavedNotes } from '../services/api'
 import { useAuth } from '../context/AuthContext'
 import { useLocale } from '../context/LocaleContext'
-import { useLocale } from '../context/LocaleContext'
 
 function NoteCard({ note }) {
   return (

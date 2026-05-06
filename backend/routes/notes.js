@@ -27,6 +27,7 @@ function formatNote(note) {
     ...note,
     author: note.users?.username ?? null,
     tags: (note.note_tags || []).map(nt => nt.tags?.name).filter(Boolean),
+    files: note.files || [],
     users: undefined,
     note_tags: undefined,
   }
@@ -113,6 +114,30 @@ router.delete('/:id', requireAuth, async (req, res) => {
   return res.status(204).send()
 })
 
+// GET /api/notes/mine  — current user's own notes (including private)
+router.get('/mine', requireAuth, async (req, res) => {
+  const { course, page = 1, limit = 50 } = req.query
+  const offset = (Number(page) - 1) * Number(limit)
+
+  let query = supabase
+    .from('notes')
+    .select('*, users!fk_notes_user(username), note_tags(tags(name)), files(id, file_name, file_url, file_type, file_size)', { count: 'exact' })
+    .eq('user_id', req.user.id)
+
+  if (course) query = query.ilike('course', course)
+
+  query = query.order('created_at', { ascending: false }).range(offset, offset + Number(limit) - 1)
+
+  const { data: notes, count, error } = await query
+  if (error) return res.status(500).json({ error: error.message })
+
+  return res.status(200).json({
+    notes: (notes || []).map(formatNote),
+    total: count ?? 0,
+    hasNextPage: offset + (notes?.length ?? 0) < (count ?? 0),
+  })
+})
+
 // GET /api/notes
 router.get('/', async (req, res) => {
   const { page = 1, limit = 12, search, course, tag, sort = 'latest' } = req.query
@@ -120,7 +145,7 @@ router.get('/', async (req, res) => {
 
   let query = supabase
     .from('notes')
-    .select('*, users!fk_notes_user(username), note_tags(tags(name))', { count: 'exact' })
+    .select('*, users!fk_notes_user(username), note_tags(tags(name)), files(id, file_name, file_url, file_type, file_size)', { count: 'exact' })
     .eq('is_public', true)
 
   if (search) query = query.or(`title.ilike.%${search}%,content.ilike.%${search}%`)

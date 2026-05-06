@@ -47,6 +47,11 @@ export async function getNotes(params = {}) {
   return request(`/notes${query ? `?${query}` : ''}`)
 }
 
+export async function getMyNotes(params = {}) {
+  const query = new URLSearchParams(params).toString()
+  return request(`/notes/mine${query ? `?${query}` : ''}`)
+}
+
 export async function getNote(id) {
   return request(`/notes/${id}`)
 }

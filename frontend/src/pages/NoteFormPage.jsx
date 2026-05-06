@@ -1,18 +1,19 @@
 import { useState, useEffect } from 'react'
-import { useNavigate, useParams } from 'react-router-dom'
+import { useNavigate, useParams, useSearchParams } from 'react-router-dom'
 import { createNote, updateNote, getNote } from '../services/api'
 import { useLocale } from '../context/LocaleContext'
 
 function NoteFormPage() {
   const navigate = useNavigate()
   const { id } = useParams()
+  const [searchParams] = useSearchParams()
   const { t } = useLocale()
   const isEdit = Boolean(id)
 
   const [formData, setFormData] = useState({
     title: '',
     content: '',
-    course: '',
+    course: searchParams.get('course') ?? '',
     is_public: false,
     tags: '',
   })
