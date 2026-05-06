@@ -153,7 +153,7 @@ function HomePage() {
   const clearFilters = () => { setSearchInput(''); setCourse(''); setTag(''); setDepartment('') }
   // Do not treat `department` as a strict API filter; users clicking departments should land on notes area
   // but not be considered a "filter" for the empty-state message.
-  const hasFilters = searchInput || course || tag
+
 
   return (
     <div className="w-full pb-10">
