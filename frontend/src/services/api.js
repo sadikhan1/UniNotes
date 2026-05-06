@@ -37,10 +37,10 @@ async function request(path, options = {}) {
   return data
 }
 
-export async function registerUser(email, username, password) {
+export async function registerUser(email, username, password, first_name, last_name, department) {
   return request('/auth/register', {
     method: 'POST',
-    body: JSON.stringify({ email, username, password }),
+    body: JSON.stringify({ email, username, password, first_name, last_name, department }),
   })
 }
 
@@ -81,6 +81,10 @@ export async function deleteNote(id) {
   return request(`/notes/${id}`, { method: 'DELETE' })
 }
 
+export async function getMyProfile() {
+  return request('/users/me')
+}
+
 export async function getUser(id) {
   return request(`/users/${id}`)
 }
@@ -89,8 +93,39 @@ export async function getUserNotes(id) {
   return request(`/users/${id}/notes`)
 }
 
-export async function updateUsername(username) {
-  return request('/users/me', { method: 'PUT', body: JSON.stringify({ username }) })
+export async function updateProfile(data) {
+  return request('/users/me', { method: 'PUT', body: JSON.stringify(data) })
+}
+
+export async function updatePassword(password) {
+  return request('/users/me/password', { method: 'PUT', body: JSON.stringify({ password }) })
+}
+
+export async function uploadAvatar(file) {
+  const token = getToken()
+  const formData = new FormData()
+  formData.append('avatar', file)
+  let res
+  try {
+    res = await fetch(`${BASE_URL}/users/me/avatar`, {
+      method: 'POST',
+      headers: token ? { Authorization: `Bearer ${token}` } : {},
+      body: formData,
+    })
+  } catch {
+    const err = new Error('Network request failed')
+    err.status = 0
+    throw err
+  }
+  const text = await res.text()
+  let data
+  try { data = text ? JSON.parse(text) : {} } catch { data = { error: text } }
+  if (!res.ok) {
+    const err = new Error(data.error ?? 'Upload failed')
+    err.status = res.status
+    throw err
+  }
+  return data
 }
 
 export async function toggleLike(noteId) {

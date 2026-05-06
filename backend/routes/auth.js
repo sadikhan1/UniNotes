@@ -10,6 +10,9 @@ const registerRules = [
   body('email').trim().isEmail().withMessage('Valid email is required'),
   body('username').trim().isLength({ min: 3 }).withMessage('Username must be at least 3 characters'),
   body('password').isLength({ min: 8 }).withMessage('Password must be at least 8 characters'),
+  body('first_name').trim().notEmpty().withMessage('First name is required'),
+  body('last_name').trim().notEmpty().withMessage('Last name is required'),
+  body('department').trim().notEmpty().withMessage('Department is required'),
 ]
 
 const loginRules = [
@@ -19,7 +22,7 @@ const loginRules = [
 
 // POST /api/auth/register
 router.post('/register', validate(registerRules), async (req, res) => {
-  const { email, username, password } = req.body
+  const { email, username, password, first_name, last_name, department } = req.body
 
   const { data, error } = await supabase.auth.signUp({
     email: email.trim(),
@@ -45,7 +48,14 @@ router.post('/register', validate(registerRules), async (req, res) => {
 
   const { error: profileError } = await supabase
     .from('users')
-    .insert({ id: data.user.id, email: email.trim(), username: username.trim() })
+    .insert({
+      id: data.user.id,
+      email: email.trim(),
+      username: username.trim(),
+      first_name: first_name.trim(),
+      last_name: last_name.trim(),
+      department: department.trim(),
+    })
 
   if (profileError) return res.status(500).json({ error: 'Registration failed. Please try again.' })
 

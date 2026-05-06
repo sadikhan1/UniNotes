@@ -10,7 +10,11 @@ function RegisterPage() {
   const navigate = useNavigate()
   const { user } = useAuth()
   const { t } = useLocale()
-  const [formData, setFormData] = useState({ email: '', username: '', password: '' })
+  const [formData, setFormData] = useState({
+    email: '', username: '', password: '',
+    first_name: '', last_name: '', department: '',
+  })
+  const [showPassword, setShowPassword] = useState(false)
   const [errors, setErrors] = useState({})
   const [apiError, setApiError] = useState('')
   const [success, setSuccess] = useState(false)
@@ -40,6 +44,15 @@ function RegisterPage() {
       if (!value) newErrors.password = t('passwordRequired')
       else if (value.length < 8) newErrors.password = t('passwordMinLength')
       else delete newErrors.password
+    } else if (name === 'first_name') {
+      if (!value.trim()) newErrors.first_name = t('firstNameRequired')
+      else delete newErrors.first_name
+    } else if (name === 'last_name') {
+      if (!value.trim()) newErrors.last_name = t('lastNameRequired')
+      else delete newErrors.last_name
+    } else if (name === 'department') {
+      if (!value.trim()) newErrors.department = t('departmentRequired')
+      else delete newErrors.department
     }
     setErrors(newErrors)
   }
@@ -63,6 +76,10 @@ function RegisterPage() {
     if (!formData.password) newErrors.password = t('passwordRequired')
     else if (formData.password.length < 8) newErrors.password = t('passwordMinLength')
 
+    if (!formData.first_name.trim()) newErrors.first_name = t('firstNameRequired')
+    if (!formData.last_name.trim()) newErrors.last_name = t('lastNameRequired')
+    if (!formData.department.trim()) newErrors.department = t('departmentRequired')
+
     if (Object.keys(newErrors).length > 0) {
       setErrors(newErrors)
       return
@@ -71,9 +88,12 @@ function RegisterPage() {
     try {
       setApiError('')
       setRegisteredEmail(formData.email)
-      await registerUser(formData.email, formData.username, formData.password)
+      await registerUser(
+        formData.email, formData.username, formData.password,
+        formData.first_name, formData.last_name, formData.department,
+      )
       setSuccess(true)
-      setFormData({ email: '', username: '', password: '' })
+      setFormData({ email: '', username: '', password: '', first_name: '', last_name: '', department: '' })
     } catch (error) {
       setApiError(error.message)
     }
@@ -103,6 +123,11 @@ function RegisterPage() {
     )
   }
 
+  const inputClass = (field) =>
+    `w-full px-4 py-3 rounded-lg bg-[#0b1117] border text-slate-100 placeholder-slate-600
+    focus:outline-none focus:ring-2 focus:ring-cyan-500/40 focus:border-cyan-600 transition
+    ${errors[field] ? 'border-red-600' : 'border-cyan-900/50'}`
+
   return (
     <div className="min-h-screen flex items-center justify-center bg-[#0b1117] py-12 px-4 sm:px-6 lg:px-8">
       <div className="w-full max-w-md space-y-8">
@@ -114,7 +139,7 @@ function RegisterPage() {
             </div>
             <span className="text-2xl font-bold text-slate-100 tracking-tight">UniNotes</span>
           </div>
-          <p className="text-slate-400 text-sm">Yaşar Üniversitesi Öğrenci Platformu</p>
+          <p className="text-slate-400 text-sm">{t('platformSubtitle')}</p>
         </div>
 
         <div className="bg-[#10141a] border border-cyan-900/50 rounded-2xl p-8 shadow-2xl">
@@ -129,6 +154,50 @@ function RegisterPage() {
           )}
 
           <form className="space-y-4" onSubmit={handleSubmit} noValidate>
+            {/* Row: first + last name */}
+            <div className="grid grid-cols-2 gap-3">
+              <div>
+                <input
+                  name="first_name"
+                  type="text"
+                  placeholder={t('firstName')}
+                  value={formData.first_name}
+                  onChange={handleChange}
+                  className={inputClass('first_name')}
+                />
+                {errors.first_name && (
+                  <p className="mt-1.5 text-xs text-red-400">{errors.first_name}</p>
+                )}
+              </div>
+              <div>
+                <input
+                  name="last_name"
+                  type="text"
+                  placeholder={t('lastName')}
+                  value={formData.last_name}
+                  onChange={handleChange}
+                  className={inputClass('last_name')}
+                />
+                {errors.last_name && (
+                  <p className="mt-1.5 text-xs text-red-400">{errors.last_name}</p>
+                )}
+              </div>
+            </div>
+
+            <div>
+              <input
+                name="department"
+                type="text"
+                placeholder={t('department')}
+                value={formData.department}
+                onChange={handleChange}
+                className={inputClass('department')}
+              />
+              {errors.department && (
+                <p className="mt-1.5 text-xs text-red-400">{errors.department}</p>
+              )}
+            </div>
+
             <div>
               <input
                 name="email"
@@ -136,9 +205,7 @@ function RegisterPage() {
                 placeholder="XXXXXXXXXXX@stu.yasar.edu.tr"
                 value={formData.email}
                 onChange={handleChange}
-                className={`w-full px-4 py-3 rounded-lg bg-[#0b1117] border text-slate-100 placeholder-slate-600
-                  focus:outline-none focus:ring-2 focus:ring-cyan-500/40 focus:border-cyan-600 transition
-                  ${errors.email ? 'border-red-600' : 'border-cyan-900/50'}`}
+                className={inputClass('email')}
               />
               {errors.email && (
                 <p className="mt-1.5 text-xs text-red-400">{errors.email}</p>
@@ -152,9 +219,7 @@ function RegisterPage() {
                 placeholder={t('username')}
                 value={formData.username}
                 onChange={handleChange}
-                className={`w-full px-4 py-3 rounded-lg bg-[#0b1117] border text-slate-100 placeholder-slate-600
-                  focus:outline-none focus:ring-2 focus:ring-cyan-500/40 focus:border-cyan-600 transition
-                  ${errors.username ? 'border-red-600' : 'border-cyan-900/50'}`}
+                className={inputClass('username')}
               />
               {errors.username && (
                 <p className="mt-1.5 text-xs text-red-400">{errors.username}</p>
@@ -162,16 +227,30 @@ function RegisterPage() {
             </div>
 
             <div>
-              <input
-                name="password"
-                type="password"
-                placeholder={t('passwordMin')}
-                value={formData.password}
-                onChange={handleChange}
-                className={`w-full px-4 py-3 rounded-lg bg-[#0b1117] border text-slate-100 placeholder-slate-600
-                  focus:outline-none focus:ring-2 focus:ring-cyan-500/40 focus:border-cyan-600 transition
-                  ${errors.password ? 'border-red-600' : 'border-cyan-900/50'}`}
-              />
+              <div className="relative">
+                <input
+                  name="password"
+                  type={showPassword ? 'text' : 'password'}
+                  placeholder={t('passwordMin')}
+                  value={formData.password}
+                  onChange={handleChange}
+                  className={`w-full px-4 py-3 pr-11 rounded-lg bg-[#0b1117] border text-slate-100 placeholder-slate-600
+                    focus:outline-none focus:ring-2 focus:ring-cyan-500/40 focus:border-cyan-600 transition
+                    ${errors.password ? 'border-red-600' : 'border-cyan-900/50'}`}
+                />
+                <button
+                  type="button"
+                  onClick={() => setShowPassword(p => !p)}
+                  className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-500 hover:text-cyan-400 transition"
+                  aria-label={showPassword ? t('hidePassword') : t('showPassword')}
+                >
+                  {showPassword ? (
+                    <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.543-7a9.97 9.97 0 011.563-3.029m5.858.908a3 3 0 114.243 4.243M9.878 9.878l4.242 4.242M9.88 9.88l-3.29-3.29m7.532 7.532l3.29 3.29M3 3l3.59 3.59m0 0A9.953 9.953 0 0112 5c4.478 0 8.268 2.943 9.543 7a10.025 10.025 0 01-4.132 5.411m0 0L21 21" /></svg>
+                  ) : (
+                    <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" /><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" /></svg>
+                  )}
+                </button>
+              </div>
               {errors.password && (
                 <p className="mt-1.5 text-xs text-red-400">{errors.password}</p>
               )}
