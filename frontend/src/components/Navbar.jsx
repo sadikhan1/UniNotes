@@ -57,8 +57,7 @@ function Navbar() {
               >
                 {t('logout')}
               </button>
-          
-          ) : (
+            </>
           ) : (
             <>
               <Link to="/login" className={`text-sm transition ${isActive('/login')}`}>
