@@ -19,6 +19,7 @@ backend/dist/
 build/
 frontend/build/
 backend/build/
+frontend/.vite/
 
 # Logs
 *.log
