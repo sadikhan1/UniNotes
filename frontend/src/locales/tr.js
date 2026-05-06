@@ -133,12 +133,15 @@ export const tr = {
   elective: 'Seçmeli',
 
   // Toast Messages
-  noteCreated: 'Not başarıyla oluşturuldu!',
-  noteUpdated: 'Not başarıyla güncellendi!',
-  noteDeleted: 'Not başarıyla silindi!',
-  commentAdded: 'Yorum eklendi!',
-  commentDeleted: 'Yorum silindi!',
-  fileUploaded: 'Dosya başarıyla yüklendi!',
+  noteCreated: '🎉 Notunuz paylaşıma hazır!',
+  noteUpdated: '✏️ Notunuz güncellendi ve tazelendi!',
+  noteDeleted: '🗑️ Notunuz kaldırıldı!',
+  commentAdded: '💬 Yorum başarıyla eklendi!',
+  commentDeleted: '🗑️ Yorum silindi.',
+  confirmDeleteComment: '⚠️ Bu yorumu gerçekten silmek istiyor musunuz?',
+  fileUploaded: '📎 Dosya yüklendi, hazırsınız!',
+  fileUploadFailed: '⚠️ Yükleme başarısız oldu — dosyayı kontrol edip tekrar deneyin.',
+  confirmDeleteFile: '⚠️ Bu dosyayı gerçekten silmek istiyor musunuz?',
   loginRequired: 'Devam etmek için lütfen giriş yapın',
 
   // Language

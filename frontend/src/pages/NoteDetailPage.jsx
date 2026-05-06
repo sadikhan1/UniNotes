@@ -6,6 +6,7 @@ import { useLocale } from '../context/LocaleContext'
 import FileUploader from '../components/FileUploader'
 import FilePreview from '../components/FilePreview'
 import CommentSection from '../components/CommentSection'
+import ConfirmationModal from '../components/ConfirmationModal'
 
 function HeartIcon({ filled }) {
   return filled ? (
@@ -43,6 +44,7 @@ function NoteDetailPage() {
   const [liked, setLiked] = useState(false)
   const [likeCount, setLikeCount] = useState(0)
   const [saved, setSaved] = useState(false)
+  const [showDeleteNoteConfirm, setShowDeleteNoteConfirm] = useState(false)
 
   useEffect(() => {
     document.title = t('loading')
@@ -59,14 +61,22 @@ function NoteDetailPage() {
     return () => { document.title = t('appTitle') }
   }, [id, t])
 
-  const handleDelete = async () => {
-    if (!window.confirm(t('confirmDelete'))) return
+  const handleDelete = () => {
+    setShowDeleteNoteConfirm(true)
+  }
+
+  const handleConfirmDeleteNote = async () => {
+    setShowDeleteNoteConfirm(false)
     try {
       await deleteNote(id)
       navigate('/', { state: { toast: t('noteDeleted') } })
     } catch (err) {
       alert(err.message)
     }
+  }
+
+  const handleCancelDeleteNote = () => {
+    setShowDeleteNoteConfirm(false)
   }
 
   const handleLike = async () => {
@@ -226,8 +236,17 @@ function NoteDetailPage() {
           : <FilePreview files={note.files ?? []} />
         }
 
-        <CommentSection noteId={note.id} currentUser={user} />
+        <CommentSection noteId={note.id} currentUser={user} noteOwnerId={note.user_id} />
       </div>
+
+      <ConfirmationModal
+        open={showDeleteNoteConfirm}
+        message={t('confirmDelete')}
+        onConfirm={handleConfirmDeleteNote}
+        onCancel={handleCancelDeleteNote}
+        confirmLabel={t('yes')}
+        cancelLabel={t('no')}
+      />
     </div>
   )
 }

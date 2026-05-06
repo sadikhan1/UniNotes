@@ -2,14 +2,16 @@ import { useState, useEffect } from 'react'
 import { Link } from 'react-router-dom'
 import { getComments, addComment, deleteComment } from '../services/api'
 import { useLocale } from '../context/LocaleContext'
+import ConfirmationModal from './ConfirmationModal'
 
-function CommentSection({ noteId, currentUser }) {
+function CommentSection({ noteId, currentUser, noteOwnerId }) {
   const { t } = useLocale()
   const [comments, setComments] = useState([])
   const [loading, setLoading] = useState(true)
   const [text, setText] = useState('')
   const [submitting, setSubmitting] = useState(false)
   const [error, setError] = useState('')
+  const [confirmingCommentId, setConfirmingCommentId] = useState(null)
 
   useEffect(() => {
     getComments(noteId)
@@ -34,13 +36,25 @@ function CommentSection({ noteId, currentUser }) {
     }
   }
 
-  async function handleDelete(commentId) {
+  function requestDeleteComment(commentId) {
+    setConfirmingCommentId(commentId)
+  }
+
+  async function handleConfirmDelete() {
+    if (!confirmingCommentId) return
+
     try {
-      await deleteComment(commentId)
-      setComments(prev => prev.filter(c => c.id !== commentId))
+      await deleteComment(confirmingCommentId)
+      setComments(prev => prev.filter(c => c.id !== confirmingCommentId))
     } catch (err) {
       setError(err.message)
+    } finally {
+      setConfirmingCommentId(null)
     }
+  }
+
+  function handleCancelDelete() {
+    setConfirmingCommentId(null)
   }
 
   return (
@@ -93,9 +107,9 @@ function CommentSection({ noteId, currentUser }) {
                     <span>·</span>
                     <span>{new Date(comment.created_at).toLocaleDateString()}</span>
                   </div>
-                  {currentUser?.username === comment.user?.username && (
+                  {(currentUser?.id === comment.user?.id || currentUser?.id === noteOwnerId) && (
                     <button
-                      onClick={() => handleDelete(comment.id)}
+                      onClick={() => requestDeleteComment(comment.id)}
                       className="text-xs text-red-400 hover:text-red-600 shrink-0 transition"
                     >
                       {t('deleteComment')}
@@ -108,6 +122,15 @@ function CommentSection({ noteId, currentUser }) {
           ))}
         </ul>
       )}
+
+      <ConfirmationModal
+        open={!!confirmingCommentId}
+        message={t('confirmDeleteComment')}
+        onConfirm={handleConfirmDelete}
+        onCancel={handleCancelDelete}
+        confirmLabel={t('yes')}
+        cancelLabel={t('no')}
+      />
     </div>
   )
 }

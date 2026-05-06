@@ -79,7 +79,11 @@ router.post('/', requireAuth, handleUpload, async (req, res) => {
 
   if (dbError) {
     await supabase.storage.from(BUCKET).remove([storagePath])
-    return res.status(500).json({ error: dbError.message })
+    const isPermissionError = dbError.message.includes('row-level security policy')
+    const message = isPermissionError
+      ? 'You do not have permission to upload this file.'
+      : dbError.message
+    return res.status(isPermissionError ? 403 : 500).json({ error: message })
   }
 
   return res.status(201).json(file)
