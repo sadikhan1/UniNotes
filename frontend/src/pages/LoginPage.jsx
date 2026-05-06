@@ -21,7 +21,7 @@ function LoginPage() {
   const validateField = (name, value) => {
     const newErrors = { ...errors }
     if (!value.trim()) {
-      newErrors[name] = `${name.charAt(0).toUpperCase() + name.slice(1)} is required`
+      newErrors[name] = t(`${name}Required`)
     } else {
       delete newErrors[name]
     }

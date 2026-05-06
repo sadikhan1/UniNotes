@@ -1,6 +1,7 @@
 import { useState, useRef } from 'react'
 import { uploadFile, deleteFile } from '../services/api'
 import { useLocale } from '../context/LocaleContext'
+import ConfirmationModal from './ConfirmationModal'
 
 const ALLOWED_TYPES = ['application/pdf', 'image/png', 'image/jpeg']
 const MAX_SIZE = 10 * 1024 * 1024
@@ -40,7 +41,9 @@ function FileUploader({ noteId, initialFiles = [] }) {
   const [uploading, setUploading] = useState(false)
   const [dragOver, setDragOver] = useState(false)
   const [error, setError] = useState('')
+  const [success, setSuccess] = useState('')
   const [lightbox, setLightbox] = useState(null)
+  const [confirmDeleteFileId, setConfirmDeleteFileId] = useState(null)
   const inputRef = useRef()
 
   function validate(file) {
@@ -51,8 +54,9 @@ function FileUploader({ noteId, initialFiles = [] }) {
 
   function handleSelect(file) {
     const err = validate(file)
-    if (err) { setError(err); setSelected(null); return }
+    if (err) { setError(err); setSelected(null); setSuccess(''); return }
     setError('')
+    setSuccess('')
     setSelected(file)
   }
 
@@ -67,24 +71,39 @@ function FileUploader({ noteId, initialFiles = [] }) {
     if (!selected || uploading) return
     setUploading(true)
     setError('')
+    setSuccess('')
     try {
       const uploaded = await uploadFile(noteId, selected)
       setFiles(prev => [...prev, uploaded])
       setSelected(null)
+      setSuccess(t('fileUploaded'))
     } catch (err) {
-      setError(err.message)
+      setError(err.message || t('fileUploadFailed'))
+      setSuccess('')
     } finally {
       setUploading(false)
     }
   }
 
-  async function handleDelete(fileId) {
+  function requestDeleteFile(fileId) {
+    setConfirmDeleteFileId(fileId)
+  }
+
+  async function handleConfirmDeleteFile() {
+    if (!confirmDeleteFileId) return
+
     try {
-      await deleteFile(fileId)
-      setFiles(prev => prev.filter(f => f.id !== fileId))
+      await deleteFile(confirmDeleteFileId)
+      setFiles(prev => prev.filter(f => f.id !== confirmDeleteFileId))
     } catch (err) {
       setError(err.message)
+    } finally {
+      setConfirmDeleteFileId(null)
     }
+  }
+
+  function handleCancelDeleteFile() {
+    setConfirmDeleteFileId(null)
   }
 
   return (
@@ -139,6 +158,7 @@ function FileUploader({ noteId, initialFiles = [] }) {
         </div>
       )}
 
+      {success && <p className="text-sm text-green-600 mt-2">{success}</p>}
       {error && <p className="text-sm text-red-600 mt-2">{error}</p>}
 
       {/* Uploaded files with preview */}
@@ -169,7 +189,7 @@ function FileUploader({ noteId, initialFiles = [] }) {
                         ↓ {t('download')}
                       </button>
                       <button
-                        onClick={() => handleDelete(f.id)}
+                        onClick={() => requestDeleteFile(f.id)}
                         className="text-gray-400 hover:text-red-500 transition text-sm"
                         title={t('removeFileTitle')}
                       >
@@ -195,7 +215,7 @@ function FileUploader({ noteId, initialFiles = [] }) {
                         ↓ {t('download')}
                       </button>
                       <button
-                        onClick={() => handleDelete(f.id)}
+                        onClick={() => requestDeleteFile(f.id)}
                         className="text-gray-400 hover:text-red-500 transition text-sm"
                         title={t('removeFileTitle')}
                       >
@@ -215,7 +235,7 @@ function FileUploader({ noteId, initialFiles = [] }) {
                       ↓ {t('download')}
                     </button>
                     <button
-                      onClick={() => handleDelete(f.id)}
+                      onClick={() => requestDeleteFile(f.id)}
                       className="text-gray-400 hover:text-red-500 transition text-sm"
                       title={t('removeFileTitle')}
                     >
@@ -228,6 +248,15 @@ function FileUploader({ noteId, initialFiles = [] }) {
           ))}
         </div>
       )}
+
+      <ConfirmationModal
+        open={!!confirmDeleteFileId}
+        message={t('confirmDeleteFile')}
+        onConfirm={handleConfirmDeleteFile}
+        onCancel={handleCancelDeleteFile}
+        confirmLabel={t('yes')}
+        cancelLabel={t('no')}
+      />
 
       {/* Lightbox for full-size image */}
       {lightbox && (

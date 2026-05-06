@@ -17,9 +17,10 @@ function useDebounce(value, delay) {
 }
 
 function FacultyGrid({ selectedFaculty, onSelect }) {
+  const { t, locale } = useLocale()
   return (
     <div className="mb-8">
-      <h2 className="text-sm font-semibold text-gray-500 uppercase tracking-wide mb-3">Browse by Faculty</h2>
+      <h2 className="text-sm font-semibold text-gray-500 uppercase tracking-wide mb-3">{t('browseByFaculty')}</h2>
       <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3">
         {FACULTIES.map(faculty => {
           const isSelected = selectedFaculty?.slug === faculty.slug
@@ -35,9 +36,9 @@ function FacultyGrid({ selectedFaculty, onSelect }) {
             >
               <div className="text-2xl mb-2">{faculty.icon}</div>
               <div className={`text-sm font-semibold leading-tight ${isSelected ? 'text-blue-700' : 'text-gray-800'}`}>
-                {faculty.name}
+                {getLocalizedFacultyName(faculty, locale)}
               </div>
-              <div className="text-xs text-gray-400 mt-1">{faculty.departments.length} departments</div>
+              <div className="text-xs text-gray-400 mt-1">{faculty.departments.length} {t('departments')}</div>
             </button>
           )
         })}
@@ -85,7 +86,6 @@ function HomePage() {
   const [hasNextPage, setHasNextPage] = useState(false)
   const [loading, setLoading] = useState(true)
 
-  const [courses, setCourses] = useState([])
   const [searchInput, setSearchInput] = useState('')
   const [course, setCourse] = useState(() => searchParams.get('course') ?? '')
   const [tag, setTag] = useState('')
@@ -112,11 +112,8 @@ function HomePage() {
     }
   }, [location, searchParams])
 
-  useEffect(() => {
-    getCourses().then(setCourses).catch(() => {})
-  }, [])
-
   const debouncedSearch = useDebounce(searchInput, 300)
+  const hasFilters = searchInput || course || tag
 
   // If the user searches a department name, show a curriculum preview
   const matchedDept = debouncedSearch
@@ -124,6 +121,14 @@ function HomePage() {
     : null
 
   const fetchNotes = useCallback(() => {
+    if (!hasFilters) {
+      setNotes([])
+      setTotal(0)
+      setHasNextPage(false)
+      setLoading(false)
+      return
+    }
+
     setLoading(true)
     const params = { page, limit: 12 }
     if (debouncedSearch) {
@@ -140,7 +145,7 @@ function HomePage() {
       .then(data => { setNotes(data.notes); setTotal(data.total); setHasNextPage(data.hasNextPage) })
       .catch(console.error)
       .finally(() => setLoading(false))
-  }, [page, debouncedSearch, course, tag])
+  }, [page, debouncedSearch, course, tag, hasFilters])
 
   useEffect(() => { setPage(1) }, [debouncedSearch, course, tag])
   useEffect(() => { fetchNotes() }, [fetchNotes])
@@ -322,22 +327,21 @@ function HomePage() {
             </div>
           )}
         </div>
-        <div className="min-w-36">
-          <label className="block text-xs font-medium text-gray-600 mb-1">{t('course')}</label>
-          <select
+        <div className="min-w-36 flex-1">
+          <label className="block text-xs font-medium text-gray-600 mb-1">{t('courseCode')}</label>
+          <input
+            type="text"
+            placeholder={t('courseCodePlaceholder')}
             value={course}
-            onChange={e => setCourse(e.target.value)}
+            onChange={e => setCourse(e.target.value.toUpperCase())}
             className="w-full px-3 py-2 border border-gray-300 rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
-          >
-            <option value="">{t('allCourses')}</option>
-            {courses.map(c => <option key={c} value={c}>{c}</option>)}
-          </select>
+          />
         </div>
         <div className="min-w-36">
           <label className="block text-xs font-medium text-gray-600 mb-1">{t('tags')}</label>
           <input
             type="text"
-            placeholder="e.g. exam"
+            placeholder={t('tagExample')}
             value={tag}
             onChange={e => setTag(e.target.value)}
             className="w-full px-3 py-2 border border-gray-300 rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"

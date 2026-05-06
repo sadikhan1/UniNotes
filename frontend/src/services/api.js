@@ -6,18 +6,31 @@ function getToken() {
 
 async function request(path, options = {}) {
   const token = getToken()
-  const res = await fetch(`${BASE_URL}${path}`, {
-    ...options,
-    headers: {
-      'Content-Type': 'application/json',
-      ...(token ? { Authorization: `Bearer ${token}` } : {}),
-      ...options.headers,
-    },
-  })
+  let res
+  try {
+    res = await fetch(`${BASE_URL}${path}`, {
+      ...options,
+      headers: {
+        'Content-Type': 'application/json',
+        ...(token ? { Authorization: `Bearer ${token}` } : {}),
+        ...options.headers,
+      },
+    })
+  } catch (err) {
+    const networkError = new Error('Network request failed')
+    networkError.status = 0
+    throw networkError
+  }
   if (res.status === 204) return null
-  const data = await res.json()
+  const text = await res.text()
+  let data
+  try {
+    data = text ? JSON.parse(text) : {}
+  } catch {
+    data = { error: text }
+  }
   if (!res.ok) {
-    const err = new Error(data.error ?? 'Something went wrong')
+    const err = new Error(data.error || 'Something went wrong')
     err.status = res.status
     throw err
   }
@@ -114,14 +127,26 @@ export async function uploadFile(noteId, file) {
   formData.append('note_id', noteId)
 
   const token = getToken()
-  const res = await fetch(`${BASE_URL}/files`, {
-    method: 'POST',
-    headers: token ? { Authorization: `Bearer ${token}` } : {},
-    body: formData,
-  })
+  let res
+  try {
+    res = await fetch(`${BASE_URL}/files`, {
+      method: 'POST',
+      headers: token ? { Authorization: `Bearer ${token}` } : {},
+      body: formData,
+    })
+  } catch (err) {
+    const networkError = new Error('Network request failed')
+    networkError.status = 0
+    throw networkError
+  }
 
-
-  const data = await res.json()
+  const text = await res.text()
+  let data
+  try {
+    data = text ? JSON.parse(text) : {}
+  } catch {
+    data = { error: text }
+  }
   if (!res.ok) {
     const err = new Error(data.error ?? 'Upload failed')
     err.status = res.status
