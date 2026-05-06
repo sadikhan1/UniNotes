@@ -1,9 +1,9 @@
 import { useState, useEffect, useCallback } from 'react'
 import { Link, useSearchParams } from 'react-router-dom'
-import { getNotes, getCourses } from '../services/api'
+import { getNotes } from '../services/api'
 import { useAuth } from '../context/AuthContext'
 import { useLocale } from '../context/LocaleContext'
-import { DEPARTMENTS, FACULTIES } from '../data/curriculum'
+import { DEPARTMENTS, FACULTIES, getLocalizedFacultyName, getLocalizedDeptName } from '../data/curriculum'
 
 function useDebounce(value, delay) {
   const [debounced, setDebounced] = useState(value)
@@ -15,9 +15,10 @@ function useDebounce(value, delay) {
 }
 
 function FacultyGrid({ selectedFaculty, onSelect }) {
+  const { t, locale } = useLocale()
   return (
     <div className="mb-8">
-      <h2 className="text-sm font-semibold text-gray-500 uppercase tracking-wide mb-3">Browse by Faculty</h2>
+      <h2 className="text-sm font-semibold text-gray-500 uppercase tracking-wide mb-3">{t('browseByFaculty')}</h2>
       <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3">
         {FACULTIES.map(faculty => {
           const isSelected = selectedFaculty?.slug === faculty.slug
@@ -33,9 +34,9 @@ function FacultyGrid({ selectedFaculty, onSelect }) {
             >
               <div className="text-2xl mb-2">{faculty.icon}</div>
               <div className={`text-sm font-semibold leading-tight ${isSelected ? 'text-blue-700' : 'text-gray-800'}`}>
-                {faculty.name}
+                {getLocalizedFacultyName(faculty, locale)}
               </div>
-              <div className="text-xs text-gray-400 mt-1">{faculty.departments.length} departments</div>
+              <div className="text-xs text-gray-400 mt-1">{faculty.departments.length} {t('departments')}</div>
             </button>
           )
         })}
@@ -45,6 +46,7 @@ function FacultyGrid({ selectedFaculty, onSelect }) {
 }
 
 function DepartmentGrid({ faculty, selectedDept, onSelect }) {
+  const { t, locale } = useLocale()
   const depts = faculty.departments
     .map(slug => DEPARTMENTS.find(d => d.slug === slug))
     .filter(Boolean)
@@ -54,7 +56,7 @@ function DepartmentGrid({ faculty, selectedDept, onSelect }) {
       <div className="flex items-center gap-2 mb-3">
         <span className="text-lg">{faculty.icon}</span>
         <h2 className="text-sm font-semibold text-gray-500 uppercase tracking-wide">
-          {faculty.name} — Departments
+          {getLocalizedFacultyName(faculty, locale)} — {t('departments')}
         </h2>
       </div>
       <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3">
@@ -72,15 +74,15 @@ function DepartmentGrid({ faculty, selectedDept, onSelect }) {
               }`}
             >
               <div className={`text-sm font-semibold leading-tight ${isSelected ? 'text-blue-700' : 'text-gray-800'}`}>
-                {dept.name}
+                {getLocalizedDeptName(dept, locale)}
               </div>
-              <div className="text-xs text-gray-400 mt-1">{totalCourses} courses · {dept.semesters.length} semesters</div>
+              <div className="text-xs text-gray-400 mt-1">{totalCourses} {t('coursesLabel')} · {dept.semesters.length} {t('semesters')}</div>
               <Link
                 to={`/departments/${dept.slug}`}
                 onClick={e => e.stopPropagation()}
                 className="inline-block mt-2 text-xs text-blue-500 hover:text-blue-700"
               >
-                View notes →
+                {t('viewNotes')}
               </Link>
             </button>
           )
@@ -91,14 +93,15 @@ function DepartmentGrid({ faculty, selectedDept, onSelect }) {
 }
 
 function CourseList({ dept }) {
+  const { t, locale } = useLocale()
   return (
     <div className="mb-8">
       <div className="flex items-center justify-between mb-3">
         <h2 className="text-sm font-semibold text-gray-500 uppercase tracking-wide">
-          {dept.name} — Courses
+          {getLocalizedDeptName(dept, locale)} — {t('courses')}
         </h2>
         <Link to={`/departments/${dept.slug}`} className="text-xs text-blue-600 hover:underline">
-          View all notes →
+          {t('viewAllNotes')}
         </Link>
       </div>
       <div className="space-y-4">
@@ -106,7 +109,7 @@ function CourseList({ dept }) {
           <div key={sem.semester} className="bg-white border border-gray-200 rounded-xl overflow-hidden">
             <div className="bg-gray-50 border-b border-gray-200 px-4 py-2">
               <span className="text-xs font-semibold text-gray-600 uppercase tracking-wide">
-                Semester {sem.semester}
+                {t('semester')} {sem.semester}
               </span>
             </div>
             <div className="divide-y divide-gray-100">
@@ -127,7 +130,7 @@ function CourseList({ dept }) {
                         ? 'bg-blue-50 text-blue-700'
                         : 'bg-amber-50 text-amber-700'
                     }`}>
-                      {course.ects} ECTS
+                      {course.ects} {t('ects')}
                     </span>
                     <span className="text-xs text-gray-300 group-hover:text-blue-400">→</span>
                   </div>
@@ -176,7 +179,6 @@ function HomePage() {
   const [hasNextPage, setHasNextPage] = useState(false)
   const [loading, setLoading] = useState(true)
 
-  const [courses, setCourses] = useState([])
   const [searchInput, setSearchInput] = useState('')
   const [course, setCourse] = useState(() => searchParams.get('course') ?? '')
   const [tag, setTag] = useState('')
@@ -184,13 +186,18 @@ function HomePage() {
   const [selectedFaculty, setSelectedFaculty] = useState(null)
   const [selectedDept, setSelectedDept] = useState(null)
 
-  useEffect(() => {
-    getCourses().then(setCourses).catch(() => {})
-  }, [])
-
   const debouncedSearch = useDebounce(searchInput, 300)
+  const hasFilters = searchInput || course || tag
 
   const fetchNotes = useCallback(() => {
+    if (!hasFilters) {
+      setNotes([])
+      setTotal(0)
+      setHasNextPage(false)
+      setLoading(false)
+      return
+    }
+
     setLoading(true)
     const params = { page, limit: 12 }
     if (debouncedSearch) params.search = debouncedSearch
@@ -201,13 +208,12 @@ function HomePage() {
       .then(data => { setNotes(data.notes); setTotal(data.total); setHasNextPage(data.hasNextPage) })
       .catch(console.error)
       .finally(() => setLoading(false))
-  }, [page, debouncedSearch, course, tag])
+  }, [page, debouncedSearch, course, tag, hasFilters])
 
   useEffect(() => { setPage(1) }, [debouncedSearch, course, tag])
   useEffect(() => { fetchNotes() }, [fetchNotes])
 
   const clearFilters = () => { setSearchInput(''); setCourse(''); setTag('') }
-  const hasFilters = searchInput || course || tag
 
   const handleFacultySelect = (faculty) => {
     setSelectedFaculty(faculty)
@@ -254,22 +260,21 @@ function HomePage() {
             className="w-full px-3 py-2 border border-gray-300 rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
           />
         </div>
-        <div className="min-w-36">
-          <label className="block text-xs font-medium text-gray-600 mb-1">{t('course')}</label>
-          <select
+        <div className="min-w-36 flex-1">
+          <label className="block text-xs font-medium text-gray-600 mb-1">{t('courseCode')}</label>
+          <input
+            type="text"
+            placeholder={t('courseCodePlaceholder')}
             value={course}
-            onChange={e => setCourse(e.target.value)}
+            onChange={e => setCourse(e.target.value.toUpperCase())}
             className="w-full px-3 py-2 border border-gray-300 rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
-          >
-            <option value="">{t('allCourses')}</option>
-            {courses.map(c => <option key={c} value={c}>{c}</option>)}
-          </select>
+          />
         </div>
         <div className="min-w-36">
           <label className="block text-xs font-medium text-gray-600 mb-1">{t('tags')}</label>
           <input
             type="text"
-            placeholder="e.g. exam"
+            placeholder={t('tagExample')}
             value={tag}
             onChange={e => setTag(e.target.value)}
             className="w-full px-3 py-2 border border-gray-300 rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
@@ -286,9 +291,13 @@ function HomePage() {
         <div className="flex justify-center py-20">
           <div className="w-8 h-8 border-4 border-blue-600 border-t-transparent rounded-full animate-spin" />
         </div>
+      ) : !hasFilters ? (
+        <div className="text-center py-20 text-gray-500">
+          {t('enterCourseCodePrompt')}
+        </div>
       ) : notes.length === 0 ? (
         <div className="text-center py-20 text-gray-500">
-          {hasFilters ? t('noNotesMatchFilters') : t('noNotesFound')}
+          {t('noNotesMatchFilters')}
         </div>
       ) : (
         <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-4">
