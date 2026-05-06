@@ -1,7 +1,6 @@
 import { Link } from 'react-router-dom'
 import { useLocale } from '../context/LocaleContext'
 import './StudentLoungeHero.css'
-import shushCustom from '../assets/shush-custom.svg'
 
 function StudentLoungeHero({ searchInput, onSearchChange, isLoggedIn }) {
   const { t } = useLocale()
@@ -12,22 +11,11 @@ function StudentLoungeHero({ searchInput, onSearchChange, isLoggedIn }) {
         <div className="sl-background-overlay" aria-hidden="true" />
 
         <div className="sl-header">
-          <div className="sl-logo-group">
-            <div className="sl-university-name">YASAR<br />UNIVERSITY</div>
-          </div>
-
-          <div className="platform-title-wrapper">
-            <div className="sl-platform-title-group">
-              <div className="sl-platform-name">ARAMIZDA</div>
-              <div className="sl-platform-subtitle">TOP SECRET STUDENT PLATFORM</div>
-            </div>
-            <img src={shushCustom} alt="Sus İşareti" className="shush-icon" />
-          </div>
-
-          <div className="sl-banned-group">
-            <div className="sl-banned-stamp">{t('banned')}</div>
-            <div className="sl-banned-subtitle">{t('teachers')}</div>
-          </div>
+          <img
+            src="/images/header2.png"
+            alt="UniNotes Header"
+            className="sl-header-image"
+          />
         </div>
 
         <nav className="sl-nav" aria-label={t('heroNavigationLabel')}>
@@ -48,8 +36,6 @@ function StudentLoungeHero({ searchInput, onSearchChange, isLoggedIn }) {
           </div>
 
           <div className="sl-right-content">
-            <div className="sl-user-profile" aria-hidden="true">◉</div>
-
             <div className="sl-message-box">
               <p className="sl-message-text">{t('heroMessage')}</p>
               <p className="sl-message-hashtags">{t('heroHashtags')}</p>

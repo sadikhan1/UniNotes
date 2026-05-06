@@ -174,18 +174,7 @@ function HomePage() {
 
       <div className="max-w-7xl mx-auto px-4">
       <div id="notes-list" className="scroll-mt-24 bg-gradient-to-b from-[#10141a] to-[#0d1218] p-4 sm:p-6">
-      <div className="flex items-center justify-between mb-6">
-        <h1 className="text-2xl font-bold text-cyan-300 tracking-wide uppercase">
-          Tum Notlar {total > 0 && <span className="text-slate-400 font-normal text-lg">({total})</span>}
-        </h1>
-        {user && (
-          <Link to="/notes/new" className="bg-cyan-400 text-[#10141a] px-4 py-2 rounded-md text-sm font-bold tracking-wide hover:bg-cyan-300 transition uppercase">
-            + Not Paylas
-          </Link>
-        )}
-      </div>
-
-      <div className="flex gap-6 items-start">
+<div className="flex gap-6 items-start">
         {/* Departments sidebar */}
         <aside className="hidden lg:block w-56 shrink-0">
           <div className="bg-[#151c25] border border-cyan-900/60 rounded-lg p-4 sticky top-4">
@@ -231,43 +220,60 @@ function HomePage() {
           </div>
 
           {/* Filters */}
-          <div className="bg-[#151c25] border border-cyan-900/60 rounded-lg p-4 mb-6 flex flex-wrap gap-3 items-end">
-            <div className="flex-1 min-w-48">
-              <label className="block text-xs font-medium text-cyan-400 mb-1">Search</label>
-              <input
-                type="text"
-                placeholder={t('searchNotes')}
-                value={searchInput}
-                onChange={e => setSearchInput(e.target.value)}
-                className="w-full px-3 py-2 border border-cyan-800/80 bg-[#0f141c] text-slate-100 rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-cyan-500"
-              />
+          <div className="bg-[#151c25] border border-cyan-900/60 rounded-lg p-4 mb-6">
+            <div className="w-full flex flex-wrap gap-3 mb-3">
+              <div className="flex-1 min-w-48">
+                <label className="block text-xs font-medium text-cyan-400 mb-1">Code</label>
+                <input
+                  type="text"
+                  placeholder="Enter course code"
+                  value={course}
+                  onChange={e => { setCourse(e.target.value.toUpperCase()); setDepartment('') }}
+                  className="w-full px-3 py-2 border border-cyan-800/80 bg-[#0f141c] text-slate-100 rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-cyan-500"
+                />
+              </div>
+              <div className="min-w-48">
+                <label className="block text-xs font-medium text-cyan-400 mb-1">Tags</label>
+                <input
+                  type="text"
+                  placeholder="e.g. exam"
+                  value={tag}
+                  onChange={e => setTag(e.target.value)}
+                  className="w-full px-3 py-2 border border-cyan-800/80 bg-[#0f141c] text-slate-100 rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-cyan-500"
+                />
+              </div>
             </div>
-            <div className="min-w-36">
-              <label className="block text-xs font-medium text-cyan-400 mb-1">Course</label>
-              <select
-                value={course}
-                onChange={e => { setCourse(e.target.value); setDepartment('') }}
-                className="w-full px-3 py-2 border border-cyan-800/80 bg-[#0f141c] text-slate-100 rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-cyan-500"
-              >
-                <option value="">{t('allCourses')}</option>
-              {courses.map(c => <option key={c} value={c}>{c}</option>)}
-              </select>
+
+            <div className="flex flex-wrap gap-3 items-end">
+              <div className="flex-1 min-w-48">
+                <label className="block text-xs font-medium text-cyan-400 mb-1">Search</label>
+                <input
+                  type="text"
+                  placeholder={t('searchNotes')}
+                  value={searchInput}
+                  onChange={e => setSearchInput(e.target.value)}
+                  className="w-full px-3 py-2 border border-cyan-800/80 bg-[#0f141c] text-slate-100 rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-cyan-500"
+                />
+              </div>
+              <div className="min-w-36">
+                <label className="block text-xs font-medium text-cyan-400 mb-1">Course</label>
+                <select
+                  value={course}
+                  onChange={e => { setCourse(e.target.value); setDepartment('') }}
+                  className="w-full px-3 py-2 border border-cyan-800/80 bg-[#0f141c] text-slate-100 rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-cyan-500"
+                >
+                  <option value="">{t('allCourses')}</option>
+                  {courses.map(c => <option key={c} value={c}>{c}</option>)}
+                </select>
+              </div>
+              {hasFilters && (
+                <div className="ml-auto">
+                  <button onClick={clearFilters} className="px-4 py-2 text-sm text-slate-300 hover:text-red-400 border border-cyan-800/80 rounded-md hover:border-red-500/70 transition">
+                    Clear filters
+                  </button>
+                </div>
+              )}
             </div>
-            <div className="min-w-36">
-              <label className="block text-xs font-medium text-cyan-400 mb-1">Tag</label>
-              <input
-                type="text"
-                placeholder="e.g. exam"
-                value={tag}
-                onChange={e => setTag(e.target.value)}
-                className="w-full px-3 py-2 border border-cyan-800/80 bg-[#0f141c] text-slate-100 rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-cyan-500"
-              />
-            </div>
-            {hasFilters && (
-              <button onClick={clearFilters} className="px-4 py-2 text-sm text-slate-300 hover:text-red-400 border border-cyan-800/80 rounded-md hover:border-red-500/70 transition">
-                Clear filters
-              </button>
-            )}
           </div>
 
           {department && (
@@ -336,31 +342,6 @@ function HomePage() {
             </div>
           )}
         </div>
-        <div className="min-w-36 flex-1">
-          <label className="block text-xs font-medium text-gray-600 mb-1">{t('courseCode')}</label>
-          <input
-            type="text"
-            placeholder={t('courseCodePlaceholder')}
-            value={course}
-            onChange={e => setCourse(e.target.value.toUpperCase())}
-            className="w-full px-3 py-2 border border-gray-300 rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
-          />
-        </div>
-        <div className="min-w-36">
-          <label className="block text-xs font-medium text-gray-600 mb-1">{t('tags')}</label>
-          <input
-            type="text"
-            placeholder={t('tagExample')}
-            value={tag}
-            onChange={e => setTag(e.target.value)}
-            className="w-full px-3 py-2 border border-gray-300 rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
-          />
-        </div>
-        {hasFilters && (
-          <button onClick={clearFilters} className="px-4 py-2 text-sm text-gray-500 hover:text-red-600 border border-gray-300 rounded-md hover:border-red-300 transition">
-            {t('clearFilters')}
-          </button>
-        )}
       </div>
       </div>
       </div>

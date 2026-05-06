@@ -75,7 +75,7 @@ function App() {
               <Route path="/notes/:id" element={<ProtectedRoute><NoteDetailPage /></ProtectedRoute>} />
               <Route path="/profile/:id" element={<ProtectedRoute><ProfilePage /></ProtectedRoute>} />
               <Route path="/departments/:slug" element={<CurriculumPage />} />
-              <Route path="*" element={<Navigate to="/login" replace />} />
+              <Route path="*" element={<Navigate to="/" replace />} />
             </Routes>
           </div>
         </div>
