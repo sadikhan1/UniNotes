@@ -21,3 +21,9 @@ create policy "Users can update their own row"
   for update
   using (auth.uid() = id)
   with check (auth.uid() = id);
+
+drop policy if exists "Service can insert users" on public.users;
+create policy "Service can insert users"
+  on public.users
+  for insert
+  with check (true);
