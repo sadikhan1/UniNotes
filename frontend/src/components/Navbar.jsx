@@ -23,8 +23,13 @@ function Navbar() {
   return (
     <nav className="bg-[var(--color-surface)] border-b border-cyan-900/40 px-4 py-3">
       <div className="max-w-6xl mx-auto flex flex-wrap items-center justify-between gap-3">
-        <Link to="/notes" className="text-xl font-bold text-cyan-400 shrink-0 tracking-tight">
-          {t('appTitle')}
+        <Link to="/notes" className="flex items-center gap-2 shrink-0">
+          <img
+            src="/yasar-logo.svg"
+            alt="Yaşar Üniversitesi"
+            className="h-8 w-auto object-contain"
+          />
+          <span className="text-xl font-bold text-cyan-400 tracking-tight">{t('appTitle')}</span>
         </Link>
 
         <div className="flex items-center gap-3 shrink-0 ml-auto">
