@@ -1,8 +1,9 @@
-import { useEffect, useState } from 'react'
+﻿import { useEffect, useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import { loginUser } from '../services/api'
 import { useAuth } from '../context/AuthContext'
 import { useLocale } from '../context/LocaleContext'
+import { useTheme } from '../context/ThemeContext'
 
 const STUDENT_EMAIL_RE = /^\d{11}@stu\.yasar\.edu\.tr$/
 
@@ -10,6 +11,7 @@ function LoginPage() {
   const navigate = useNavigate()
   const { user, login } = useAuth()
   const { t } = useLocale()
+  const { isDark, toggleTheme } = useTheme()
   const [formData, setFormData] = useState({ email: '', password: '' })
   const [errors, setErrors] = useState({})
   const [serverError, setServerError] = useState('')
@@ -80,7 +82,27 @@ function LoginPage() {
   }
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-[#0b1117] py-12 px-4 sm:px-6 lg:px-8">
+    <div className="min-h-screen flex items-center justify-center bg-[var(--color-base)] py-12 px-4 sm:px-6 lg:px-8">
+      <button
+        onClick={toggleTheme}
+        className={`fixed top-4 right-4 p-2 rounded-md border transition z-10 ${
+          isDark
+            ? 'border-amber-600/60 text-amber-400 hover:bg-amber-400/10'
+            : 'border-indigo-400/60 text-indigo-500 hover:bg-indigo-100/60'
+        }`}
+        aria-label={isDark ? 'Switch to light mode' : 'Switch to dark mode'}
+      >
+        {isDark ? (
+          <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+            <path strokeLinecap="round" strokeLinejoin="round" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z" />
+          </svg>
+        ) : (
+          <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
+            <path d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z" />
+          </svg>
+        )}
+      </button>
+
       <div className="w-full max-w-md space-y-8">
 
         <div className="text-center">
@@ -93,7 +115,7 @@ function LoginPage() {
           <p className="text-slate-400 text-sm">{t('platformSubtitle')}</p>
         </div>
 
-        <div className="bg-[#10141a] border border-cyan-900/50 rounded-2xl p-8 shadow-2xl">
+        <div className="bg-[var(--color-surface)] border border-cyan-900/50 rounded-2xl p-8 shadow-2xl">
           <h2 className="text-xl font-semibold text-slate-100 mb-6 text-center">
             {t('signInTitle')}
           </h2>
@@ -117,7 +139,7 @@ function LoginPage() {
                 placeholder="XXXXXXXXXXX@stu.yasar.edu.tr"
                 value={formData.email}
                 onChange={handleChange}
-                className={`w-full px-4 py-3 rounded-lg bg-[#0b1117] border text-slate-100 placeholder-slate-600
+                className={`w-full px-4 py-3 rounded-lg bg-[var(--color-base)] border text-slate-100 placeholder-slate-600
                   focus:outline-none focus:ring-2 focus:ring-cyan-500/40 focus:border-cyan-600 transition
                   ${errors.email ? 'border-red-600' : 'border-cyan-900/50'}`}
               />
@@ -134,7 +156,7 @@ function LoginPage() {
                   placeholder={t('password')}
                   value={formData.password}
                   onChange={handleChange}
-                  className={`w-full px-4 py-3 pr-11 rounded-lg bg-[#0b1117] border text-slate-100 placeholder-slate-600
+                  className={`w-full px-4 py-3 pr-11 rounded-lg bg-[var(--color-base)] border text-slate-100 placeholder-slate-600
                     focus:outline-none focus:ring-2 focus:ring-cyan-500/40 focus:border-cyan-600 transition
                     ${errors.password ? 'border-red-600' : 'border-cyan-900/50'}`}
                 />

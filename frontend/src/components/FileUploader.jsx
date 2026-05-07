@@ -1,4 +1,4 @@
-import { useState, useRef } from 'react'
+﻿import { useState, useRef } from 'react'
 import { uploadFile, deleteFile } from '../services/api'
 import { useLocale } from '../context/LocaleContext'
 import ConfirmationModal from './ConfirmationModal'
@@ -128,7 +128,7 @@ function FileUploader({ noteId, initialFiles = [] }) {
 
       {/* Selected file + upload button */}
       {selected && (
-        <div className="mt-3 flex items-center justify-between bg-[#0b1117] border border-cyan-900/50 rounded-lg px-3 py-2">
+        <div className="mt-3 flex items-center justify-between bg-[var(--color-base)] border border-cyan-900/50 rounded-lg px-3 py-2">
           <div>
             <p className="text-sm font-medium text-slate-300 truncate max-w-xs">{selected.name}</p>
             <p className="text-xs text-slate-600">{formatSize(selected.size)}</p>
@@ -166,7 +166,7 @@ function FileUploader({ noteId, initialFiles = [] }) {
                   <div className="cursor-pointer" onClick={() => setLightbox(f.file_url)} title={t('viewFullSize')}>
                     <img src={f.file_url} alt={f.file_name} className="w-full max-h-48 object-cover hover:opacity-80 transition" />
                   </div>
-                  <div className="px-3 py-2 flex items-center justify-between bg-[#0d1218] border-t border-cyan-900/30">
+                  <div className="px-3 py-2 flex items-center justify-between bg-[var(--color-muted)] border-t border-cyan-900/30">
                     <span className="text-sm text-slate-400 truncate">{f.file_name}</span>
                     <div className="flex items-center gap-3 shrink-0 ml-3">
                       <button onClick={() => triggerDownload(f.file_url, f.file_name)} className="text-xs text-cyan-400 hover:text-cyan-300">
@@ -179,7 +179,7 @@ function FileUploader({ noteId, initialFiles = [] }) {
               ) : isPDF(f) ? (
                 <>
                   <iframe src={f.file_url} title={f.file_name} className="w-full h-96 border-0" />
-                  <div className="px-3 py-2 flex items-center justify-between bg-[#0d1218] border-t border-cyan-900/30">
+                  <div className="px-3 py-2 flex items-center justify-between bg-[var(--color-muted)] border-t border-cyan-900/30">
                     <span className="text-sm text-slate-400 truncate">{f.file_name}</span>
                     <div className="flex items-center gap-3 shrink-0 ml-3">
                       <button onClick={() => triggerDownload(f.file_url, f.file_name)} className="text-xs text-cyan-400 hover:text-cyan-300">
@@ -190,7 +190,7 @@ function FileUploader({ noteId, initialFiles = [] }) {
                   </div>
                 </>
               ) : (
-                <div className="px-3 py-3 flex items-center justify-between bg-[#10141a]">
+                <div className="px-3 py-3 flex items-center justify-between bg-[var(--color-surface)]">
                   <span className="text-sm text-slate-400 truncate">{f.file_name}</span>
                   <div className="flex items-center gap-3 shrink-0 ml-3">
                     <button onClick={() => triggerDownload(f.file_url, f.file_name)} className="text-xs text-cyan-400 hover:text-cyan-300">

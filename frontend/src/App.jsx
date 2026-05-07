@@ -1,6 +1,7 @@
 import { Routes, Route, Navigate, useLocation } from 'react-router-dom'
 import { AuthProvider, useAuth } from './context/AuthContext'
 import { LocaleProvider } from './context/LocaleContext'
+import { ThemeProvider } from './context/ThemeContext'
 import ProtectedRoute from './components/ProtectedRoute'
 import Navbar from './components/Navbar'
 import LoginPage from './pages/LoginPage'
@@ -21,7 +22,7 @@ function RootRedirect() {
 
   if (loading) {
     return (
-      <div className="min-h-screen flex items-center justify-center" style={{ backgroundColor: '#0b1117' }}>
+      <div className="min-h-screen flex items-center justify-center">
         <div className="w-8 h-8 border-4 border-cyan-400 border-t-transparent rounded-full animate-spin" />
       </div>
     )
@@ -35,7 +36,7 @@ function AppShell() {
   const isAuthPage = AUTH_PAGES.includes(location.pathname)
 
   return (
-    <div className="min-h-screen" style={{ backgroundColor: '#0b1117' }}>
+    <div className="min-h-screen">
       {!isAuthPage && <Navbar />}
       <Toast />
       <Routes>
@@ -58,11 +59,13 @@ function AppShell() {
 
 function App() {
   return (
-    <LocaleProvider>
-      <AuthProvider>
-        <AppShell />
-      </AuthProvider>
-    </LocaleProvider>
+    <ThemeProvider>
+      <LocaleProvider>
+        <AuthProvider>
+          <AppShell />
+        </AuthProvider>
+      </LocaleProvider>
+    </ThemeProvider>
   )
 }
 

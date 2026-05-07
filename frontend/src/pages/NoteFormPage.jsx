@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+﻿import { useState, useEffect } from 'react'
 import { useNavigate, useParams, useSearchParams } from 'react-router-dom'
 import { createNote, updateNote, getNote } from '../services/api'
 import { useLocale } from '../context/LocaleContext'
@@ -72,7 +72,7 @@ function NoteFormPage() {
   }
 
   const inputClass = (hasError) =>
-    `w-full px-3 py-2.5 bg-[#0b1117] border rounded-lg text-slate-100 placeholder-slate-600
+    `w-full px-3 py-2.5 bg-[var(--color-base)] border rounded-lg text-slate-100 placeholder-slate-600
      focus:outline-none focus:ring-2 focus:ring-cyan-500/40 focus:border-cyan-600 transition
      ${hasError ? 'border-red-600' : 'border-cyan-900/50'}`
 
@@ -82,7 +82,7 @@ function NoteFormPage() {
         {isEdit ? t('editNote') : t('createNote')}
       </h1>
 
-      <form onSubmit={handleSubmit} className="bg-[#10141a] border border-cyan-900/40 rounded-xl p-6 space-y-5">
+      <form onSubmit={handleSubmit} className="bg-[var(--color-surface)] border border-cyan-900/40 rounded-xl p-6 space-y-5">
         {errors.api && (
           <div className="rounded-lg bg-red-950/60 border border-red-800/50 p-3 text-sm text-red-400">
             {errors.api}
@@ -108,7 +108,7 @@ function NoteFormPage() {
             value={formData.content}
             onChange={handleChange('content')}
             placeholder={t('noteContentPlaceholder')}
-            className={`w-full px-3 py-2.5 bg-[#0b1117] border border-cyan-900/50 rounded-lg text-slate-100 placeholder-slate-600
+            className={`w-full px-3 py-2.5 bg-[var(--color-base)] border border-cyan-900/50 rounded-lg text-slate-100 placeholder-slate-600
               focus:outline-none focus:ring-2 focus:ring-cyan-500/40 focus:border-cyan-600 transition resize-y`}
           />
         </div>
@@ -147,7 +147,7 @@ function NoteFormPage() {
             }`}
           >
             <span
-              className={`absolute top-0.5 left-0.5 w-5 h-5 bg-[#0b1117] rounded-full shadow transition-transform ${
+              className={`absolute top-0.5 left-0.5 w-5 h-5 bg-[var(--color-base)] rounded-full shadow transition-transform ${
                 formData.is_public ? 'translate-x-5' : ''
               }`}
             />

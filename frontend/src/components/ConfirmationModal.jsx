@@ -1,4 +1,4 @@
-import { useLocale } from '../context/LocaleContext'
+﻿import { useLocale } from '../context/LocaleContext'
 
 function ConfirmationModal({ open, title, message, onConfirm, onCancel, confirmLabel, cancelLabel }) {
   const { t } = useLocale()
@@ -7,7 +7,7 @@ function ConfirmationModal({ open, title, message, onConfirm, onCancel, confirmL
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 p-4">
-      <div className="w-full max-w-md rounded-2xl bg-[#10141a] border border-cyan-900/50 p-6 shadow-2xl">
+      <div className="w-full max-w-md rounded-2xl bg-[var(--color-surface)] border border-cyan-900/50 p-6 shadow-2xl">
         <div className="mb-4 flex items-start gap-3">
           <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-red-950/60 border border-red-800/50 text-red-400 text-xl shrink-0">!</div>
           <div>

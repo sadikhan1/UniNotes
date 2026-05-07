@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+﻿import { useState, useEffect } from 'react'
 import { useParams, Link } from 'react-router-dom'
 import { getNotes, getMyNotes } from '../services/api'
 import { useAuth } from '../context/AuthContext'
@@ -30,13 +30,13 @@ function NoteCard({ note, isOwn }) {
   return (
     <Link
       to={`/notes/${note.id}`}
-      className="block bg-[#10141a] rounded-xl border border-cyan-900/40 p-4 hover:border-cyan-700/60 hover:bg-cyan-900/10 transition"
+      className="block bg-[var(--color-surface)] rounded-xl border border-cyan-900/40 p-4 hover:border-cyan-700/60 hover:bg-cyan-900/10 transition"
     >
       <div className="flex items-start justify-between gap-2">
         <h3 className="font-semibold text-slate-100 truncate">{note.title}</h3>
         <div className="flex items-center gap-1 shrink-0">
           {isOwn && !note.is_public && (
-            <span className="text-xs bg-[#0b1117] border border-cyan-900/40 text-slate-500 px-1.5 py-0.5 rounded">{t('private')}</span>
+            <span className="text-xs bg-[var(--color-base)] border border-cyan-900/40 text-slate-500 px-1.5 py-0.5 rounded">{t('private')}</span>
           )}
           {note.files?.length > 0 && (
             <span className="text-xs bg-cyan-900/30 text-cyan-400 px-1.5 py-0.5 rounded">
@@ -51,7 +51,7 @@ function NoteCard({ note, isOwn }) {
       {note.tags?.length > 0 && (
         <div className="flex flex-wrap gap-1 mt-2">
           {note.tags.map(tag => (
-            <span key={tag} className="text-xs bg-[#0b1117] border border-cyan-900/30 text-slate-500 px-2 py-0.5 rounded-full">{tag}</span>
+            <span key={tag} className="text-xs bg-[var(--color-base)] border border-cyan-900/30 text-slate-500 px-2 py-0.5 rounded-full">{tag}</span>
           ))}
         </div>
       )}
@@ -138,7 +138,7 @@ function CoursePage() {
       </nav>
 
       {/* Course info card */}
-      <div className="bg-[#10141a] border border-cyan-900/40 rounded-xl p-6 mb-8">
+      <div className="bg-[var(--color-surface)] border border-cyan-900/40 rounded-xl p-6 mb-8">
         <div className="flex items-start justify-between gap-4">
           <div>
             <span className="text-xs font-mono font-semibold text-cyan-400 bg-cyan-900/30 px-2 py-1 rounded">
