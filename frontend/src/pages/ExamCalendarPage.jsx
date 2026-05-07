@@ -127,11 +127,11 @@ function ExamCalendarPage() {
                             <Link
                               key={exam.course}
                               to={`/courses/${encodeURIComponent(exam.course)}`}
-                              className="block mb-1 px-2 py-1.5 rounded text-xs font-semibold bg-cyan-900/40 text-cyan-400 hover:bg-cyan-900/60 hover:text-cyan-300 transition truncate"
+                              className="exam-block block mb-1 px-2 py-1.5 rounded text-xs font-semibold bg-cyan-900/40 text-cyan-400 hover:bg-cyan-900/60 hover:text-cyan-300 transition truncate"
                               title={exam.course + (exam.note ? ` (${exam.note})` : '')}
                             >
                               {exam.course}
-                              {exam.note && <span className="ml-1 font-normal text-cyan-600">({exam.note})</span>}
+                              {exam.note && <span className="exam-note ml-1 font-normal text-cyan-600">({exam.note})</span>}
                             </Link>
                           ))}
                         </td>

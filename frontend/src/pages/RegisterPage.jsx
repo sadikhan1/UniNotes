@@ -159,11 +159,13 @@ function RegisterPage() {
       <div className="w-full max-w-md space-y-8">
 
         <div className="text-center">
-          <div className="inline-flex items-center gap-2 mb-3">
-            <div className="w-8 h-8 rounded-lg bg-cyan-400 flex items-center justify-center">
-              <span className="text-[#0b1117] font-bold text-sm">U</span>
-            </div>
-            <span className="text-2xl font-bold text-slate-100 tracking-tight">UniNotes</span>
+          <div className="flex flex-col items-center gap-2 mb-3">
+            <img
+              src="/yasar-logo.svg"
+              alt="Yaşar Üniversitesi"
+              className="h-16 w-auto object-contain"
+            />
+            <span className="text-2xl font-bold text-cyan-400 tracking-tight">UniNotes</span>
           </div>
           <p className="text-slate-400 text-sm">{t('platformSubtitle')}</p>
         </div>
