@@ -30,7 +30,10 @@ async function request(path, options = {}) {
     data = { error: text }
   }
   if (!res.ok) {
-    const err = new Error(data.error || 'Something went wrong')
+    const msg = data.details?.length
+      ? data.details.join(', ')
+      : (data.error || 'Something went wrong')
+    const err = new Error(msg)
     err.status = res.status
     throw err
   }

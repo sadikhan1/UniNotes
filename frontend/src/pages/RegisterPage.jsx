@@ -19,8 +19,7 @@ function RegisterPage() {
   const [showPassword, setShowPassword] = useState(false)
   const [errors, setErrors] = useState({})
   const [apiError, setApiError] = useState('')
-  const [success, setSuccess] = useState(false)
-  const [registeredEmail, setRegisteredEmail] = useState('')
+  const [loading, setLoading] = useState(false)
 
   useEffect(() => {
     if (user) navigate('/notes', { replace: true })
@@ -89,15 +88,18 @@ function RegisterPage() {
 
     try {
       setApiError('')
-      setRegisteredEmail(formData.email)
-      await registerUser(
+      setLoading(true)
+      const data = await registerUser(
         formData.email, formData.username, formData.password,
         formData.first_name, formData.last_name, formData.department,
       )
-      setSuccess(true)
-      setFormData({ email: '', username: '', password: '', first_name: '', last_name: '', department: '' })
+      navigate('/login', {
+        state: { toast: data?.message || 'Registration successful! Check your email.' },
+      })
     } catch (error) {
       setApiError(error.message)
+    } finally {
+      setLoading(false)
     }
   }
 
@@ -122,31 +124,6 @@ function RegisterPage() {
       )}
     </button>
   )
-
-  if (success) {
-    return (
-      <div className="min-h-screen flex items-center justify-center bg-[var(--color-base)] py-12 px-4">
-        <ThemeToggle />
-        <div className="w-full max-w-md">
-          <div className="bg-[var(--color-surface)] border border-cyan-900/50 rounded-2xl p-8 shadow-2xl text-center">
-            <div className="w-12 h-12 rounded-full bg-cyan-400/10 border border-cyan-400/30 flex items-center justify-center mx-auto mb-4">
-              <svg className="w-6 h-6 text-cyan-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
-              </svg>
-            </div>
-            <h2 className="text-xl font-semibold text-slate-100 mb-3">{t('checkEmailTitle')}</h2>
-            <p className="text-slate-400 text-sm mb-2">
-              {t('checkEmailMessage')} <span className="text-cyan-400 font-medium">{registeredEmail || t('yourEmail')}</span>
-            </p>
-            <p className="text-slate-500 text-sm mb-6">{t('verifyEmailMessage')}</p>
-            <Link to="/login" className="text-cyan-400 hover:text-cyan-300 font-medium text-sm transition-colors">
-              {t('backToLogin')}
-            </Link>
-          </div>
-        </div>
-      </div>
-    )
-  }
 
   const inputClass = (field) =>
     `w-full px-4 py-3 rounded-lg bg-[var(--color-base)] border text-slate-100 placeholder-slate-600
@@ -286,10 +263,12 @@ function RegisterPage() {
 
             <button
               type="submit"
+              disabled={loading}
               className="w-full bg-cyan-400 text-[#0b1117] py-3 px-4 rounded-lg font-semibold
-                hover:bg-cyan-300 active:bg-cyan-500 transition-colors mt-2"
+                hover:bg-cyan-300 active:bg-cyan-500 transition-colors mt-2
+                disabled:opacity-60 disabled:cursor-not-allowed"
             >
-              {t('register')}
+              {loading ? t('loading') || 'Registering...' : t('register')}
             </button>
           </form>
 
