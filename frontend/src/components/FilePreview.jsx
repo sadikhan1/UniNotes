@@ -1,4 +1,4 @@
-import { useState } from 'react'
+﻿import { useState } from 'react'
 import { useLocale } from '../context/LocaleContext'
 
 function isImage(f) {
@@ -52,7 +52,7 @@ function FilePreview({ files = [] }) {
                 <div className="cursor-pointer" onClick={() => setLightbox(f.file_url)} title={t('viewFullSize')}>
                   <img src={f.file_url} alt={f.file_name} className="w-full max-h-48 object-cover hover:opacity-80 transition" />
                 </div>
-                <div className="px-3 py-2 flex items-center justify-between bg-[#0d1218] border-t border-cyan-900/30">
+                <div className="px-3 py-2 flex items-center justify-between bg-[var(--color-muted)] border-t border-cyan-900/30">
                   <span className="text-sm text-slate-400 truncate">{f.file_name}</span>
                   <DownloadBtn file={f} />
                 </div>
@@ -60,13 +60,13 @@ function FilePreview({ files = [] }) {
             ) : isPDF(f) ? (
               <>
                 <iframe src={f.file_url} title={f.file_name} className="w-full h-96 border-0" />
-                <div className="px-3 py-2 flex items-center justify-between bg-[#0d1218] border-t border-cyan-900/30">
+                <div className="px-3 py-2 flex items-center justify-between bg-[var(--color-muted)] border-t border-cyan-900/30">
                   <span className="text-sm text-slate-400 truncate">{f.file_name}</span>
                   <DownloadBtn file={f} />
                 </div>
               </>
             ) : (
-              <div className="px-3 py-3 flex items-center justify-between bg-[#10141a]">
+              <div className="px-3 py-3 flex items-center justify-between bg-[var(--color-surface)]">
                 <span className="text-sm text-slate-400 truncate">{f.file_name}</span>
                 <DownloadBtn file={f} />
               </div>

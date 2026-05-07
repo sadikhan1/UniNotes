@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+﻿import { useState, useEffect } from 'react'
 import { Link } from 'react-router-dom'
 import { getComments, addComment, deleteComment } from '../services/api'
 import { useLocale } from '../context/LocaleContext'
@@ -61,7 +61,7 @@ function CommentSection({ noteId, currentUser, noteOwnerId }) {
             onChange={e => setText(e.target.value)}
             placeholder={t('addComment')}
             rows={3}
-            className="w-full bg-[#0b1117] border border-cyan-900/50 rounded-lg px-3 py-2 text-sm text-slate-300 placeholder-slate-600
+            className="w-full bg-[var(--color-base)] border border-cyan-900/50 rounded-lg px-3 py-2 text-sm text-slate-300 placeholder-slate-600
               focus:outline-none focus:ring-2 focus:ring-cyan-500/40 focus:border-cyan-600 resize-none transition"
           />
           {error && <p className="text-xs text-red-400 mt-1">{error}</p>}

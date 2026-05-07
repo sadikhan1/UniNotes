@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from 'react'
+﻿import { useState, useEffect, useRef } from 'react'
 import { useParams, Link } from 'react-router-dom'
 import {
   getMyProfile, getUser, getUserNotes,
@@ -33,13 +33,13 @@ function EyeIcon({ open }) {
 function NoteCard({ note }) {
   return (
     <Link to={`/notes/${note.id}`}
-      className="block bg-[#0b1117] rounded-xl border border-cyan-900/40 p-4 hover:border-cyan-700/60 hover:bg-cyan-900/10 transition">
+      className="block bg-[var(--color-base)] rounded-xl border border-cyan-900/40 p-4 hover:border-cyan-700/60 hover:bg-cyan-900/10 transition">
       <h3 className="font-semibold text-slate-100 truncate">{note.title}</h3>
       {note.course && <p className="text-xs text-cyan-400 mt-1 font-medium">{note.course}</p>}
       {note.tags?.length > 0 && (
         <div className="flex flex-wrap gap-1 mt-2">
           {note.tags.map(tag => (
-            <span key={tag} className="text-xs bg-[#10141a] border border-cyan-900/30 text-slate-500 px-2 py-0.5 rounded-full">{tag}</span>
+            <span key={tag} className="text-xs bg-[var(--color-surface)] border border-cyan-900/30 text-slate-500 px-2 py-0.5 rounded-full">{tag}</span>
           ))}
         </div>
       )}
@@ -59,7 +59,7 @@ function TabButton({ active, onClick, children }) {
 }
 
 const field = (err) =>
-  `w-full px-3 py-2 bg-[#0b1117] border rounded-lg text-slate-100 text-sm
+  `w-full px-3 py-2 bg-[var(--color-base)] border rounded-lg text-slate-100 text-sm
    placeholder-slate-600 focus:outline-none focus:ring-2 focus:ring-cyan-500/40
    focus:border-cyan-600 transition ${err ? 'border-red-600' : 'border-cyan-900/50'}`
 
@@ -172,7 +172,7 @@ function ProfilePage() {
 
   /* ── states ── */
   if (loading)
-    return <div className="min-h-screen flex items-center justify-center bg-[#0b1117]">
+    return <div className="min-h-screen flex items-center justify-center bg-[var(--color-base)]">
       <div className="w-8 h-8 border-4 border-cyan-400 border-t-transparent rounded-full animate-spin" />
     </div>
 
@@ -188,7 +188,7 @@ function ProfilePage() {
     <div className="max-w-4xl mx-auto px-4 py-8 space-y-6">
 
       {/* ══ Main profile card ══════════════════════════════════ */}
-      <div className="bg-[#10141a] rounded-xl border border-cyan-900/40 overflow-hidden">
+      <div className="bg-[var(--color-surface)] rounded-xl border border-cyan-900/40 overflow-hidden">
 
         {/* Note count banner */}
         <div className="flex justify-end items-center px-6 pt-4 pb-0">
@@ -205,7 +205,7 @@ function ProfilePage() {
           <div className="flex flex-col items-center gap-2 shrink-0">
             <div className="relative group">
               <div
-                className={`w-32 h-32 rounded-full border-2 border-cyan-700/40 bg-[#0b1117]
+                className={`w-32 h-32 rounded-full border-2 border-cyan-700/40 bg-[var(--color-base)]
                   flex items-center justify-center overflow-hidden
                   ${isOwn ? 'cursor-pointer' : ''}`}
                 onClick={() => isOwn && fileRef.current?.click()}

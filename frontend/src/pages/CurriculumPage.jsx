@@ -1,4 +1,4 @@
-import { useParams, useNavigate, Link } from 'react-router-dom'
+﻿import { useParams, useNavigate, Link } from 'react-router-dom'
 import { getDepartmentBySlug } from '../data/curriculum'
 import { useLocale } from '../context/LocaleContext'
 
@@ -49,7 +49,7 @@ function SemesterTable({ semester }) {
         <h2 className="text-base font-semibold text-slate-200">
           {t('semester')} {semester.semester}
         </h2>
-        <span className="text-xs text-slate-500 bg-[#10141a] border border-cyan-900/40 px-2 py-0.5 rounded-full">
+        <span className="text-xs text-slate-500 bg-[var(--color-surface)] border border-cyan-900/40 px-2 py-0.5 rounded-full">
           {totalEcts} {t('ects')}
         </span>
       </div>
@@ -57,7 +57,7 @@ function SemesterTable({ semester }) {
       <div className="overflow-x-auto rounded-xl border border-cyan-900/40">
         <table className="w-full text-sm border-collapse">
           <thead>
-            <tr className="bg-[#0d1218] text-xs text-slate-500 uppercase tracking-wide">
+            <tr className="bg-[var(--color-muted)] text-xs text-slate-500 uppercase tracking-wide">
               <th className="text-left px-3 py-2 border-b border-cyan-900/30 font-medium w-28">{t('courseCode')}</th>
               <th className="text-left px-3 py-2 border-b border-cyan-900/30 font-medium">{t('courseName')}</th>
               <th className="text-center px-3 py-2 border-b border-cyan-900/30 font-medium w-20">T+P+L</th>
@@ -65,7 +65,7 @@ function SemesterTable({ semester }) {
               <th className="text-center px-3 py-2 border-b border-cyan-900/30 font-medium w-16">{t('ects')}</th>
             </tr>
           </thead>
-          <tbody className="bg-[#10141a]">
+          <tbody className="bg-[var(--color-surface)]">
             {semester.courses.map(course => (
               <CourseRow key={course.code} course={course} />
             ))}

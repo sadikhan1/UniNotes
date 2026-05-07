@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+﻿import { useState, useEffect } from 'react'
 import { useParams, Link, useNavigate } from 'react-router-dom'
 import { getNote, deleteNote, toggleLike, toggleSave } from '../services/api'
 import { useAuth } from '../context/AuthContext'
@@ -103,7 +103,7 @@ function NoteDetailPage() {
 
   if (loading) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-[#0b1117]">
+      <div className="min-h-screen flex items-center justify-center bg-[var(--color-base)]">
         <div className="w-8 h-8 border-4 border-cyan-400 border-t-transparent rounded-full animate-spin" />
       </div>
     )
@@ -131,7 +131,7 @@ function NoteDetailPage() {
         </div>
       )}
 
-      <div className="bg-[#10141a] rounded-xl border border-cyan-900/40 p-6">
+      <div className="bg-[var(--color-surface)] rounded-xl border border-cyan-900/40 p-6">
         <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-4 mb-4">
           <h1 className="text-2xl font-bold text-slate-100">{note.title}</h1>
           <div className="flex flex-wrap items-center gap-2 shrink-0">
@@ -149,7 +149,7 @@ function NoteDetailPage() {
                 <span>{likeCount}</span>
               </button>
               {!user && (
-                <span className="pointer-events-none absolute bottom-full left-1/2 -translate-x-1/2 mb-1.5 whitespace-nowrap rounded bg-[#10141a] border border-cyan-900/40 px-2 py-1 text-xs text-slate-300 opacity-0 transition-opacity group-hover:opacity-100 z-10">
+                <span className="pointer-events-none absolute bottom-full left-1/2 -translate-x-1/2 mb-1.5 whitespace-nowrap rounded bg-[var(--color-surface)] border border-cyan-900/40 px-2 py-1 text-xs text-slate-300 opacity-0 transition-opacity group-hover:opacity-100 z-10">
                   {t('loginToLike')}
                 </span>
               )}
@@ -168,7 +168,7 @@ function NoteDetailPage() {
                 <BookmarkIcon filled={saved} />
               </button>
               {!user && (
-                <span className="pointer-events-none absolute bottom-full left-1/2 -translate-x-1/2 mb-1.5 whitespace-nowrap rounded bg-[#10141a] border border-cyan-900/40 px-2 py-1 text-xs text-slate-300 opacity-0 transition-opacity group-hover:opacity-100 z-10">
+                <span className="pointer-events-none absolute bottom-full left-1/2 -translate-x-1/2 mb-1.5 whitespace-nowrap rounded bg-[var(--color-surface)] border border-cyan-900/40 px-2 py-1 text-xs text-slate-300 opacity-0 transition-opacity group-hover:opacity-100 z-10">
                   {t('loginToSave')}
                 </span>
               )}
@@ -213,7 +213,7 @@ function NoteDetailPage() {
         {note.tags?.length > 0 && (
           <div className="flex flex-wrap gap-1.5 mb-6">
             {note.tags.map(tag => (
-              <span key={tag} className="text-xs bg-[#0b1117] border border-cyan-900/40 text-slate-400 px-2 py-0.5 rounded-full">
+              <span key={tag} className="text-xs bg-[var(--color-base)] border border-cyan-900/40 text-slate-400 px-2 py-0.5 rounded-full">
                 {tag}
               </span>
             ))}

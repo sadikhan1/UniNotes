@@ -1,4 +1,4 @@
-import { Link, useParams } from 'react-router-dom'
+﻿import { Link, useParams } from 'react-router-dom'
 import { getDepartmentBySlug } from '../data/curriculum'
 import { getExamsByDept } from '../data/examSchedule'
 
@@ -91,13 +91,13 @@ function ExamCalendarPage() {
             <table className="w-full border-collapse text-sm">
               <thead>
                 <tr>
-                  <th className="w-24 px-2 py-2 text-xs text-slate-600 font-normal border-b border-r border-cyan-900/30 bg-[#0d1218]" />
+                  <th className="w-24 px-2 py-2 text-xs text-slate-600 font-normal border-b border-r border-cyan-900/30 bg-[var(--color-muted)]" />
                   {weekDates.map(date => {
                     const d = new Date(date)
                     const isHoliday = date === HOLIDAY
                     return (
                       <th key={date} className={`px-2 py-2 border-b border-r border-cyan-900/30 text-center font-medium ${
-                        isHoliday ? 'bg-amber-950/40' : 'bg-[#0d1218]'
+                        isHoliday ? 'bg-amber-950/40' : 'bg-[var(--color-muted)]'
                       }`}>
                         <div className="text-xs text-slate-600">{DAY_NAMES[d.getDay()]}</div>
                         <div className={`font-bold ${isHoliday ? 'text-amber-400' : 'text-slate-300'}`}>
@@ -109,10 +109,10 @@ function ExamCalendarPage() {
                   })}
                 </tr>
               </thead>
-              <tbody className="bg-[#10141a]">
+              <tbody className="bg-[var(--color-surface)]">
                 {TIME_SLOTS.map(slot => (
                   <tr key={slot} className="border-b border-cyan-900/20">
-                    <td className="px-2 py-2 text-xs text-slate-600 text-right border-r border-cyan-900/20 bg-[#0d1218] whitespace-nowrap">
+                    <td className="px-2 py-2 text-xs text-slate-600 text-right border-r border-cyan-900/20 bg-[var(--color-muted)] whitespace-nowrap">
                       {slot}<br /><span className="text-slate-700">{SLOT_ENDS[slot]}</span>
                     </td>
                     {weekDates.map(date => {

@@ -1,8 +1,9 @@
-import { useEffect, useState } from 'react'
+﻿import { useEffect, useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import { registerUser } from '../services/api'
 import { useAuth } from '../context/AuthContext'
 import { useLocale } from '../context/LocaleContext'
+import { useTheme } from '../context/ThemeContext'
 
 const STUDENT_EMAIL_RE = /^\d{11}@stu\.yasar\.edu\.tr$/
 
@@ -10,6 +11,7 @@ function RegisterPage() {
   const navigate = useNavigate()
   const { user } = useAuth()
   const { t } = useLocale()
+  const { isDark, toggleTheme } = useTheme()
   const [formData, setFormData] = useState({
     email: '', username: '', password: '',
     first_name: '', last_name: '', department: '',
@@ -99,11 +101,34 @@ function RegisterPage() {
     }
   }
 
+  const ThemeToggle = () => (
+    <button
+      onClick={toggleTheme}
+      className={`fixed top-4 right-4 p-2 rounded-md border transition z-10 ${
+        isDark
+          ? 'border-amber-600/60 text-amber-400 hover:bg-amber-400/10'
+          : 'border-indigo-400/60 text-indigo-500 hover:bg-indigo-100/60'
+      }`}
+      aria-label={isDark ? 'Switch to light mode' : 'Switch to dark mode'}
+    >
+      {isDark ? (
+        <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+          <path strokeLinecap="round" strokeLinejoin="round" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z" />
+        </svg>
+      ) : (
+        <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
+          <path d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z" />
+        </svg>
+      )}
+    </button>
+  )
+
   if (success) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-[#0b1117] py-12 px-4">
+      <div className="min-h-screen flex items-center justify-center bg-[var(--color-base)] py-12 px-4">
+        <ThemeToggle />
         <div className="w-full max-w-md">
-          <div className="bg-[#10141a] border border-cyan-900/50 rounded-2xl p-8 shadow-2xl text-center">
+          <div className="bg-[var(--color-surface)] border border-cyan-900/50 rounded-2xl p-8 shadow-2xl text-center">
             <div className="w-12 h-12 rounded-full bg-cyan-400/10 border border-cyan-400/30 flex items-center justify-center mx-auto mb-4">
               <svg className="w-6 h-6 text-cyan-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
@@ -124,12 +149,13 @@ function RegisterPage() {
   }
 
   const inputClass = (field) =>
-    `w-full px-4 py-3 rounded-lg bg-[#0b1117] border text-slate-100 placeholder-slate-600
+    `w-full px-4 py-3 rounded-lg bg-[var(--color-base)] border text-slate-100 placeholder-slate-600
     focus:outline-none focus:ring-2 focus:ring-cyan-500/40 focus:border-cyan-600 transition
     ${errors[field] ? 'border-red-600' : 'border-cyan-900/50'}`
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-[#0b1117] py-12 px-4 sm:px-6 lg:px-8">
+    <div className="min-h-screen flex items-center justify-center bg-[var(--color-base)] py-12 px-4 sm:px-6 lg:px-8">
+      <ThemeToggle />
       <div className="w-full max-w-md space-y-8">
 
         <div className="text-center">
@@ -142,7 +168,7 @@ function RegisterPage() {
           <p className="text-slate-400 text-sm">{t('platformSubtitle')}</p>
         </div>
 
-        <div className="bg-[#10141a] border border-cyan-900/50 rounded-2xl p-8 shadow-2xl">
+        <div className="bg-[var(--color-surface)] border border-cyan-900/50 rounded-2xl p-8 shadow-2xl">
           <h2 className="text-xl font-semibold text-slate-100 mb-6 text-center">
             {t('createAccountTitle')}
           </h2>
@@ -234,7 +260,7 @@ function RegisterPage() {
                   placeholder={t('passwordMin')}
                   value={formData.password}
                   onChange={handleChange}
-                  className={`w-full px-4 py-3 pr-11 rounded-lg bg-[#0b1117] border text-slate-100 placeholder-slate-600
+                  className={`w-full px-4 py-3 pr-11 rounded-lg bg-[var(--color-base)] border text-slate-100 placeholder-slate-600
                     focus:outline-none focus:ring-2 focus:ring-cyan-500/40 focus:border-cyan-600 transition
                     ${errors.password ? 'border-red-600' : 'border-cyan-900/50'}`}
                 />
